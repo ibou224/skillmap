@@ -1,0 +1,31 @@
+# Variables d'environnement
+.env
+.env.local
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+
+# Python
+__pycache__/
+*.pyc
+backend/venv/
+backend/.venv/
+
+# Uploads et fichiers CV
+backend/uploads/
+*.pdf
+*.docx
+*.doc
+
+# Fichiers de test
+backend/test_*.py
+backend/cv_test.*
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
