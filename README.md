@@ -22,12 +22,12 @@
 
 ## Fonctionnalités
 
-- 📄 Upload de CV (PDF et Word)
-- 🤖 Extraction automatique des compétences via LLM
-- ⚖️ Algorithme d'affectation pondérée configurable
-- 👥 3 rôles : Professeur, Responsable RH, Administrateur
-- 📊 Historique des affectations par session
-- 🔐 Authentification sécurisée avec JWT
+- Upload de CV (PDF et Word)
+- Extraction automatique des compétences via LLM
+- Algorithme d'affectation pondérée configurable
+- 3 rôles : Professeur, Responsable RH, Administrateur
+- Historique des affectations par session
+- Authentification sécurisée avec JWT
 
 ---
 
