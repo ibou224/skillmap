@@ -1,0 +1,67 @@
+@startuml diagramme_cas_utilisation
+left to right direction
+skinparam packageStyle rectangle
+
+actor Professeur as Prof
+actor "Responsable RH" as RH
+actor Administrateur as Admin
+
+rectangle "Application Web de Gestion de CV" {
+  usecase "S'authentifier" as UC_Auth
+  usecase "Soumettre un CV\n(PDF/Word)" as UC_Upload
+  usecase "Valider / Corriger\nles données extraites" as UC_Validate
+  usecase "Consulter son profil\net ses affectations" as UC_ConsulterProfil
+  usecase "Gérer les cours" as UC_Cours
+  usecase "Gérer les programmes" as UC_Programmes
+  usecase "Gérer les compétences" as UC_Competences
+  usecase "Gérer les sessions" as UC_Sessions
+  usecase "Configurer les\npondérations" as UC_Ponderations
+  usecase "Lancer les affectations" as UC_LancerAffect
+  usecase "Ajuster manuellement\nles affectations" as UC_AjusterAffect
+  usecase "Valider / Finaliser\nles affectations" as UC_ValiderAffect
+  usecase "Consulter l'historique\net les rapports" as UC_Historique
+  usecase "Gérer les comptes\nutilisateurs" as UC_Users
+  usecase "Consulter les logs" as UC_Logs
+  usecase "Extraire les informations\n(IA)" as UC_Extract
+  usecase "Calculer les scores\nde compatibilité" as UC_Score
+  usecase "Consulter les\nnotifications" as UC_Notifs
+}
+
+' Professeur (gauche)
+Prof --> UC_Auth
+Prof --> UC_Upload
+Prof --> UC_Validate
+Prof --> UC_ConsulterProfil
+Prof --> UC_Notifs
+
+' Responsable RH (gauche)
+RH --> UC_Auth
+RH --> UC_Cours
+RH --> UC_Programmes
+RH --> UC_Competences
+RH --> UC_Sessions
+RH --> UC_Ponderations
+RH --> UC_LancerAffect
+RH --> UC_AjusterAffect
+RH --> UC_ValiderAffect
+RH --> UC_Historique
+RH --> UC_Notifs
+
+' Include et extend
+UC_Upload ..> UC_Extract : «include»
+UC_LancerAffect ..> UC_Score : «include»
+UC_AjusterAffect ..> UC_LancerAffect : «extend»
+
+' Administrateur (droite) : flèches inversées pour le placer à droite
+UC_Auth <-- Admin
+UC_Users <-- Admin
+UC_Logs <-- Admin
+UC_Ponderations <-- Admin
+UC_Cours <-- Admin
+UC_Programmes <-- Admin
+UC_Competences <-- Admin
+UC_Sessions <-- Admin
+UC_Historique <-- Admin
+UC_Notifs <-- Admin
+
+@enduml

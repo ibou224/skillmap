@@ -1,0 +1,105 @@
+@startuml
+title Diagramme d'activité — Gestion des CV et Extraction IA
+
+|Professeur|
+start
+:Accéder à la section "Mon CV";
+:Glisser-déposer ou sélectionner\nun fichier PDF ou Word;
+
+|Navigateur (Next.js Client)|
+:Vérifier format (PDF / .docx)\net taille (<= 5 MB) côté client;
+if (Fichier valide ?) then (non)
+  :Afficher erreur de format ou de taille;
+  |Professeur|
+  :Choisir un autre fichier;
+  detach
+else (oui)
+  :POST /api/cv/upload\n(multipart/form-data);
+  :Afficher barre de progression;
+endif
+
+|API Next.js (Serveur)|
+:Vérifier JWT + rôle PROFESSEUR;
+if (Autorisé ?) then (non)
+  :Retourner 401 / 403;
+  |Navigateur (Next.js Client)|
+  :Rediriger vers /login;
+  stop
+else (oui)
+  :Valider format et taille côté serveur;
+  if (Fichier valide ?) then (non)
+    :Retourner 400 Bad Request;
+    |Navigateur (Next.js Client)|
+    :Afficher erreur serveur;
+    stop
+  else (oui)
+    :Sauvegarder le fichier\ncvs/{professorId}/v{n}_{fileName};
+    :INSERT CvExtraction\n{ filePath, fileName,\n  status: PENDING, version: n };
+    :Retourner 202 Accepted\n{ extractionId };
+    :Appeler POST /extract (FastAPI)\n{ filePath, professorId };
+  endif
+endif
+
+|FastAPI — Service IA|
+:Lire le fichier depuis le stockage partagé;
+:Extraire le texte brut\n(PyMuPDF si PDF / python-docx si Word);
+if (Extraction texte OK ?) then (non)
+  :UPDATE CvExtraction { status: FAILED };
+  :Retourner erreur à Next.js;
+  |API Next.js (Serveur)|
+  :Notifier le navigateur — échec extraction;
+  |Navigateur (Next.js Client)|
+  :Afficher "Extraction échouée, réessayez";
+  stop
+else (oui)
+  :Envoyer prompt structuré + texte brut\nà l'API LLM;
+endif
+
+|LLM API (open-source)|
+:Analyser le texte du CV;
+:Retourner JSON structuré\n{ nom, prenom,\n  formations[], experiences[],\n  competences[] };
+
+|FastAPI — Service IA|
+if (Réponse LLM valide ?) then (non)
+  :UPDATE CvExtraction { status: FAILED };
+  :Retourner erreur à Next.js;
+  |API Next.js (Serveur)|
+  :Notifier le navigateur — échec LLM;
+  stop
+else (oui)
+  :INSERT Experience[];
+  :INSERT Formation[];
+  :UPSERT ProfessorSkill[];
+  :UPDATE Professor { nom, prenom, telephone };
+  :UPDATE CvExtraction { status: EXTRACTED };
+  :Retourner 200 OK à Next.js;
+endif
+
+|API Next.js (Serveur)|
+:Notifier le navigateur\n"Extraction terminée";
+
+|Navigateur (Next.js Client)|
+:Afficher formulaire pré-rempli\navec les données extraites;
+
+|Professeur|
+:Vérifier et corriger les champs\n(formations, expériences, compétences);
+:Soumettre la validation;
+
+|Navigateur (Next.js Client)|
+:PUT /api/cv/{extractionId}/validate\n{ formations[], experiences[], skills[] };
+
+|API Next.js (Serveur)|
+:UPDATE Experience[];
+:UPDATE Formation[];
+:UPDATE ProfessorSkill[];
+:UPDATE CvExtraction { status: VALIDATED };
+:Retourner 200 OK;
+
+|Navigateur (Next.js Client)|
+:Afficher "Profil mis à jour";
+
+|Professeur|
+:Consulter son profil finalisé;
+stop
+
+@enduml

@@ -1,0 +1,77 @@
+@startuml
+title Diagramme d'activité — Connexion utilisateur
+
+|Utilisateur|
+start
+:Accéder à la page /login;
+:Saisir email et mot de passe;
+:Soumettre le formulaire;
+
+|Navigateur (Next.js Client)|
+:Valider les champs\n(email non vide, mot de passe non vide);
+if (Champs valides ?) then (non)
+  :Afficher erreurs de validation;
+  |Utilisateur|
+  :Corriger les champs;
+  |Navigateur (Next.js Client)|
+  -[hidden]->
+  :Valider les champs\n(email non vide, mot de passe non vide);
+  detach
+else (oui)
+  :POST /api/auth/login\n{ email, password };
+endif
+
+|API Next.js (Serveur)|
+:Rechercher l'utilisateur\n(SELECT WHERE email = ?);
+if (Utilisateur trouvé ?) then (non)
+  :Retourner 401 Unauthorized\n"Identifiants invalides";
+  |Navigateur (Next.js Client)|
+  :Afficher message d'erreur générique;
+  stop
+else (oui)
+  if (Compte actif ?) then (non)
+    :Retourner 403 Forbidden\n"Compte désactivé";
+    |Navigateur (Next.js Client)|
+    :Afficher "Compte bloqué ou désactivé";
+    stop
+  else (oui)
+    :bcrypt.verify(password, passwordHash);
+    if (Mot de passe correct ?) then (non)
+      :Incrémenter compteur\nde tentatives échouées;
+      if (>= 5 tentatives ?) then (oui)
+        :Désactiver le compte\n(isActive = false);
+        :Retourner 403 Forbidden\n"Compte bloqué après 5 tentatives";
+        |Navigateur (Next.js Client)|
+        :Afficher "Compte bloqué";
+        stop
+      else (non)
+        :Retourner 401 Unauthorized\n"Identifiants invalides";
+        |Navigateur (Next.js Client)|
+        :Afficher message d'erreur;
+        stop
+      endif
+    else (oui)
+      :Remettre compteur tentatives à 0;
+      :Générer JWT\n(exp: 2h, payload: userId, role);
+      :Générer Refresh Token\n(exp: 7j);
+      :Retourner 200 OK\nSet-Cookie: jwt HttpOnly Secure\nSet-Cookie: refresh HttpOnly Secure;
+    endif
+  endif
+endif
+
+|Navigateur (Next.js Client)|
+:Stocker cookies (HttpOnly — inaccessibles au JS);
+:Lire le rôle depuis la réponse;
+if (Rôle ?) then (PROFESSEUR)
+  :Rediriger vers /dashboard;
+elseif (RH) then (RH)
+  :Rediriger vers /rh/dashboard;
+else (ADMIN)
+  :Rediriger vers /admin;
+endif
+
+|Utilisateur|
+:Accéder au tableau de bord personnalisé;
+stop
+
+@enduml
