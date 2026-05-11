@@ -71,7 +71,7 @@
 | 🔐 Auth & API | Next.js API Routes + NextAuth.js + Prisma | 14 / 5.x |
 | 🤖 Backend IA | FastAPI + SQLAlchemy + Alembic | Python 3.11 |
 | 🗄️ Base de données | PostgreSQL | 16 |
-| 📄 Parsing PDF | PyMuPDF + pdfplumber | — |
+| 📄 Parsing PDF | pdfplumber | — |
 | 📝 Parsing Word | python-docx | — |
 | 🧠 LLM | gpt-oss-ctx24k:120B | — |
 | 🐳 Déploiement | Docker Compose | — |
