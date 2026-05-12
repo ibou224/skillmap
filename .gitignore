@@ -2,18 +2,24 @@
 .env
 .env.local
 
-# Next.js
-frontend/.next/
-frontend/node_modules/
-
 # Python
 __pycache__/
 *.pyc
 backend/venv/
 backend/.venv/
 
+# Next.js
+frontend/.next/
+frontend/node_modules/
+node_modules/
+.next/
+
+# Prisma généré
+frontend/src/generated/prisma
+
 # Uploads et fichiers CV
 backend/uploads/
+cv_uploads/
 *.pdf
 *.docx
 *.doc

@@ -1,0 +1,301 @@
+@startuml diagramme_objets
+title Diagramme d'objets — Snapshot : Affectation Automne 2026\nProfesseure Marie Dupont → cours PROG302
+
+skinparam objectAttributeIconSize 0
+
+' =============================================
+' SCÉNARIO
+' Marie Dupont (PROFESSEUR) a soumis et validé
+' son CV (version 2). Elle maîtrise JavaScript
+' et React, mais pas Git.
+' Le cours PROG302 exige les trois.
+' La session Automne 2026 est ACTIVE.
+' Score calculé : 78.00 / 100
+' =============================================
+
+package "Utilisateurs & Sécurité" {
+
+  object "userMarie : User" as userMarie {
+    id            = "u-001"
+    email         = "marie.dupont@lacite.edu"
+    role          = PROFESSEUR
+    isActive      = true
+    loginAttempts = 0
+    lockedUntil   = null
+    lastLoginAt   = 2026-05-11 08:30:00
+  }
+
+  object "userRH : User" as userRH {
+    id            = "u-002"
+    email         = "rh@lacite.edu"
+    role          = RH
+    isActive      = true
+    loginAttempts = 0
+    lastLoginAt   = 2026-05-11 09:00:00
+  }
+
+  object "log1 : AuditLog" as log1 {
+    id         = "log-001"
+    userId     = "u-001"
+    action     = "LOGIN_SUCCESS"
+    entityType = "User"
+    entityId   = "u-001"
+    ipAddress  = "192.168.1.42"
+    createdAt  = 2026-05-11 08:30:00
+  }
+
+  object "notif1 : Notification" as notif1 {
+    id         = "n-001"
+    userId     = "u-001"
+    type       = CV_VALIDATED
+    message    = "Votre CV a été validé — profil mis à jour"
+    isRead     = false
+    entityType = "CvExtraction"
+    entityId   = "cv-001"
+    createdAt  = 2026-05-10 14:22:00
+  }
+
+  object "notif2 : Notification" as notif2 {
+    id         = "n-002"
+    userId     = "u-001"
+    type       = ASSIGNMENT_PROPOSED
+    message    = "Affectation proposée : PROG302 — Automne 2026"
+    isRead     = false
+    entityType = "Assignment"
+    entityId   = "asgn-001"
+    createdAt  = 2026-05-11 10:15:00
+  }
+
+}
+
+package "Profil Professeure" {
+
+  object "profMarie : Professor" as profMarie {
+    id        = "prof-001"
+    userId    = "u-001"
+    nom       = "Dupont"
+    prenom    = "Marie"
+    telephone = "613-555-0187"
+    maxCours  = 3
+    createdAt = 2025-08-15 00:00:00
+  }
+
+  object "cvMarie : CvExtraction" as cvMarie {
+    id          = "cv-001"
+    professorId = "prof-001"
+    fileName    = "CV_Dupont_2026.pdf"
+    filePath    = "cvs/prof-001/v2_CV_Dupont_2026.pdf"
+    status      = VALIDATED
+    version     = 2
+    extractedAt = 2026-05-10 14:18:00
+    validatedAt = 2026-05-10 14:22:00
+    createdAt   = 2026-05-10 14:15:00
+  }
+
+  object "exp1 : Experience" as exp1 {
+    id             = "exp-001"
+    professorId    = "prof-001"
+    poste          = "Développeuse Backend"
+    domaine        = "Développement Web"
+    dateDebut      = 2019-09-01
+    dateFin        = 2023-06-30
+    cvExtractionId = "cv-001"
+  }
+
+  object "exp2 : Experience" as exp2 {
+    id             = "exp-002"
+    professorId    = "prof-001"
+    poste          = "Chargée de cours"
+    domaine        = "Informatique"
+    dateDebut      = 2023-08-15
+    dateFin        = null
+    cvExtractionId = "cv-001"
+  }
+
+  object "form1 : Formation" as form1 {
+    id             = "frm-001"
+    professorId    = "prof-001"
+    diplome        = "Maîtrise en informatique"
+    niveauDiplome  = MAITRISE
+    etablissement  = "Université de Montréal"
+    anneeObtention = 2019
+    cvExtractionId = "cv-001"
+  }
+
+}
+
+package "Compétences" {
+
+  object "skillJS : Skill" as skillJS {
+    id        = "sk-001"
+    nom       = "JavaScript"
+    categorie = "Langage"
+  }
+
+  object "skillReact : Skill" as skillReact {
+    id        = "sk-002"
+    nom       = "React"
+    categorie = "Framework"
+  }
+
+  object "skillGit : Skill" as skillGit {
+    id        = "sk-003"
+    nom       = "Git"
+    categorie = "Outil"
+  }
+
+  object "psJS : ProfessorSkill" as psJS {
+    professorId    = "prof-001"
+    skillId        = "sk-001"
+    niveau         = AVANCE
+    anneesExp      = 5
+    cvExtractionId = "cv-001"
+  }
+
+  object "psReact : ProfessorSkill" as psReact {
+    professorId    = "prof-001"
+    skillId        = "sk-002"
+    niveau         = INTERMEDIAIRE
+    anneesExp      = 3
+    cvExtractionId = "cv-001"
+  }
+
+  note bottom of skillGit
+    Compétence requise par PROG302
+    mais ABSENTE du profil de Marie
+    → score individuel Git = 0 %
+  end note
+
+}
+
+package "Référentiel Métier" {
+
+  object "progPI : Program" as progPI {
+    id       = "prg-001"
+    code     = "PI"
+    nom      = "Programmation Informatique"
+    nbEtapes = 6
+  }
+
+  object "courseDW : Course" as courseDW {
+    id         = "crs-001"
+    code       = "PROG302"
+    nom        = "Développement Web Client"
+    programId  = "prg-001"
+    etape      = 3
+    isArchived = false
+  }
+
+  object "csJS : CourseSkill" as csJS {
+    courseId      = "crs-001"
+    skillId       = "sk-001"
+    niveauRequis  = AVANCE
+    poidsCritique = 5
+  }
+
+  object "csReact : CourseSkill" as csReact {
+    courseId      = "crs-001"
+    skillId       = "sk-002"
+    niveauRequis  = INTERMEDIAIRE
+    poidsCritique = 3
+  }
+
+  object "csGit : CourseSkill" as csGit {
+    courseId      = "crs-001"
+    skillId       = "sk-003"
+    niveauRequis  = DEBUTANT
+    poidsCritique = 2
+  }
+
+}
+
+package "Session & Affectation" {
+
+  object "sessionA2026 : Session" as sessionA2026 {
+    id      = "sess-001"
+    nom     = "Automne 2026"
+    annee   = 2026
+    periode = AUTOMNE
+    statut  = ACTIVE
+  }
+
+  object "weights : WeightsConfig" as weights {
+    id             = "wc-001"
+    sessionId      = "sess-001"
+    competencesPct = 40
+    experiencePct  = 25
+    formationPct   = 20
+    historiquePct  = 15
+  }
+
+  object "assignDupont : Assignment" as assignDupont {
+    id          = "asgn-001"
+    sessionId   = "sess-001"
+    professorId = "prof-001"
+    courseId    = "crs-001"
+    score       = 78.00
+    scoreDetail = {competences:80.0, experience:60.0,
+                   formation:80.0, historique:100.0}
+    statut      = PROPOSEE
+    updatedById = null
+  }
+
+  note right of assignDupont
+    Calcul du score :
+    ① Compétences :
+       JS   (AVANCE>=AVANCE)    100% × 5 =  500
+       React(INTERM>=INTERM)    100% × 3 =  300
+       Git  (absent)              0% × 2 =    0
+       → (500+300+0)/(5+3+2) = 80.0 %
+    ② Expérience :
+       exp1 = 3 ans 9 mois ≈ 4 ans
+       exp2 = 1 an 9 mois  ≈ 2 ans
+       → min(6/10,1)×100   = 60.0 %
+    ③ Formation : MAITRISE      = 80.0 %
+    ④ Historique : déjà enseigné= 100.0 %
+    Score = (80×0.40)+(60×0.25)
+          + (80×0.20)+(100×0.15)
+          = 32+15+16+15 = 78.00
+  end note
+
+}
+
+' =============================================
+' LIENS
+' =============================================
+
+userMarie   --> profMarie      : possède
+userMarie   --> log1           : génère
+userMarie   --> notif1         : reçoit
+userMarie   --> notif2         : reçoit
+
+profMarie   --> cvMarie        : soumet
+profMarie   --> exp1           : a
+profMarie   --> exp2           : a
+profMarie   --> form1          : a
+profMarie   --> psJS           : maîtrise
+profMarie   --> psReact        : maîtrise
+
+cvMarie     --> exp1           : est source de
+cvMarie     --> exp2           : est source de
+cvMarie     --> form1          : est source de
+cvMarie     --> psJS           : est source de
+cvMarie     --> psReact        : est source de
+
+psJS        --> skillJS        : référence
+psReact     --> skillReact     : référence
+
+progPI      --> courseDW       : contient
+courseDW    --> csJS           : requiert
+courseDW    --> csReact        : requiert
+courseDW    --> csGit          : requiert
+csJS        --> skillJS        : référence
+csReact     --> skillReact     : référence
+csGit       --> skillGit       : référence
+
+sessionA2026 --> weights       : configure
+sessionA2026 --> assignDupont  : regroupe
+profMarie    --> assignDupont  : est affectée dans
+courseDW     --> assignDupont  : est assigné dans
+
+@enduml

@@ -1,0 +1,282 @@
+@startuml
+title Diagramme d'activité — Gestion des Entités Métier\n(Cours, Programmes, Compétences)
+
+|Administrateur / RH|
+start
+:Accéder au module de gestion du catalogue;
+:Sélectionner le type d'entité;
+
+if (Type d'entité ?) then (PROGRAMME)
+
+  :Choisir une action sur le programme;
+
+  if (Action ?) then (Créer)
+
+    |Navigateur (Next.js Client)|
+    :Saisir : code, nom, description, nbEtapes;
+    :POST /api/programs;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    :SELECT Program WHERE code = ?;
+    if (Code déjà existant ?) then (oui)
+      :Retourner 409 Conflict\n"Code programme déjà utilisé";
+      |Navigateur (Next.js Client)|
+      :Afficher erreur d'unicité;
+      stop
+    else (non)
+      |PostgreSQL|
+      :INSERT Program\n{ code, nom, description, nbEtapes };
+      |API Next.js (Serveur)|
+      :Retourner 201 Created;
+      |Navigateur (Next.js Client)|
+      :Afficher confirmation\net mettre à jour la liste;
+    endif
+
+  elseif (Modifier) then (Modifier)
+
+    |Navigateur (Next.js Client)|
+    :Modifier : nom, description, nbEtapes;
+    :PUT /api/programs/:id;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    :SELECT max(Course.etape) WHERE programId = ?;
+    if (nbEtapes < etape max des cours existants ?) then (oui)
+      :Retourner 422 Unprocessable\n"nbEtapes inférieur à l'étape max des cours liés";
+      |Navigateur (Next.js Client)|
+      :Afficher erreur de cohérence;
+      stop
+    else (non)
+      |PostgreSQL|
+      :UPDATE Program { nom, description, nbEtapes };
+      |API Next.js (Serveur)|
+      :Retourner 200 OK;
+      |Navigateur (Next.js Client)|
+      :Afficher confirmation;
+    endif
+
+  else (Supprimer)
+
+    |Navigateur (Next.js Client)|
+    :DELETE /api/programs/:id;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN uniquement;
+    :SELECT COUNT(Course) WHERE programId = ?;
+    if (Cours liés au programme ?) then (oui)
+      :Retourner 409 Conflict\n"Programme lié à des cours existants";
+      |Navigateur (Next.js Client)|
+      :Afficher "Archivez les cours liés avant de supprimer";
+      stop
+    else (non)
+      |PostgreSQL|
+      :DELETE Program;
+      |API Next.js (Serveur)|
+      :Retourner 200 OK;
+      |Navigateur (Next.js Client)|
+      :Afficher confirmation;
+    endif
+
+  endif
+
+elseif (COURS) then (COURS)
+
+  :Choisir une action sur le cours;
+
+  if (Action ?) then (Créer)
+
+    |Navigateur (Next.js Client)|
+    :Saisir : code, nom, programme, étape;
+    :POST /api/courses;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    :SELECT Course WHERE code = ?;
+    if (Code cours déjà existant ?) then (oui)
+      :Retourner 409 Conflict\n"Code cours déjà utilisé";
+      |Navigateur (Next.js Client)|
+      :Afficher erreur d'unicité;
+      stop
+    else (non)
+      :SELECT Program.nbEtapes WHERE id = programId;
+      if (etape > Program.nbEtapes ?) then (oui)
+        :Retourner 422 Unprocessable\n"Étape dépasse nbEtapes du programme";
+        |Navigateur (Next.js Client)|
+        :Afficher erreur de cohérence;
+        stop
+      else (non)
+        |PostgreSQL|
+        :INSERT Course\n{ code, nom, programId,\n  etape, isArchived: false };
+        |API Next.js (Serveur)|
+        :Retourner 201 Created;
+        |Navigateur (Next.js Client)|
+        :Afficher confirmation;
+      endif
+    endif
+
+  elseif (Modifier) then (Modifier)
+
+    |Navigateur (Next.js Client)|
+    :Modifier : nom, étape, programme;
+    :PUT /api/courses/:id;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    :SELECT Program.nbEtapes WHERE id = programId;
+    if (nouvelle étape > Program.nbEtapes ?) then (oui)
+      :Retourner 422 Unprocessable\n"Étape dépasse nbEtapes du programme";
+      |Navigateur (Next.js Client)|
+      :Afficher erreur de cohérence;
+      stop
+    else (non)
+      |PostgreSQL|
+      :UPDATE Course { nom, programId, etape };
+      |API Next.js (Serveur)|
+      :Retourner 200 OK;
+      |Navigateur (Next.js Client)|
+      :Afficher confirmation;
+    endif
+
+  elseif (Archiver) then (Archiver)
+
+    |Navigateur (Next.js Client)|
+    :PUT /api/courses/:id/archive;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    note right
+      Suppression LOGIQUE uniquement —
+      les affectations historiques sont préservées.
+    end note
+    |PostgreSQL|
+    :UPDATE Course { isArchived: true };
+    |API Next.js (Serveur)|
+    :Retourner 200 OK;
+    |Navigateur (Next.js Client)|
+    :Retirer le cours de la liste active\n(toujours visible dans l'historique);
+
+  else (Associer Compétences)
+
+    |Navigateur (Next.js Client)|
+    :Sélectionner le cours à configurer;
+    :Afficher les compétences actuelles (CourseSkill);
+
+    fork
+      :Ajouter une compétence :;
+      :Choisir Skill dans le référentiel;
+      :Définir niveauRequis\n(DEBUTANT / INTERMEDIAIRE / AVANCE);
+      :Définir poidsCritique (1 à 5);
+      :POST /api/courses/:id/skills;
+
+      |API Next.js (Serveur)|
+      :Vérifier que la compétence\nn'est pas déjà liée à ce cours;
+      if (Liaison CourseSkill déjà existante ?) then (oui)
+        :Retourner 409 Conflict;
+        |Navigateur (Next.js Client)|
+        :Afficher "Compétence déjà associée";
+        stop
+      else (non)
+        |PostgreSQL|
+        :INSERT CourseSkill\n{ courseId, skillId,\n  niveauRequis, poidsCritique };
+      endif
+
+    fork again
+      :Modifier une compétence existante :;
+      :Ajuster niveauRequis ou poidsCritique;
+      :PUT /api/courses/:id/skills/:skillId;
+
+      |API Next.js (Serveur)|
+      |PostgreSQL|
+      :UPDATE CourseSkill\n{ niveauRequis, poidsCritique };
+
+    fork again
+      :Retirer une compétence :;
+      :DELETE /api/courses/:id/skills/:skillId;
+
+      |API Next.js (Serveur)|
+      |PostgreSQL|
+      :DELETE CourseSkill\n{ courseId, skillId };
+
+    end fork
+
+    |API Next.js (Serveur)|
+    :Retourner 200 OK;
+    |Navigateur (Next.js Client)|
+    :Mettre à jour la liste\ndes compétences du cours;
+
+  endif
+
+else (COMPÉTENCE)
+
+  :Choisir une action sur la compétence;
+
+  if (Action ?) then (Créer)
+
+    |Navigateur (Next.js Client)|
+    :Saisir : nom, catégorie, description (opt.);
+    :POST /api/skills;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    :SELECT Skill WHERE nom = ?;
+    if (Nom déjà existant ?) then (oui)
+      :Retourner 409 Conflict\n"Compétence déjà existante";
+      |Navigateur (Next.js Client)|
+      :Afficher erreur d'unicité;
+      stop
+    else (non)
+      |PostgreSQL|
+      :INSERT Skill { nom, categorie, description };
+      |API Next.js (Serveur)|
+      :Retourner 201 Created;
+      |Navigateur (Next.js Client)|
+      :Afficher confirmation;
+    endif
+
+  elseif (Modifier) then (Modifier)
+
+    |Navigateur (Next.js Client)|
+    :Modifier : nom, catégorie, description;
+    :PUT /api/skills/:id;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN ou RH;
+    |PostgreSQL|
+    :UPDATE Skill { nom, categorie, description };
+    |API Next.js (Serveur)|
+    :Retourner 200 OK;
+    |Navigateur (Next.js Client)|
+    :Afficher confirmation;
+
+  else (Supprimer)
+
+    |Navigateur (Next.js Client)|
+    :DELETE /api/skills/:id;
+
+    |API Next.js (Serveur)|
+    :Vérifier JWT + rôle ADMIN uniquement;
+    :SELECT COUNT(CourseSkill + ProfessorSkill)\nWHERE skillId = ?;
+    if (Compétence référencée\n(cours ou profil professeur) ?) then (oui)
+      :Retourner 409 Conflict\n"Compétence utilisée — suppression impossible";
+      |Navigateur (Next.js Client)|
+      :Afficher "Retirez d'abord les liaisons existantes";
+      stop
+    else (non)
+      |PostgreSQL|
+      :DELETE Skill;
+      |API Next.js (Serveur)|
+      :Retourner 200 OK;
+      |Navigateur (Next.js Client)|
+      :Afficher confirmation;
+    endif
+
+  endif
+
+endif
+
+|Administrateur / RH|
+:Catalogue mis à jour —\nprêt pour le calcul d'affectation;
+stop
+
+@enduml

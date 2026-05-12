@@ -1,0 +1,110 @@
+@startuml diagramme_deploiement
+title Diagramme de déploiement — Application Gestion de CV\n(Docker Compose — 3 conteneurs)
+
+skinparam nodeBackgroundColor #F8F9FA
+skinparam nodeBorderColor     #6C757D
+skinparam componentBackgroundColor #DDEEFF
+skinparam databaseBackgroundColor  #FFF3CD
+skinparam storageBackgroundColor   #D4EDDA
+skinparam cloudBackgroundColor     #F8D7DA
+skinparam linetype ortho
+
+' =====================
+' POSTE CLIENT
+' =====================
+
+node "Poste Client\n(Navigateur Web)" as client {
+  component [Navigateur\n(Chrome / Firefox / Edge)] as browser
+}
+
+' =====================
+' SERVEUR HÔTE DOCKER
+' =====================
+
+node "Serveur Hôte\n(Docker Compose)" as host {
+
+  ' ---- Réseau Docker interne (non exposé publiquement) ----
+  rectangle "Réseau Docker Interne : gestion_cv_network" as dockernet {
+
+    ' --- Conteneur frontend ---
+    node "Conteneur : frontend\n──────────────────\nImage : node:20-alpine\nPort exposé : 3000" as cFrontend {
+      component [Next.js 14\nApp + API Routes] as nextjs
+      component [Prisma ORM 5.x] as prisma
+      component [Auth JWT\n+ bcrypt (coût ≥ 10)] as auth
+      component [Upload CV\n(multipart/form-data)] as upload
+      nextjs --> prisma
+      nextjs --> auth
+      nextjs --> upload
+    }
+
+    ' --- Conteneur backend ---
+    node "Conteneur : backend\n──────────────────\nImage : python:3.11-slim\nPort : 8000 (interne uniquement)" as cBackend {
+      component [FastAPI\n(Python 3.11)] as fastapi
+      component [PyMuPDF\n+ python-docx] as extractor
+      component [SQLAlchemy ORM\n+ Alembic] as sqlalchemy
+      component [Scoring\nAlgorithme affectation] as scoring
+      fastapi --> extractor
+      fastapi --> sqlalchemy
+      fastapi --> scoring
+    }
+
+    ' --- Conteneur db ---
+    node "Conteneur : db\n──────────────────\nImage : postgres:15-alpine\nPort : 5432 (interne uniquement)" as cDb {
+      database [PostgreSQL 15\ngestion_cv] as pg
+    }
+
+  }
+
+  ' --- Volumes Docker ---
+  storage "Volume : uploads\n(partagé frontend ↔ backend)\ncvs/{professorId}/v{n}_{fileName}" as volUploads
+
+  storage "Volume : pgdata\n(persistance PostgreSQL)" as volPgdata
+
+}
+
+' =====================
+' SERVICE EXTERNE
+' =====================
+
+cloud "Internet\n(HTTPS)" as internet {
+  component [LLM API\n(open-source fournie)] as llmApi
+}
+
+' =====================
+' COMMUNICATIONS
+' =====================
+
+' Client <-> Frontend
+browser    -down-> nextjs    : HTTPS :3000\nJWT via cookies HttpOnly + Secure\nCSRF token (formulaires sensibles)
+
+' Frontend <-> Backend (interne)
+nextjs     -right-> fastapi  : HTTP interne Docker\nPOST /extract  { filePath, professorId }\nPOST /score    { sessionId }\n< 5 ms de latence
+
+' Frontend <-> PostgreSQL
+prisma     -down-> pg        : TCP :5432\n(Prisma — requêtes CRUD Auth, CV,\n Cours, Sessions, Affectations)
+
+' Backend <-> PostgreSQL
+sqlalchemy -down-> pg        : TCP :5432\n(SQLAlchemy — INSERT Experience,\n Formation, ProfessorSkill, Assignment)
+
+' Backend <-> LLM (externe)
+fastapi    -right-> llmApi   : HTTPS\nAuthorization: Bearer <LLM_API_KEY>\nPrompt structuré + texte brut CV
+
+' Volumes
+upload     ..> volUploads    : écriture fichier CV
+extractor  ..> volUploads    : lecture fichier CV
+pg         ..> volPgdata     : persistance données
+
+' =====================
+' LÉGENDE
+' =====================
+
+legend bottom right
+  | Symbole | Signification |
+  | ──────► | Communication réseau (synchrone) |
+  | ·······► | Accès stockage (I/O fichier) |
+  | Port 3000 | Exposé publiquement (HTTPS) |
+  | Port 8000 | Interne Docker uniquement |
+  | Port 5432 | Interne Docker uniquement |
+end legend
+
+@enduml
