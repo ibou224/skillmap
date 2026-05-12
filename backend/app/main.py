@@ -1,6 +1,11 @@
+# main.py
+# Point d'entrée de l'application FastAPI SkillMap.
+# Configure le CORS et enregistre toutes les routes.
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.api.routes import cv, assignments
 
 # Initialisation de l'application FastAPI
 app = FastAPI(
@@ -9,7 +14,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configuration CORS et autorise le frontend Next.js à appeler l'API
+#  CORS 
+# Autorise le frontend Next.js à appeler l'API FastAPI
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -18,7 +24,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Route de test pour vérifier que l'API tourne
+#  Routes 
+app.include_router(cv.router, prefix="/api/cv", tags=["CV"])
+app.include_router(assignments.router, prefix="/api/assignments", tags=["Affectations"])
+
+#  Route de test 
 @app.get("/")
 def root():
     return {"message": "SkillMap API opérationnelle"}
