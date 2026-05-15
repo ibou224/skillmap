@@ -25,8 +25,8 @@ app.add_middleware(
 )
 
 #  Routes 
-app.include_router(cv.router, prefix="/api/cv", tags=["CV"])
-app.include_router(assignments.router, prefix="/api/assignments", tags=["Affectations"])
+app.include_router(cv.router, prefix="/analyze-cv", tags=["CV"])
+app.include_router(assignments.router, prefix="/calculate-assignments", tags=["Affectations"])
 
 #  Route de test 
 @app.get("/")

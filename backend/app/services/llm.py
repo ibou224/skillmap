@@ -17,27 +17,29 @@ You are a CV parsing expert. Extract structured information from the following C
 
 The JSON must follow this exact schema:
 {
-  "nom": "string",
-  "courriel": "string or null",
-  "telephone": "string or null",
-  "formation": [
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string or null",
+  "phone": "string or null",
+  "education": [
     {
-      "diplome": "string",
-      "etablissement": "string",
-      "annee": "number or null"
+      "diploma": "string",
+      "institution": "string",
+      "year": "number or null",
+      "niveauDiplome": "one of: DOCTORATE, MASTERS, BACHELORS, DEC, OTHER"
     }
   ],
   "experiences": [
     {
-      "poste": "string",
-      "organisation": "string",
-      "duree_annees": "number or null",
+      "position": "string",
+      "organization": "string",
+      "yearsExp": "number or null",
       "description": "string or null"
     }
   ],
-  "competences": ["string"],
-  "langues": ["string"],
-  "annees_experience_totales": "number or null"
+  "skills": ["string"],
+  "languages": ["string"],
+  "totalYearsExperience": "number or null"
 }
 
 If a field is not found in the CV, use null or an empty array.
@@ -93,13 +95,14 @@ def _fallback_extraction(text: str) -> dict:
     phone = re.findall(r"\+?[\d\s\-().]{10,}", text)
 
     return {
-        "nom": None,
-        "courriel": email[0] if email else None,
-        "telephone": phone[0].strip() if phone else None,
-        "formation": [],
+        "firstName": None,
+        "lastName": None,
+        "email": email[0] if email else None,
+        "phone": phone[0].strip() if phone else None,
+        "education": [],
         "experiences": [],
-        "competences": [],
-        "langues": [],
-        "annees_experience_totales": None,
+        "skills": [],
+        "languages": [],
+        "totalYearsExperience": None,
         "extraction_method": "fallback_regex"
     }

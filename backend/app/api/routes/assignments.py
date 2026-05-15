@@ -24,7 +24,7 @@ class RunAssignmentRequest(BaseModel):
 #  Endpoint principal 
 
 @router.post("/run")
-async def run_assignment(
+async def calculate_assignments(
     request: RunAssignmentRequest,
     x_internal_api_key: str = Header(...)
 ):

@@ -18,8 +18,8 @@ ALLOWED_TYPES = [
 
 #  Endpoint principal 
 
-@router.post("/parse")
-async def parse_cv(
+@router.post("/")
+async def analyze_cv(
     file: UploadFile = File(...),
     x_internal_api_key: str = Header(...)
 ):
