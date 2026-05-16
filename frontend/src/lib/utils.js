@@ -1,12 +1,6 @@
-export function formatDate(date) {
-  return new Date(date).toLocaleDateString("fr-CA");
-}
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge"
 
-export function capitalize(str) {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
-
-export function scoreToPercent(score) {
-  return Math.round(score * 100);
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
 }

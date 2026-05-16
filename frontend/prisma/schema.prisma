@@ -208,11 +208,11 @@ enum SkillSource {
 }
 
 enum NiveauDiplome {
-  DOCTORAT
-  MAITRISE
-  BACCALAUREAT
-  DEC_TECHNIQUE
-  AUTRE
+  DOCTORATE
+  MASTERS
+  BACHELORS
+  DEC
+  OTHER
 }
 
 enum Periode {

@@ -1,0 +1,36 @@
+{
+  "login": {
+    "brand": "SkillMap",
+    "languageSwitcher": "FR | EN",
+    "leftPanel": {
+      "title": "Valorisez chaque comp\u00e9tence",
+      "description": "G\u00e9rez les CV du corps professoral, d\u00e9tectez les comp\u00e9tences par IA et optimisez les affectations de cours, tout en un.",
+      "features": {
+        "centralizedCvs": "CV centralis\u00e9s et structur\u00e9s",
+        "mappedSkills": "Comp\u00e9tences cartographi\u00e9es par IA",
+        "roleAccess": "Acc\u00e8s s\u00e9curis\u00e9 par r\u00f4le"
+      }
+    },
+    "mobile": {
+      "subtitle": "Plateforme de gestion des CV - Coll\u00e8ge La Cit\u00e9"
+    },
+    "form": {
+      "title": "Connexion",
+      "welcome": "Bienvenue sur SkillMap",
+      "description": "Connectez-vous pour acc\u00e9der \u00e0 votre espace de gestion des CV et des affectations.",
+      "emailLabel": "Adresse e-mail",
+      "emailPlaceholder": "prenom.nom@lacitec.on.ca",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "Mot de passe",
+      "institutionalAccount": "Compte institutionnel",
+      "showPassword": "Afficher le mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "submit": "Se connecter",
+      "loading": "Connexion en cours..."
+    },
+    "footer": {
+      "copyright": "(c) 2026 Coll\u00e8ge La Cit\u00e9. Tous droits r\u00e9serv\u00e9s.",
+      "description": "SkillMap - Gestion des CV, comp\u00e9tences et affectations"
+    }
+  }
+}

@@ -4,15 +4,16 @@ import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import prisma from '@/lib/prisma'
 import { authConfig } from './auth.config'
+import { isValidEmail,isValidPassword } from './validation'
 
 const ACCESS_TOKEN_DURATION  = 15 * 60
 const REFRESH_TOKEN_DURATION = 7 * 24 * 60 * 60 
 
-// classe pour gerer les erreur personnalises
-class PersonnaliseError extends CredentialsSignin{
-  constructor(message) {
+// Codes d'erreur envoyes au client, puis traduits en messages dans useAuth.js.
+class LoginError extends CredentialsSignin{
+  constructor(code) {
     super()
-    this.code = message
+    this.code = code
   }
 }
 // Fonction pour generer le refresh token
@@ -83,20 +84,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       authorize: async (credentials) => {
-        if (!credentials?.email || !credentials?.password) return null
+        if (!credentials?.email || !credentials?.password) {
+          throw new LoginError('Identifiants incorrects. Veuillez réessayer.')
+        }
+
+        const emailValidation = isValidEmail(credentials.email)
+        if (!emailValidation.valid) {
+          throw new LoginError(emailValidation.message)
+        }
 
           const user = await prisma.user.findUnique({
             where:   { email: credentials.email },
             include: { professor: true },
           })
 
-          if (!user || !user.isActive) {
-            throw new PersonnaliseError("Email ou mot de passe incorrect")
+          if (!user) {
+            throw new LoginError('Identifiants incorrects. Veuillez réessayer.')
+          }
+          if (!user.isActive) {
+            throw new LoginError('Compte désactivé. Contactez l\'administrateur.')
           }
           if (user.lockedUntil && user.lockedUntil > new Date()) {
-            throw new PersonnaliseError("Compte verrouillé")
+            throw new LoginError('Compte temporairement verrouillé. Réessayez dans 30 minutes.')
           }
 
+          const passwordValidation = isValidPassword(credentials.password)
+          if (!passwordValidation.valid) {
+            throw new LoginError('Identifiants incorrects. Veuillez réessayer.')
+          }
           const passwordOk = await bcrypt.compare(credentials.password, user.passwordHash)
 
           if (!passwordOk) {
@@ -109,7 +124,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                   : null,
               },
             })
-            throw new PersonnaliseError("Email ou mot de passe incorrect")
+            throw new LoginError("Identifiants incorrects. Veuillez réessayer.")
           }
 
           const refreshToken = await createRefreshToken(user.id)

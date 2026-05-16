@@ -3,6 +3,8 @@
 import { signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { isValidEmail } from '@/lib/validation'
+
 
 /**
  * @module useAuth
@@ -13,27 +15,28 @@ import { useState } from 'react'
  */
 
 /**
- * @hook useAuth
- * @brief Fournit les fonctions et états liés à l'authentification.
+ * @hook useLogin
+ * @brief Fournit les fonctions et états liés à la connexion.
  *
  * @returns {{
  *   login: Function,
  *   logout: Function,
  *   error: string,
- *   loading: boolean
+ *   isLoading: boolean
  * }} Les utilitaires d'authentification.
  */
-export function useAuth() {
+export function useLogin() {
   const router = useRouter()
   const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   /**
    * @brief Authentifie l'utilisateur avec ses identifiants.
    *
    * Appelle NextAuth avec le provider `credentials`. En cas de succès,
-   * redirige vers `/dashboard`. En cas d'échec, expose le message
-   * d'erreur retourné par `authorize()` via `result.code`.
+   * redirige vers `/` et le middleware se charge de rediriger l'utilisateur vers le dashboard 
+   * correspondant. En cas d'échec, expose le message
+   * d'erreur retourné par `authorize()` via `result.error`.
    *
    * @param {string} email    - Adresse email de l'utilisateur.
    * @param {string} password - Mot de passe de l'utilisateur.
@@ -41,18 +44,34 @@ export function useAuth() {
    */
   const login = async (email, password) => {
     setError('')
-    setLoading(true)
+    setIsLoading(true)
 
-    const result = await signIn('credentials', { email, password, redirect: false })
-
-    setLoading(false)
-
-    if (result?.error) {
-      setError(result.code ?? 'Une erreur est survenue')
+    const emailValidation = isValidEmail(email)
+    if (!emailValidation.valid) {
+      setError(emailValidation.message)
+      setIsLoading(false)
+      setTimeout(() => setError(''), 3000)
       return
     }
 
-    router.push('/dashboard')
+    let result
+    try {
+      result = await signIn('credentials', { email: email.trim(), password: password.trim(), redirect: false })
+    } catch {
+      setIsLoading(false)
+      setError('Identifiants incorrects. Veuillez réessayer.')
+      setTimeout(() => setError(''), 3000)
+      return
+    }
+
+    setIsLoading(false)
+    if (result?.error) {
+      setError(result.error)
+      setTimeout(() => setError(''), 3000)
+      return
+    }
+
+    router.push('/')
   }
 
   /**
@@ -67,5 +86,5 @@ export function useAuth() {
     await signOut({ callbackUrl: '/login' })
   }
 
-  return { login, logout, error, loading }
+  return { login, logout, error, isLoading }
 }
