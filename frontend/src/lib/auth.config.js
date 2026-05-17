@@ -4,6 +4,12 @@ const ROLE_HOME = {
   PROFESSEUR: '/dashboard/professeur',
 }
 
+const ROLE_PATHS = {
+  '/dashboard/admin':      ['ADMIN'],
+  '/dashboard/rh':         ['RH', 'ADMIN'],
+  '/dashboard/professeur': ['PROFESSEUR'],
+}
+
 export const authConfig = {
   providers: [],
   pages: {
@@ -26,6 +32,17 @@ export const authConfig = {
       if (isPublic && isLoggedIn) {
         const home = ROLE_HOME[auth.user.role] ?? '/dashboard'
         return Response.redirect(new URL(home, nextUrl))
+      }
+
+      // Connecté mais mauvais rôle pour ce sous-chemin → redirect vers son dashboard
+      if (isDashboard && isLoggedIn) {
+        const role = auth.user.role
+        for (const [prefix, allowed] of Object.entries(ROLE_PATHS)) {
+          if (nextUrl.pathname.startsWith(prefix) && !allowed.includes(role)) {
+            const home = ROLE_HOME[role] ?? '/dashboard'
+            return Response.redirect(new URL(home, nextUrl))
+          }
+        }
       }
 
       return true

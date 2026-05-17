@@ -45,11 +45,11 @@ export type SkillSource = (typeof SkillSource)[keyof typeof SkillSource]
 
 
 export const NiveauDiplome = {
-  DOCTORAT: 'DOCTORAT',
-  MAITRISE: 'MAITRISE',
-  BACCALAUREAT: 'BACCALAUREAT',
-  DEC_TECHNIQUE: 'DEC_TECHNIQUE',
-  AUTRE: 'AUTRE'
+  DOCTORATE: 'DOCTORATE',
+  MASTERS: 'MASTERS',
+  BACHELORS: 'BACHELORS',
+  DEC: 'DEC',
+  OTHER: 'OTHER'
 } as const
 
 export type NiveauDiplome = (typeof NiveauDiplome)[keyof typeof NiveauDiplome]

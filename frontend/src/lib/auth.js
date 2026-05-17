@@ -59,8 +59,8 @@ const refreshAccessToken = async (token) => {
       refreshToken: nouveauRefreshToken,
       error: undefined,
     }
-  } catch {
-
+  } catch (error) {
+    console.error('Erreur lors du refresh du token :', error);
     return { ...token, error: 'RefreshTokenError' }
   }
 }
@@ -93,9 +93,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new LoginError(emailValidation.message)
         }
 
+
+          const normalizedEmail = credentials.email.toLowerCase().trim()
           const user = await prisma.user.findUnique({
-            where:   { email: credentials.email },
-            include: { professor: true },
+            where:   { email: normalizedEmail },
           })
 
           if (!user) {
@@ -115,11 +116,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const passwordOk = await bcrypt.compare(credentials.password, user.passwordHash)
 
           if (!passwordOk) {
+            const newAttemps = user.loginAttempts + 1
             await prisma.user.update({
               where: { id: user.id },
               data: {
                 loginAttempts: user.loginAttempts + 1,
-                lockedUntil: user.loginAttempts + 1 >= 5
+                lockedUntil: newAttemps >= 5
                   ? new Date(Date.now() + 30 * 60 * 1000)
                   : null,
               },
@@ -131,15 +133,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           await prisma.user.update({
             where: { id: user.id },
-            data:  { loginAttempts: 0, lockedUntil: null, lastLoginAt: new Date() },
+            data:  { loginAttempts: 0, 
+              lockedUntil: null, 
+              lastLoginAt: new Date() 
+            },
           })
 
           return {
             id:           user.id,
             email:        user.email,
             role:         user.role,
-            nom:          user.professor?.nom    || '',
-            prenom:       user.professor?.prenom || '',
+            nom:          user.nom,
+            prenom:       user.prenom,
             refreshToken,
           }
       },
