@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { analyzeCV } from "@/lib/fastapi";
 import {
   Upload, FileText, CheckCircle2, Loader2, X,
   User, Mail, Phone, GraduationCap, Briefcase,
@@ -84,20 +85,39 @@ export default function CvStatusSection() {
   const [manualSaved, setManualSaved] = useState(false);
 
   // ── Upload handlers ──────────────────────────────────────────────────────────
-  const handleFile = (f: File) => {
+  const handleFile = async (f: File) => {
     if (
       !["application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       ].includes(f.type)
     ) return;
     if (f.size > 5 * 1024 * 1024) return;
+
     setFile(f);
     setUploadState("uploading");
-    setTimeout(() => {
-      setFields(mockExtracted);
-      setEditValues(Object.fromEntries(mockExtracted.map((field) => [field.label, field.value])));
+
+    try {
+      // Appel réel à FastAPI via le client fastapi.js
+      const result = await analyzeCV(f);
+      const cvData = result.cv_data;
+
+      // Transformation des données LLM en champs affichables
+      const extracted: ExtractedField[] = [
+        { label: "firstName",            value: cvData.firstName            || "", confidence: 95 },
+        { label: "lastName",             value: cvData.lastName             || "", confidence: 95 },
+        { label: "email",                value: cvData.email                || "", confidence: 95 },
+        { label: "phone",                value: cvData.phone                || "", confidence: 80 },
+        { label: "totalYearsExperience", value: String(cvData.totalYearsExperience || ""), confidence: 85 },
+      ];
+
+      setFields(extracted);
+      setEditValues(Object.fromEntries(extracted.map((field) => [field.label, field.value])));
       setUploadState("extracted");
-    }, 2500);
+
+    } catch (error) {
+      console.error("Erreur analyse CV :", error);
+      setUploadState("error");
+    }
   };
 
   const onDrop = (e: React.DragEvent) => {
