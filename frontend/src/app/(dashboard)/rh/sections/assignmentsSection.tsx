@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search, Check, X, SlidersHorizontal } from "lucide-react";
+import { calculateAssignments } from "@/lib/fastapi";
 
 type Statut = "PROPOSEE" | "AJUSTEE" | "FINALISEE" | "REFUSEE";
 
@@ -13,29 +14,62 @@ interface Assignment {
 }
 
 const STATUT_STYLE: Record<Statut, { bg: string; text: string; label: string }> = {
-  PROPOSEE:  { bg: "bg-amber-50",   text: "text-amber-600",  label: "Proposée"  },
-  AJUSTEE:   { bg: "bg-blue-50",    text: "text-blue-600",   label: "Ajustée"   },
-  FINALISEE: { bg: "bg-emerald-50", text: "text-emerald-600",label: "Finalisée" },
-  REFUSEE:   { bg: "bg-red-50",     text: "text-red-500",    label: "Refusée"   },
+  PROPOSEE: { bg: "bg-amber-50", text: "text-amber-600", label: "Proposée" },
+  AJUSTEE: { bg: "bg-blue-50", text: "text-blue-600", label: "Ajustée" },
+  FINALISEE: { bg: "bg-emerald-50", text: "text-emerald-600", label: "Finalisée" },
+  REFUSEE: { bg: "bg-red-50", text: "text-red-500", label: "Refusée" },
 };
 
 const INITIAL: Assignment[] = [
-  { id:"1", code:"420-1A3", nom:"Programmation Web", programme:"PI",  etape:1, score:92, statut:"FINALISEE", professeur:"Jean Dupont"    },
-  { id:"2", code:"420-2B4", nom:"Base de données",   programme:"PI",  etape:2, score:85, statut:"FINALISEE", professeur:"Marie Tremblay"  },
-  { id:"3", code:"420-3C5", nom:"IA Appliquée",      programme:"IAI", etape:3, score:84, statut:"PROPOSEE",  professeur:"Luc Bernard"     },
-  { id:"4", code:"420-1D6", nom:"Algorithmique",     programme:"PI",  etape:1, score:78, statut:"PROPOSEE",  professeur:"Sara Leclerc"    },
+  { id: "1", code: "420-1A3", nom: "Programmation Web", programme: "PI", etape: 1, score: 92, statut: "FINALISEE", professeur: "Jean Dupont" },
+  { id: "2", code: "420-2B4", nom: "Base de données", programme: "PI", etape: 2, score: 85, statut: "FINALISEE", professeur: "Marie Tremblay" },
+  { id: "3", code: "420-3C5", nom: "IA Appliquée", programme: "IAI", etape: 3, score: 84, statut: "PROPOSEE", professeur: "Luc Bernard" },
+  { id: "4", code: "420-1D6", nom: "Algorithmique", programme: "PI", etape: 1, score: 78, statut: "PROPOSEE", professeur: "Sara Leclerc" },
 ];
 
 export default function AssignmentsSection() {
-  const [items, setItems]       = useState<Assignment[]>(INITIAL);
-  const [search, setSearch]     = useState("");
+  const [items, setItems] = useState<Assignment[]>(INITIAL);
+  const [search, setSearch] = useState("");
   const [adjustId, setAdjustId] = useState<string | null>(null);
   const [newScore, setNewScore] = useState(0);
+  const [launching, setLaunching] = useState(false);
+
+  const handleLancerAffectation = async () => {
+    setLaunching(true);
+    try {
+      const result = await calculateAssignments(
+        "session-automne-2026",
+        [],
+        [],
+        {
+          skills_weight: 0.40,
+          experience_weight: 0.25,
+          education_weight: 0.20,
+          history_weight: 0.15,
+        }
+      );
+      setItems(result.assignments.map((a: any) => ({
+        id: a.professor_id + a.course_id,
+        code: a.course_id,
+        nom: a.course_name,
+        programme: "",
+        etape: 0,
+        score: a.score,
+        statut: "PROPOSEE" as Statut,
+        professeur: a.professor_name,
+      })));
+    } catch (error) {
+      console.error("Erreur lancement affectation :", error);
+    } finally {
+      setLaunching(false);
+    }
+  };
+
 
   const filtered = items.filter(
     (a) => a.nom.toLowerCase().includes(search.toLowerCase()) ||
-           a.code.includes(search) ||
-           a.professeur.toLowerCase().includes(search.toLowerCase())
+      a.code.includes(search) ||
+      a.professeur.toLowerCase().includes(search.toLowerCase())
   );
 
   const setStatut = (id: string, statut: Statut) =>
@@ -61,6 +95,13 @@ export default function AssignmentsSection() {
           </div>
           <span className="px-3 py-1.5 bg-white/15 text-white rounded-full text-xs font-bold">
             {items.filter(a => a.statut === "PROPOSEE").length} en attente
+            <button
+              onClick={handleLancerAffectation}
+              disabled={launching}
+              className="px-4 py-2 bg-white text-[hsl(134,35%,45%)] text-sm font-bold rounded-xl hover:bg-white/90 disabled:opacity-50 transition"
+            >
+              {launching ? "Calcul en cours…" : "Lancer l'affectation"}
+            </button>
           </span>
         </div>
       </div>
