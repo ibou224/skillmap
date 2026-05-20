@@ -1,3 +1,4 @@
+import CoursesSection from "../sections/CoursesSection";
 export default function CoursesPage() {
-  return <div>Cours</div>;
+  return <CoursesSection />;
 }

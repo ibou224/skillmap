@@ -1,12 +1,8 @@
-import { auth } from '@/lib/auth.js'
-import { redirect } from 'next/navigation'
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function AdminLayout({ children }) {
-  const session = await auth()
-
-  if (!session?.user || session.user.role !== 'ADMIN') {
-    redirect('/')
-  }
-
-  return <>{children}</>
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") redirect("/dashboard");
+  return children;
 }

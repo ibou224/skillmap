@@ -42,6 +42,10 @@ model Professor {
   id            String           @id @default(uuid())
   userId        String           @unique
   telephone     String?
+  ville         String?
+  siteWeb       String?
+  linkedIn      String?
+  resume        String?
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   assignments   Assignment[]
@@ -72,6 +76,7 @@ model Experience {
   domaine     String
   dateDebut   DateTime
   dateFin     DateTime?
+  Entreprise   String
   description String?
   createdAt   DateTime  @default(now())
   professor   Professor @relation(fields: [professorId], references: [id])
@@ -130,7 +135,7 @@ model Course {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   assignments  Assignment[]
-  program      Program       @relation(fields: [programId], references: [id])
+  programs      Program []    
   courseSkills CourseSkill[]
 }
 
@@ -147,9 +152,11 @@ model CourseSkill {
 
 model Session {
   id          String         @id @default(uuid())
-  nom         String
-  annee       Int
-  periode     Periode
+  nom         String         @unique
+  annee       Int?
+  periode     Periode?
+  dateDebut   DateTime?
+  dateFin     DateTime?
   statut      SessionStatut  @default(PLANIFIEE)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt

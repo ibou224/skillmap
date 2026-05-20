@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.ts"
-import type * as Prisma from "../internal/prismaNamespace.ts"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Session
@@ -39,6 +39,8 @@ export type SessionMinAggregateOutputType = {
   nom: string | null
   annee: number | null
   periode: $Enums.Periode | null
+  dateDebut: Date | null
+  dateFin: Date | null
   statut: $Enums.SessionStatut | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +51,8 @@ export type SessionMaxAggregateOutputType = {
   nom: string | null
   annee: number | null
   periode: $Enums.Periode | null
+  dateDebut: Date | null
+  dateFin: Date | null
   statut: $Enums.SessionStatut | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +63,8 @@ export type SessionCountAggregateOutputType = {
   nom: number
   annee: number
   periode: number
+  dateDebut: number
+  dateFin: number
   statut: number
   createdAt: number
   updatedAt: number
@@ -79,6 +85,8 @@ export type SessionMinAggregateInputType = {
   nom?: true
   annee?: true
   periode?: true
+  dateDebut?: true
+  dateFin?: true
   statut?: true
   createdAt?: true
   updatedAt?: true
@@ -89,6 +97,8 @@ export type SessionMaxAggregateInputType = {
   nom?: true
   annee?: true
   periode?: true
+  dateDebut?: true
+  dateFin?: true
   statut?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +109,8 @@ export type SessionCountAggregateInputType = {
   nom?: true
   annee?: true
   periode?: true
+  dateDebut?: true
+  dateFin?: true
   statut?: true
   createdAt?: true
   updatedAt?: true
@@ -194,8 +206,10 @@ export type SessionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type SessionGroupByOutputType = {
   id: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee: number | null
+  periode: $Enums.Periode | null
+  dateDebut: Date | null
+  dateFin: Date | null
   statut: $Enums.SessionStatut
   createdAt: Date
   updatedAt: Date
@@ -227,8 +241,10 @@ export type SessionWhereInput = {
   NOT?: Prisma.SessionWhereInput | Prisma.SessionWhereInput[]
   id?: Prisma.StringFilter<"Session"> | string
   nom?: Prisma.StringFilter<"Session"> | string
-  annee?: Prisma.IntFilter<"Session"> | number
-  periode?: Prisma.EnumPeriodeFilter<"Session"> | $Enums.Periode
+  annee?: Prisma.IntNullableFilter<"Session"> | number | null
+  periode?: Prisma.EnumPeriodeNullableFilter<"Session"> | $Enums.Periode | null
+  dateDebut?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
+  dateFin?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   statut?: Prisma.EnumSessionStatutFilter<"Session"> | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string
@@ -239,8 +255,10 @@ export type SessionWhereInput = {
 export type SessionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nom?: Prisma.SortOrder
-  annee?: Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  annee?: Prisma.SortOrderInput | Prisma.SortOrder
+  periode?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateDebut?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateFin?: Prisma.SortOrderInput | Prisma.SortOrder
   statut?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -250,24 +268,28 @@ export type SessionOrderByWithRelationInput = {
 
 export type SessionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  nom?: string
   AND?: Prisma.SessionWhereInput | Prisma.SessionWhereInput[]
   OR?: Prisma.SessionWhereInput[]
   NOT?: Prisma.SessionWhereInput | Prisma.SessionWhereInput[]
-  nom?: Prisma.StringFilter<"Session"> | string
-  annee?: Prisma.IntFilter<"Session"> | number
-  periode?: Prisma.EnumPeriodeFilter<"Session"> | $Enums.Periode
+  annee?: Prisma.IntNullableFilter<"Session"> | number | null
+  periode?: Prisma.EnumPeriodeNullableFilter<"Session"> | $Enums.Periode | null
+  dateDebut?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
+  dateFin?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   statut?: Prisma.EnumSessionStatutFilter<"Session"> | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   assignments?: Prisma.AssignmentListRelationFilter
   weights?: Prisma.XOR<Prisma.WeightsConfigNullableScalarRelationFilter, Prisma.WeightsConfigWhereInput> | null
-}, "id">
+}, "id" | "nom">
 
 export type SessionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nom?: Prisma.SortOrder
-  annee?: Prisma.SortOrder
-  periode?: Prisma.SortOrder
+  annee?: Prisma.SortOrderInput | Prisma.SortOrder
+  periode?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateDebut?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateFin?: Prisma.SortOrderInput | Prisma.SortOrder
   statut?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -284,8 +306,10 @@ export type SessionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SessionScalarWhereWithAggregatesInput | Prisma.SessionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Session"> | string
   nom?: Prisma.StringWithAggregatesFilter<"Session"> | string
-  annee?: Prisma.IntWithAggregatesFilter<"Session"> | number
-  periode?: Prisma.EnumPeriodeWithAggregatesFilter<"Session"> | $Enums.Periode
+  annee?: Prisma.IntNullableWithAggregatesFilter<"Session"> | number | null
+  periode?: Prisma.EnumPeriodeNullableWithAggregatesFilter<"Session"> | $Enums.Periode | null
+  dateDebut?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
+  dateFin?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
   statut?: Prisma.EnumSessionStatutWithAggregatesFilter<"Session"> | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
@@ -294,8 +318,10 @@ export type SessionScalarWhereWithAggregatesInput = {
 export type SessionCreateInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -306,8 +332,10 @@ export type SessionCreateInput = {
 export type SessionUncheckedCreateInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -318,8 +346,10 @@ export type SessionUncheckedCreateInput = {
 export type SessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -330,8 +360,10 @@ export type SessionUpdateInput = {
 export type SessionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -342,8 +374,10 @@ export type SessionUncheckedUpdateInput = {
 export type SessionCreateManyInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -352,8 +386,10 @@ export type SessionCreateManyInput = {
 export type SessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -362,8 +398,10 @@ export type SessionUpdateManyMutationInput = {
 export type SessionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -374,6 +412,8 @@ export type SessionCountOrderByAggregateInput = {
   nom?: Prisma.SortOrder
   annee?: Prisma.SortOrder
   periode?: Prisma.SortOrder
+  dateDebut?: Prisma.SortOrder
+  dateFin?: Prisma.SortOrder
   statut?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -388,6 +428,8 @@ export type SessionMaxOrderByAggregateInput = {
   nom?: Prisma.SortOrder
   annee?: Prisma.SortOrder
   periode?: Prisma.SortOrder
+  dateDebut?: Prisma.SortOrder
+  dateFin?: Prisma.SortOrder
   statut?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -398,6 +440,8 @@ export type SessionMinOrderByAggregateInput = {
   nom?: Prisma.SortOrder
   annee?: Prisma.SortOrder
   periode?: Prisma.SortOrder
+  dateDebut?: Prisma.SortOrder
+  dateFin?: Prisma.SortOrder
   statut?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -412,8 +456,16 @@ export type SessionScalarRelationFilter = {
   isNot?: Prisma.SessionWhereInput
 }
 
-export type EnumPeriodeFieldUpdateOperationsInput = {
-  set?: $Enums.Periode
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableEnumPeriodeFieldUpdateOperationsInput = {
+  set?: $Enums.Periode | null
 }
 
 export type EnumSessionStatutFieldUpdateOperationsInput = {
@@ -451,8 +503,10 @@ export type SessionUpdateOneRequiredWithoutAssignmentsNestedInput = {
 export type SessionCreateWithoutWeightsInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -462,8 +516,10 @@ export type SessionCreateWithoutWeightsInput = {
 export type SessionUncheckedCreateWithoutWeightsInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -489,8 +545,10 @@ export type SessionUpdateToOneWithWhereWithoutWeightsInput = {
 export type SessionUpdateWithoutWeightsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -500,8 +558,10 @@ export type SessionUpdateWithoutWeightsInput = {
 export type SessionUncheckedUpdateWithoutWeightsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -511,8 +571,10 @@ export type SessionUncheckedUpdateWithoutWeightsInput = {
 export type SessionCreateWithoutAssignmentsInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -522,8 +584,10 @@ export type SessionCreateWithoutAssignmentsInput = {
 export type SessionUncheckedCreateWithoutAssignmentsInput = {
   id?: string
   nom: string
-  annee: number
-  periode: $Enums.Periode
+  annee?: number | null
+  periode?: $Enums.Periode | null
+  dateDebut?: Date | string | null
+  dateFin?: Date | string | null
   statut?: $Enums.SessionStatut
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -549,8 +613,10 @@ export type SessionUpdateToOneWithWhereWithoutAssignmentsInput = {
 export type SessionUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -560,8 +626,10 @@ export type SessionUpdateWithoutAssignmentsInput = {
 export type SessionUncheckedUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
-  annee?: Prisma.IntFieldUpdateOperationsInput | number
-  periode?: Prisma.EnumPeriodeFieldUpdateOperationsInput | $Enums.Periode
+  annee?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  periode?: Prisma.NullableEnumPeriodeFieldUpdateOperationsInput | $Enums.Periode | null
+  dateDebut?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statut?: Prisma.EnumSessionStatutFieldUpdateOperationsInput | $Enums.SessionStatut
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -604,6 +672,8 @@ export type SessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   nom?: boolean
   annee?: boolean
   periode?: boolean
+  dateDebut?: boolean
+  dateFin?: boolean
   statut?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -617,6 +687,8 @@ export type SessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nom?: boolean
   annee?: boolean
   periode?: boolean
+  dateDebut?: boolean
+  dateFin?: boolean
   statut?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -627,6 +699,8 @@ export type SessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nom?: boolean
   annee?: boolean
   periode?: boolean
+  dateDebut?: boolean
+  dateFin?: boolean
   statut?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -637,12 +711,14 @@ export type SessionSelectScalar = {
   nom?: boolean
   annee?: boolean
   periode?: boolean
+  dateDebut?: boolean
+  dateFin?: boolean
   statut?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nom" | "annee" | "periode" | "statut" | "createdAt" | "updatedAt", ExtArgs["result"]["session"]>
+export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nom" | "annee" | "periode" | "dateDebut" | "dateFin" | "statut" | "createdAt" | "updatedAt", ExtArgs["result"]["session"]>
 export type SessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Session$assignmentsArgs<ExtArgs>
   weights?: boolean | Prisma.Session$weightsArgs<ExtArgs>
@@ -660,8 +736,10 @@ export type $SessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     nom: string
-    annee: number
-    periode: $Enums.Periode
+    annee: number | null
+    periode: $Enums.Periode | null
+    dateDebut: Date | null
+    dateFin: Date | null
     statut: $Enums.SessionStatut
     createdAt: Date
     updatedAt: Date
@@ -1094,6 +1172,8 @@ export interface SessionFieldRefs {
   readonly nom: Prisma.FieldRef<"Session", 'String'>
   readonly annee: Prisma.FieldRef<"Session", 'Int'>
   readonly periode: Prisma.FieldRef<"Session", 'Periode'>
+  readonly dateDebut: Prisma.FieldRef<"Session", 'DateTime'>
+  readonly dateFin: Prisma.FieldRef<"Session", 'DateTime'>
   readonly statut: Prisma.FieldRef<"Session", 'SessionStatut'>
   readonly createdAt: Prisma.FieldRef<"Session", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Session", 'DateTime'>

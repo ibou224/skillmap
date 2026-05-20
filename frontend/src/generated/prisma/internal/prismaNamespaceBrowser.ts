@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.ts'
-export type * from './prismaNamespace.ts'
+export type * from '../models'
+export type * from './prismaNamespace'
 
 export const Decimal = runtime.Decimal
 
@@ -233,6 +233,8 @@ export const SessionScalarFieldEnum = {
   nom: 'nom',
   annee: 'annee',
   periode: 'periode',
+  dateDebut: 'dateDebut',
+  dateFin: 'dateFin',
   statut: 'statut',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

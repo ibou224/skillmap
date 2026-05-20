@@ -1,3 +1,9 @@
+import HomeSection from "./sections/HomeSection";
+
 export default function AdminDashboard() {
-  return <div>Dashboard Admin</div>;
+  return (
+    <div>
+      <HomeSection />
+    </div>
+  );
 }

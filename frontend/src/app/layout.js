@@ -1,5 +1,10 @@
-import { Geist, Geist_Mono } from "next/font/google";
+/**
+ * @module app/layout
+ * @description Layout racine — obligatoire Next.js, contient html + body.
+ */
+
 import "./globals.css";
+import { Geist, Geist_Mono } from "next/font/google";
 import { poppins, sora, ysabeau, quintessential, felipa } from "./fonts";
 
 const geistSans = Geist({

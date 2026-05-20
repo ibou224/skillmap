@@ -17,6 +17,12 @@ export const authConfig = {
     error:  '/login',
   },
   callbacks: {
+    async session({ session, token }) {
+      if (token?.role)  session.user.role  = token.role
+      if (token?.error) session.error      = token.error
+      return session
+    },
+
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn  = !!auth?.user
       const isDashboard = nextUrl.pathname.startsWith('/dashboard')

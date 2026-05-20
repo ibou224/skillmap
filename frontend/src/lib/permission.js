@@ -8,7 +8,6 @@ import { NextResponse } from 'next/server'
  *   const { session, error } = await requireRole(request, 'ADMIN')
  *   if (error) return error
  *
- * @param {Request} _request - Non utilisé mais conservé pour cohérence des signatures.
  * @param {...string} roles  - Rôles autorisés ('ADMIN', 'RH', 'PROFESSEUR').
  * @returns {Promise<{ session: import('next-auth').Session } | { error: NextResponse }>}
  */

@@ -16,10 +16,10 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "../models.ts"
-import { type PrismaClient } from "./class.ts"
+import type * as Prisma from "../models"
+import { type PrismaClient } from "./class"
 
-export type * from '../models.ts'
+export type * from '../models'
 
 export type DMMF = typeof runtime.DMMF
 
@@ -1642,6 +1642,8 @@ export const SessionScalarFieldEnum = {
   nom: 'nom',
   annee: 'annee',
   periode: 'periode',
+  dateDebut: 'dateDebut',
+  dateFin: 'dateFin',
   statut: 'statut',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

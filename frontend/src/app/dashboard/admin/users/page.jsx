@@ -1,3 +1,9 @@
-export default function UsersPage() {
-  return <div>Utilisateurs</div>;
+import UsersSection from "../sections/usersSection";
+
+export default function UserPage() {
+  return (
+    <div>
+      <UsersSection />
+    </div>
+  );
 }

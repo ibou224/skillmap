@@ -30,3 +30,42 @@ export const isValidRole = (role) => {
     const validRoles = ['ADMIN', 'RH', 'PROFESSEUR'];
     return validRoles.includes(role.trim().toUpperCase());
 }
+
+
+/**
+ * Valide un fichier CV avant envoi à l'API.
+ * @param {File} file - Le fichier à valider.
+ * @returns {{ valid: boolean, error?: string }} Résultat de la validation.
+ */
+
+export const isValidFile = (file) => {
+
+    if(!file || !(file instanceof File)) {
+        return { valid: false, message: "Aucun fichier fourni." };
+    }
+
+    const allowedTypes = [
+        "application/pdf", 
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        return { 
+            valid: false, 
+            message: "Type de fichier non autorisé. Seuls les PDF et DOCX sont acceptés." 
+        };
+
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5 Mo
+    if (file.size > maxSize) {
+        return {
+            valid: false,
+            message: `Le fichier est trop volumineux (${(file.size / (1024 * 1024)).toFixed(1)} Mo). La taille maximale est de 5 Mo.`,
+        };
+    }
+        
+    return { valid: true, message: "Le fichier est valide." };
+}
+
+

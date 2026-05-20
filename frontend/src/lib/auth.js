@@ -2,6 +2,7 @@ import NextAuth, { CredentialsSignin } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
+import { cache } from 'react'
 import prisma from '@/lib/prisma'
 import { authConfig } from './auth.config'
 import { isValidEmail,isValidPassword } from './validation'
@@ -51,12 +52,9 @@ const refreshAccessToken = async (token) => {
     const valide = await bcrypt.compare(token.refreshToken, user.refreshTokenHash)
     if (!valide) throw new Error('Refresh token invalide')
 
-    const nouveauRefreshToken = await createRefreshToken(token.id)
-
     return {
       ...token,
       accessTokenExpires: Date.now() + ACCESS_TOKEN_DURATION * 1000,
-      refreshToken: nouveauRefreshToken,
       error: undefined,
     }
   } catch (error) {
@@ -66,7 +64,7 @@ const refreshAccessToken = async (token) => {
 }
 
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const { handlers, auth: _auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
@@ -166,6 +164,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
 
+      // Refresh déjà échoué → ne pas retenter, laisser le middleware rediriger
+      if (token.error === 'RefreshTokenError') return token
+
       // Access token encore valide → rien à faire
       if (Date.now() < token.accessTokenExpires) {
         return token
@@ -210,3 +211,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 })
+
+export { handlers, signIn, signOut }
+export const auth = cache(_auth)

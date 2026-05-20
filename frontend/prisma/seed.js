@@ -31,3 +31,9 @@ async function main() {
 main()
   .catch(console.error)
   .finally(() => prisma.$disconnect())
+
+  // kevin.tiam@lacitec.on.ca
+  // KEvintiam7816&
+
+  // rostand.tiam@lacitec.on.ca
+  // ROstandtiam9839$
