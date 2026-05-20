@@ -31,6 +31,8 @@ services:
       NEXTAUTH_URL: http://localhost:3000
       FASTAPI_INTERNAL_URL: http://fastapi:8000
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
     volumes:
       - ./frontend:/app
       - /app/node_modules
