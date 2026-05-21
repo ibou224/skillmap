@@ -392,6 +392,7 @@ export const ModelName = {
   Formation: 'Formation',
   Skill: 'Skill',
   ProfessorSkill: 'ProfessorSkill',
+  Departement: 'Departement',
   Program: 'Program',
   Course: 'Course',
   CourseSkill: 'CourseSkill',
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "auditLog" | "professor" | "cvExtraction" | "experience" | "formation" | "skill" | "professorSkill" | "program" | "course" | "courseSkill" | "session" | "weightsConfig" | "assignment"
+    modelProps: "user" | "auditLog" | "professor" | "cvExtraction" | "experience" | "formation" | "skill" | "professorSkill" | "departement" | "program" | "course" | "courseSkill" | "session" | "weightsConfig" | "assignment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1009,6 +1010,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Departement: {
+      payload: Prisma.$DepartementPayload<ExtArgs>
+      fields: Prisma.DepartementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DepartementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DepartementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>
+        }
+        findFirst: {
+          args: Prisma.DepartementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DepartementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>
+        }
+        findMany: {
+          args: Prisma.DepartementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>[]
+        }
+        create: {
+          args: Prisma.DepartementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>
+        }
+        createMany: {
+          args: Prisma.DepartementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DepartementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>[]
+        }
+        delete: {
+          args: Prisma.DepartementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>
+        }
+        update: {
+          args: Prisma.DepartementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>
+        }
+        deleteMany: {
+          args: Prisma.DepartementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DepartementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DepartementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>[]
+        }
+        upsert: {
+          args: Prisma.DepartementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartementPayload>
+        }
+        aggregate: {
+          args: Prisma.DepartementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDepartement>
+        }
+        groupBy: {
+          args: Prisma.DepartementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DepartementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DepartementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DepartementCountAggregateOutputType> | number
+        }
+      }
+    }
     Program: {
       payload: Prisma.$ProgramPayload<ExtArgs>
       fields: Prisma.ProgramFieldRefs
@@ -1530,6 +1605,10 @@ export const ProfessorScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   telephone: 'telephone',
+  ville: 'ville',
+  siteWeb: 'siteWeb',
+  linkedIn: 'linkedIn',
+  resume: 'resume',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1559,6 +1638,7 @@ export const ExperienceScalarFieldEnum = {
   domaine: 'domaine',
   dateDebut: 'dateDebut',
   dateFin: 'dateFin',
+  Entreprise: 'Entreprise',
   description: 'description',
   createdAt: 'createdAt'
 } as const
@@ -1602,11 +1682,24 @@ export const ProfessorSkillScalarFieldEnum = {
 export type ProfessorSkillScalarFieldEnum = (typeof ProfessorSkillScalarFieldEnum)[keyof typeof ProfessorSkillScalarFieldEnum]
 
 
+export const DepartementScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  nom: 'nom',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DepartementScalarFieldEnum = (typeof DepartementScalarFieldEnum)[keyof typeof DepartementScalarFieldEnum]
+
+
 export const ProgramScalarFieldEnum = {
   id: 'id',
   code: 'code',
   nom: 'nom',
   nbEtapes: 'nbEtapes',
+  departementId: 'departementId',
   createdAt: 'createdAt'
 } as const
 
@@ -1617,7 +1710,6 @@ export const CourseScalarFieldEnum = {
   id: 'id',
   code: 'code',
   nom: 'nom',
-  programId: 'programId',
   etape: 'etape',
   isArchived: 'isArchived',
   createdAt: 'createdAt',
@@ -2039,6 +2131,7 @@ export type GlobalOmitConfig = {
   formation?: Prisma.FormationOmit
   skill?: Prisma.SkillOmit
   professorSkill?: Prisma.ProfessorSkillOmit
+  departement?: Prisma.DepartementOmit
   program?: Prisma.ProgramOmit
   course?: Prisma.CourseOmit
   courseSkill?: Prisma.CourseSkillOmit

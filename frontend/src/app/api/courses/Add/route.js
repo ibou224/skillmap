@@ -20,10 +20,11 @@ import { isValidString } from '@/lib/validation';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { nom, code, programIds, etape } = body;
+    const { nom, code, programIds, etape, courseSkills } = body;
 
-    if (!isValidString(nom)) {
-      return NextResponse.json({ success: false, message: 'Nom invalide (caractères spéciaux interdits)' }, { status: 400 });
+    const nomCheck = isValidString(nom ?? '');
+    if (!nomCheck.valid) {
+      return NextResponse.json({ success: false, message: nomCheck.message }, { status: 400 });
     }
     
     if (!programIds || !Array.isArray(programIds) || programIds.length === 0) {
@@ -55,30 +56,49 @@ export async function POST(request) {
     if (programmesExistants.length !== programIds.length) {
       return NextResponse.json({ success: false, message: 'Un ou plusieurs programmes sélectionnés sont invalides' }, { status: 400 });
     }
+    // Validation compétences (optionnelles)
+    const skills = Array.isArray(courseSkills) ? courseSkills : [];
+    if (skills.length > 0) {
+      const skillExisting = await prisma.skill.findMany({
+        where: { id: { in: skills.map(s => s.skillId) } },
+        select: { id: true },
+      });
+      if (skillExisting.length !== skills.length) {
+        return NextResponse.json({ success: false, message: 'Une ou plusieurs compétences sélectionnées sont invalides' }, { status: 400 });
+      }
+    }
 
     // --- CRÉATION ---
-    // Grâce à la relation many-to-many implicite de Prisma, on peut lier 
-    // les programmes directement lors de la création avec "connect".
     const nouveauCours = await prisma.course.create({
       data: {
         nom: nom.trim(),
         code: code?.trim(),
         etape: etapeNum,
-        programs: {
-          connect: programIds.map(id => ({ id }))
-        }
+        programs: { connect: programIds.map(id => ({ id })) },
+        ...(skills.length > 0 ? {
+          courseSkills: {
+            create: skills.map(s => ({
+              skillId:       s.skillId,
+              niveauRequis:  s.niveauRequis  ?? 'DEBUTANT',
+              poidsCritique: s.poidsCritique ?? 1,
+            })),
+          },
+        } : {}),
       },
-      include: {
-        programs: {
-          select: { id: true, nom: true }
-        }
-      }
     });
+
+    // Fetch programs via raw SQL (PrismaPg 7.x driver adapter bug with implicit M2M include).
+    const rows = await prisma.$queryRaw`
+      SELECT p.id, p.nom
+      FROM "_CourseToProgram" cp
+      JOIN "Program" p ON p.id = cp."B"
+      WHERE cp."A" = ${nouveauCours.id}
+    `;
 
     return NextResponse.json({
       success: true,
       message: 'Cours créé avec succès',
-      data: nouveauCours
+      data: { ...nouveauCours, programs: rows },
     }, { status: 201 });
 
   } catch (error) {

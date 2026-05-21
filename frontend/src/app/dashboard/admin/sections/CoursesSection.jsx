@@ -5,27 +5,31 @@ import { Banner } from "@/components/Banner";
 import { CourseToolbar } from "@/components/courses/CourseToolbar";
 import CourseTable from "@/components/courses/CourseTable";
 import CourseForm from "@/components/courses/CourseForm";
-import { useManagementCourse } from "@/hooks/useManagementCourse";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import SuccessAlert from "@/components/ui/SuccessAlert";
+import { useCourses } from "@/hooks/useCourses";
 
-const DEFAULT_FORM = { nom: "", code: "", programIds: [], etape: 1 };
+const DEFAULT_FORM = { nom: "", code: "", programIds: [], etape: 1, courseSkills: [] };
 
 export default function CoursesSection() {
   const {
     courses,
-    getCourses,
+    programmes,
+    error: hookError,
+    fetchCourses,
+    fetchProgrammes,
     createCourse,
     updateCourse,
-    archiveCourse,
+    deleteCourse: archiveCourse,
     restoreCourse,
-    error: hookError,
-  } = useManagementCourse();
+  } = useCourses();
+
+  const getCourses = fetchCourses;
 
   const [search, setSearch] = useState("");
   const [filterProgram, setFilterProgram] = useState("tous");
+  const [filterSkill, setFilterSkill]     = useState("tous");
   const [showArchived, setShowArchived] = useState(false);
-  const [programs, setPrograms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editCourse, setEditCourse] = useState(null);
   const [formData, setFormData] = useState(DEFAULT_FORM);
@@ -35,22 +39,24 @@ export default function CoursesSection() {
   const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
-    getCourses();
-  }, [getCourses]);
+    fetchCourses();
+    fetchProgrammes();
+  }, [fetchCourses, fetchProgrammes]);
 
-  useEffect(() => {
-    fetch("/api/courses?programs=true")
-      .then((r) => r.json())
-      .then((d) => setPrograms(d.data ?? []));
-  }, []);
+  // Compétences uniques extraites des cours chargés
+  const skillsFromCourses = [...new Map(
+    courses.flatMap(c => c.courseSkills ?? [])
+      .filter(cs => cs.skill)
+      .map(cs => [cs.skillId, { id: cs.skillId, nom: cs.skill.nom }])
+  ).values()].sort((a, b) => a.nom.localeCompare(b.nom));
 
   const filtered = courses.filter((c) => {
     const q = search.toLowerCase();
-    const matchSearch = `${c.nom} ${c.code ?? ""}`.toLowerCase().includes(q);
-    const matchProgram =
-      filterProgram === "tous" || c.programs?.some((p) => p.id === filterProgram);
+    const matchSearch  = `${c.nom} ${c.code ?? ""}`.toLowerCase().includes(q);
+    const matchProgram = filterProgram === "tous" || c.programs?.some((p) => p.id === filterProgram);
+    const matchSkill   = filterSkill   === "tous" || c.courseSkills?.some((cs) => cs.skillId === filterSkill);
     const matchArchive = showArchived ? c.isArchived : !c.isArchived;
-    return matchSearch && matchProgram && matchArchive;
+    return matchSearch && matchProgram && matchSkill && matchArchive;
   });
 
   const openAdd = () => {
@@ -61,12 +67,18 @@ export default function CoursesSection() {
   };
 
   const openEdit = (c) => {
+    console.log("Open edit for course:", c);
     setEditCourse(c);
     setFormData({
       nom: c.nom ?? "",
       code: c.code ?? "",
       programIds: c.programs?.map((p) => p.id) ?? [],
       etape: c.etape ?? 1,
+      courseSkills: c.courseSkills?.map((cs) => ({
+        skillId:       cs.skillId,
+        niveauRequis:  cs.niveauRequis  ?? 'DEBUTANT',
+        poidsCritique: cs.poidsCritique ?? 1,
+      })) ?? [],
     });
     setFormError("");
     setShowModal(true);
@@ -84,13 +96,16 @@ export default function CoursesSection() {
       setFormError("Sélectionnez au moins un programme.");
       return;
     }
+  
 
     const payload = {
-      nom: formData.nom.trim(),
-      code: formData.code?.trim() || undefined,
-      programIds: formData.programIds,
-      etape: Number(formData.etape),
+      nom:          formData.nom.trim(),
+      code:         formData.code?.trim() || undefined,
+      programIds:   formData.programIds,
+      etape:        Number(formData.etape),
+      courseSkills: formData.courseSkills ?? [],
     };
+    console.log("Submitting course data:", payload);
 
     const result = editCourse
       ? await updateCourse(editCourse.id, payload)
@@ -141,8 +156,11 @@ export default function CoursesSection() {
         search={search}
         onSearchChange={setSearch}
         filterProgram={filterProgram}
-        programs={programs}
+        programs={programmes}
         onFilterChange={setFilterProgram}
+        filterSkill={filterSkill}
+        skills={skillsFromCourses}
+        onFilterSkillChange={setFilterSkill}
         onAdd={openAdd}
         showArchived={showArchived}
         onToggleArchived={() => setShowArchived((v) => !v)}
@@ -170,7 +188,7 @@ export default function CoursesSection() {
             formData={formData}
             setFormData={setFormData}
             isEditing={editCourse !== null}
-            programmesList={programs}
+            programmesList={programmes}
             error={formError}
             onErrorClose={() => setFormError("")}
           />

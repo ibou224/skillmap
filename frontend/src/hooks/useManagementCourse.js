@@ -28,7 +28,7 @@ export function useManagementCourse() {
     }
   }, []);
 
-  const createCourse = useCallback(async ({ nom, code, programIds, etape }) => {
+  const createCourse = useCallback(async ({ nom, code, programIds, etape,skillsIs }) => {
     setError(null);
     setIsLoading(true);
     if (!isValidString(nom)) {
@@ -36,11 +36,32 @@ export function useManagementCourse() {
       setIsLoading(false);
       return null;
     }
+    if (!isValidString(code)) {
+      setError("Code invalide.");
+      setIsLoading(false);
+      return null;
+    }
+    if (!Array.isArray(programIds) || programIds.some(id => typeof id !== 'number')) {
+      setError("Programmes invalides.");
+      setIsLoading(false);
+      return null;
+    }
+    const etapeNum = Number(etape);
+    if (!Number.isInteger(etapeNum) || etapeNum < 1 || etapeNum > 6) {
+      setError("Étape doit être un entier entre 1 et 6.");
+      setIsLoading(false);
+      return null;
+     }
+     if (!Array.isArray(skillsIs) || skillsIs.some(id => typeof id !== 'number')) {
+      setError("Compétences invalides.");
+      setIsLoading(false);
+      return null;
+     }
     try {
       const res = await fetch("/api/courses/Add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nom, code, programIds, etape }),
+        body: JSON.stringify({ nom, code, programIds, etape, skillsIs }),
       });
       const data = await res.json();
       if (!data.success) {

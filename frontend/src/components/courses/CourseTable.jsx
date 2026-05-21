@@ -109,12 +109,12 @@ export default function CourseTable({ courses = [], onEdit, onDelete, onRestore,
                     <div className="flex flex-wrap gap-1 max-w-[200px]">
                       {course.programs?.length > 0 ? (
                         course.programs.slice(0, 2).map((p, idx) => (
-                          <span key={idx} className="px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100 truncate max-w-[110px]" title={p.nom}>
-                            {p.nom}
+                          <span key={idx} className="px-2 py-0.5 text-[11px] font-semibold bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100 truncate max-w-[110px]" title={p.nom}>
+                            { p.nom}
                           </span>
                         )).concat(
                           course.programs.length > 2 ? [
-                            <span key="more" className="px-2 py-0.5 text-[10px] font-semibold bg-gray-100 text-gray-500 rounded-full border border-gray-200">
+                            <span key="more" className="px-2 py-0.5 text-[11px] font-semibold bg-gray-100 text-gray-500 rounded-full border border-gray-200">
                               +{course.programs.length - 2}
                             </span>
                           ] : []
@@ -125,17 +125,31 @@ export default function CourseTable({ courses = [], onEdit, onDelete, onRestore,
                     </div>
                   </td>
                   
-                  {/* Étape */}
-                  <td className="px-5 py-3.5 text-center">
-                    <span className="inline-flex items-center justify-center w-7 h-7 text-xs font-bold bg-cite-green/10 text-cite-green rounded-full border border-cite-green/20">
-                      {course.etape ?? '—'}
-                    </span>
+                  {/* Compétences */}
+                  <td className="px-5 py-3.5">
+                    <div className="flex flex-wrap gap-1 max-w-50">
+                      {course.courseSkills?.length > 0 ? (
+                        course.courseSkills.slice(0, 2).map((cs, idx) => (
+                          <span key={idx} className="px-2 py-0.5 text-[11px] font-semibold bg-cite-green/10 text-cite-green rounded-full border border-cite-green/20 truncate max-w-27.5" title={cs.skill?.nom}>
+                            {cs.skill?.nom}
+                          </span>
+                        )).concat(
+                          course.courseSkills.length > 2 ? [
+                            <span key="more" className="px-2 py-0.5 text-[11px] font-semibold bg-gray-100 text-gray-500 rounded-full border border-gray-200">
+                              +{course.courseSkills.length - 2}
+                            </span>
+                          ] : []
+                        )
+                      ) : (
+                        <span className="text-xs text-gray-400 italic">Aucune</span>
+                      )}
+                    </div>
                   </td>
 
-                  {/* Type de salle */}
+                  {/*  étape */}
                   <td className="px-5 py-3.5">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border border-gray-200">
-                    {course.courseSkill}
+                    <span className="px-2.5 py-0.5 rounded-full font-semibold border border-gray-200">
+                     {course.etape ?? '—'}
                     </span>
                   </td>
 

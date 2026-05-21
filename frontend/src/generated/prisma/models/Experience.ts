@@ -31,6 +31,7 @@ export type ExperienceMinAggregateOutputType = {
   domaine: string | null
   dateDebut: Date | null
   dateFin: Date | null
+  Entreprise: string | null
   description: string | null
   createdAt: Date | null
 }
@@ -42,6 +43,7 @@ export type ExperienceMaxAggregateOutputType = {
   domaine: string | null
   dateDebut: Date | null
   dateFin: Date | null
+  Entreprise: string | null
   description: string | null
   createdAt: Date | null
 }
@@ -53,6 +55,7 @@ export type ExperienceCountAggregateOutputType = {
   domaine: number
   dateDebut: number
   dateFin: number
+  Entreprise: number
   description: number
   createdAt: number
   _all: number
@@ -66,6 +69,7 @@ export type ExperienceMinAggregateInputType = {
   domaine?: true
   dateDebut?: true
   dateFin?: true
+  Entreprise?: true
   description?: true
   createdAt?: true
 }
@@ -77,6 +81,7 @@ export type ExperienceMaxAggregateInputType = {
   domaine?: true
   dateDebut?: true
   dateFin?: true
+  Entreprise?: true
   description?: true
   createdAt?: true
 }
@@ -88,6 +93,7 @@ export type ExperienceCountAggregateInputType = {
   domaine?: true
   dateDebut?: true
   dateFin?: true
+  Entreprise?: true
   description?: true
   createdAt?: true
   _all?: true
@@ -172,6 +178,7 @@ export type ExperienceGroupByOutputType = {
   domaine: string
   dateDebut: Date
   dateFin: Date | null
+  Entreprise: string
   description: string | null
   createdAt: Date
   _count: ExperienceCountAggregateOutputType | null
@@ -204,6 +211,7 @@ export type ExperienceWhereInput = {
   domaine?: Prisma.StringFilter<"Experience"> | string
   dateDebut?: Prisma.DateTimeFilter<"Experience"> | Date | string
   dateFin?: Prisma.DateTimeNullableFilter<"Experience"> | Date | string | null
+  Entreprise?: Prisma.StringFilter<"Experience"> | string
   description?: Prisma.StringNullableFilter<"Experience"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   professor?: Prisma.XOR<Prisma.ProfessorScalarRelationFilter, Prisma.ProfessorWhereInput>
@@ -216,6 +224,7 @@ export type ExperienceOrderByWithRelationInput = {
   domaine?: Prisma.SortOrder
   dateDebut?: Prisma.SortOrder
   dateFin?: Prisma.SortOrderInput | Prisma.SortOrder
+  Entreprise?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   professor?: Prisma.ProfessorOrderByWithRelationInput
@@ -231,6 +240,7 @@ export type ExperienceWhereUniqueInput = Prisma.AtLeast<{
   domaine?: Prisma.StringFilter<"Experience"> | string
   dateDebut?: Prisma.DateTimeFilter<"Experience"> | Date | string
   dateFin?: Prisma.DateTimeNullableFilter<"Experience"> | Date | string | null
+  Entreprise?: Prisma.StringFilter<"Experience"> | string
   description?: Prisma.StringNullableFilter<"Experience"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   professor?: Prisma.XOR<Prisma.ProfessorScalarRelationFilter, Prisma.ProfessorWhereInput>
@@ -243,6 +253,7 @@ export type ExperienceOrderByWithAggregationInput = {
   domaine?: Prisma.SortOrder
   dateDebut?: Prisma.SortOrder
   dateFin?: Prisma.SortOrderInput | Prisma.SortOrder
+  Entreprise?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ExperienceCountOrderByAggregateInput
@@ -260,6 +271,7 @@ export type ExperienceScalarWhereWithAggregatesInput = {
   domaine?: Prisma.StringWithAggregatesFilter<"Experience"> | string
   dateDebut?: Prisma.DateTimeWithAggregatesFilter<"Experience"> | Date | string
   dateFin?: Prisma.DateTimeNullableWithAggregatesFilter<"Experience"> | Date | string | null
+  Entreprise?: Prisma.StringWithAggregatesFilter<"Experience"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Experience"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Experience"> | Date | string
 }
@@ -270,6 +282,7 @@ export type ExperienceCreateInput = {
   domaine: string
   dateDebut: Date | string
   dateFin?: Date | string | null
+  Entreprise: string
   description?: string | null
   createdAt?: Date | string
   professor: Prisma.ProfessorCreateNestedOneWithoutExperiencesInput
@@ -282,6 +295,7 @@ export type ExperienceUncheckedCreateInput = {
   domaine: string
   dateDebut: Date | string
   dateFin?: Date | string | null
+  Entreprise: string
   description?: string | null
   createdAt?: Date | string
 }
@@ -292,6 +306,7 @@ export type ExperienceUpdateInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   professor?: Prisma.ProfessorUpdateOneRequiredWithoutExperiencesNestedInput
@@ -304,6 +319,7 @@ export type ExperienceUncheckedUpdateInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -315,6 +331,7 @@ export type ExperienceCreateManyInput = {
   domaine: string
   dateDebut: Date | string
   dateFin?: Date | string | null
+  Entreprise: string
   description?: string | null
   createdAt?: Date | string
 }
@@ -325,6 +342,7 @@ export type ExperienceUpdateManyMutationInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +354,7 @@ export type ExperienceUncheckedUpdateManyInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,6 +376,7 @@ export type ExperienceCountOrderByAggregateInput = {
   domaine?: Prisma.SortOrder
   dateDebut?: Prisma.SortOrder
   dateFin?: Prisma.SortOrder
+  Entreprise?: Prisma.SortOrder
   description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -368,6 +388,7 @@ export type ExperienceMaxOrderByAggregateInput = {
   domaine?: Prisma.SortOrder
   dateDebut?: Prisma.SortOrder
   dateFin?: Prisma.SortOrder
+  Entreprise?: Prisma.SortOrder
   description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -379,6 +400,7 @@ export type ExperienceMinOrderByAggregateInput = {
   domaine?: Prisma.SortOrder
   dateDebut?: Prisma.SortOrder
   dateFin?: Prisma.SortOrder
+  Entreprise?: Prisma.SortOrder
   description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -431,6 +453,7 @@ export type ExperienceCreateWithoutProfessorInput = {
   domaine: string
   dateDebut: Date | string
   dateFin?: Date | string | null
+  Entreprise: string
   description?: string | null
   createdAt?: Date | string
 }
@@ -441,6 +464,7 @@ export type ExperienceUncheckedCreateWithoutProfessorInput = {
   domaine: string
   dateDebut: Date | string
   dateFin?: Date | string | null
+  Entreprise: string
   description?: string | null
   createdAt?: Date | string
 }
@@ -481,6 +505,7 @@ export type ExperienceScalarWhereInput = {
   domaine?: Prisma.StringFilter<"Experience"> | string
   dateDebut?: Prisma.DateTimeFilter<"Experience"> | Date | string
   dateFin?: Prisma.DateTimeNullableFilter<"Experience"> | Date | string | null
+  Entreprise?: Prisma.StringFilter<"Experience"> | string
   description?: Prisma.StringNullableFilter<"Experience"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
 }
@@ -491,6 +516,7 @@ export type ExperienceCreateManyProfessorInput = {
   domaine: string
   dateDebut: Date | string
   dateFin?: Date | string | null
+  Entreprise: string
   description?: string | null
   createdAt?: Date | string
 }
@@ -501,6 +527,7 @@ export type ExperienceUpdateWithoutProfessorInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -511,6 +538,7 @@ export type ExperienceUncheckedUpdateWithoutProfessorInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -521,6 +549,7 @@ export type ExperienceUncheckedUpdateManyWithoutProfessorInput = {
   domaine?: Prisma.StringFieldUpdateOperationsInput | string
   dateDebut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateFin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Entreprise?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -534,6 +563,7 @@ export type ExperienceSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   domaine?: boolean
   dateDebut?: boolean
   dateFin?: boolean
+  Entreprise?: boolean
   description?: boolean
   createdAt?: boolean
   professor?: boolean | Prisma.ProfessorDefaultArgs<ExtArgs>
@@ -546,6 +576,7 @@ export type ExperienceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   domaine?: boolean
   dateDebut?: boolean
   dateFin?: boolean
+  Entreprise?: boolean
   description?: boolean
   createdAt?: boolean
   professor?: boolean | Prisma.ProfessorDefaultArgs<ExtArgs>
@@ -558,6 +589,7 @@ export type ExperienceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   domaine?: boolean
   dateDebut?: boolean
   dateFin?: boolean
+  Entreprise?: boolean
   description?: boolean
   createdAt?: boolean
   professor?: boolean | Prisma.ProfessorDefaultArgs<ExtArgs>
@@ -570,11 +602,12 @@ export type ExperienceSelectScalar = {
   domaine?: boolean
   dateDebut?: boolean
   dateFin?: boolean
+  Entreprise?: boolean
   description?: boolean
   createdAt?: boolean
 }
 
-export type ExperienceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "professorId" | "poste" | "domaine" | "dateDebut" | "dateFin" | "description" | "createdAt", ExtArgs["result"]["experience"]>
+export type ExperienceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "professorId" | "poste" | "domaine" | "dateDebut" | "dateFin" | "Entreprise" | "description" | "createdAt", ExtArgs["result"]["experience"]>
 export type ExperienceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   professor?: boolean | Prisma.ProfessorDefaultArgs<ExtArgs>
 }
@@ -597,6 +630,7 @@ export type $ExperiencePayload<ExtArgs extends runtime.Types.Extensions.Internal
     domaine: string
     dateDebut: Date
     dateFin: Date | null
+    Entreprise: string
     description: string | null
     createdAt: Date
   }, ExtArgs["result"]["experience"]>
@@ -1029,6 +1063,7 @@ export interface ExperienceFieldRefs {
   readonly domaine: Prisma.FieldRef<"Experience", 'String'>
   readonly dateDebut: Prisma.FieldRef<"Experience", 'DateTime'>
   readonly dateFin: Prisma.FieldRef<"Experience", 'DateTime'>
+  readonly Entreprise: Prisma.FieldRef<"Experience", 'String'>
   readonly description: Prisma.FieldRef<"Experience", 'String'>
   readonly createdAt: Prisma.FieldRef<"Experience", 'DateTime'>
 }

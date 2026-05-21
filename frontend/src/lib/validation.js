@@ -68,4 +68,49 @@ export const isValidFile = (file) => {
     return { valid: true, message: "Le fichier est valide." };
 }
 
+const LIMITES = {
+  competencesPct: { min: 20, max: 80 },
+  experiencePct:  { min: 10, max: 80 },
+  formationPct:   { min: 0,  max: 30 },
+  historiquePct:  { min: 0,  max: 30 },
+};
+
+/**
+ * Valide les poids d'une configuration de session.
+ * @param {{ competencesPct, experiencePct, formationPct, historiquePct }} weights
+ * @returns {{ valid: true } | { valid: false, message: string }}
+ */
+export function isValidateWeights(weights) {
+  const { competencesPct, experiencePct, formationPct, historiquePct } = weights;
+
+  if (
+    competencesPct == null ||
+    experiencePct  == null ||
+    formationPct   == null ||
+    historiquePct  == null
+  ) {
+    return { valid: false, message: "Données manquantes." };
+  }
+  
+  for (const [champ, valeur] of Object.entries({ competencesPct, experiencePct, formationPct, historiquePct })) {
+    const { min, max } = LIMITES[champ];
+    if (!Number.isInteger(valeur) || valeur < min || valeur > max) {
+      return {
+        valid: false,
+        message: `${champ} doit être un entier entre ${min}% et ${max}% (reçu : ${valeur}).`,
+      };
+    }
+  }
+
+  const total = competencesPct + experiencePct + formationPct + historiquePct;
+  if (total !== 100) {
+    return {
+      valid: false,
+      message: `Le total doit être 100% (actuellement ${total}%).`,
+    };
+  }
+
+  return { valid: true };
+}
+
 

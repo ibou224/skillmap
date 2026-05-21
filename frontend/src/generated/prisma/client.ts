@@ -82,6 +82,11 @@ export type Skill = Prisma.SkillModel
  */
 export type ProfessorSkill = Prisma.ProfessorSkillModel
 /**
+ * Model Departement
+ * 
+ */
+export type Departement = Prisma.DepartementModel
+/**
  * Model Program
  * 
  */

@@ -87,3 +87,64 @@ export const initialCvData = {
   experiences: [],
   formations: [],
 };
+
+export const ETAPES = [1,2,3,4,5,6,7,8]
+
+export const CRITERES = {
+  competencesPct: {
+    label: "Compétences techniques",
+    description: "Correspondance entre les compétences du professeur et celles requises par le cours",
+    icon: "🎯",
+    defaut: 60,
+    min: 20,
+    max: 80,
+    color: "bg-blue-500",
+    lightColor: "bg-blue-50",
+    textColor: "text-blue-700",
+  },
+  experiencePct: {
+    label: "Années d'expérience",
+    description: "Expérience pratique dans le domaine enseigné",
+    icon: "⏳",
+    defaut: 40,
+    min: 10,
+    max: 80,
+    color: "bg-emerald-500",
+    lightColor: "bg-emerald-50",
+    textColor: "text-emerald-700",
+  },
+  formationPct: {
+    label: "Niveau de formation",
+    description: "Diplômes et formation académique du professeur",
+    icon: "🎓",
+    defaut: 0,
+    min: 0,
+    max: 30,
+    color: "bg-purple-500",
+    lightColor: "bg-purple-50",
+    textColor: "text-purple-700",
+  },
+  historiquePct: {
+    label: "Historique d'enseignement",
+    description: "Expérience antérieure avec ce cours spécifique",
+    icon: "📚",
+    defaut: 0,
+    min: 0,
+    max: 30,
+    color: "bg-amber-500",
+    lightColor: "bg-amber-50",
+    textColor: "text-amber-700",
+  },
+};
+
+export const SESSIONS_MOCK = [
+  { id: "1", nom: "A2026", annee: 2026, periode: "AUTOMNE", statut: "ACTIVE" },
+  { id: "2", nom: "H2026", annee: 2026, periode: "HIVER", statut: "PLANIFIEE" },
+  { id: "3", nom: "E2026", annee: 2026, periode: "ETE", statut: "PLANIFIEE" },
+];
+
+export const SAISONS = [
+  { value: "Hiver", label: "Hiver" },
+  { value: "Été", label: "Été" },
+  { value: "Automne", label: "Automne" },
+];

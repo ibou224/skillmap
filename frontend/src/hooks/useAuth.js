@@ -66,7 +66,7 @@ export function useLogin() {
 
     setIsLoading(false)
     if (result?.error) {
-      setError(result.error)
+      setError(result.message)
       setTimeout(() => setError(''), 3000)
       return
     }

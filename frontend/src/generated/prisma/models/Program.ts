@@ -39,6 +39,7 @@ export type ProgramMinAggregateOutputType = {
   code: string | null
   nom: string | null
   nbEtapes: number | null
+  departementId: string | null
   createdAt: Date | null
 }
 
@@ -47,6 +48,7 @@ export type ProgramMaxAggregateOutputType = {
   code: string | null
   nom: string | null
   nbEtapes: number | null
+  departementId: string | null
   createdAt: Date | null
 }
 
@@ -55,6 +57,7 @@ export type ProgramCountAggregateOutputType = {
   code: number
   nom: number
   nbEtapes: number
+  departementId: number
   createdAt: number
   _all: number
 }
@@ -73,6 +76,7 @@ export type ProgramMinAggregateInputType = {
   code?: true
   nom?: true
   nbEtapes?: true
+  departementId?: true
   createdAt?: true
 }
 
@@ -81,6 +85,7 @@ export type ProgramMaxAggregateInputType = {
   code?: true
   nom?: true
   nbEtapes?: true
+  departementId?: true
   createdAt?: true
 }
 
@@ -89,6 +94,7 @@ export type ProgramCountAggregateInputType = {
   code?: true
   nom?: true
   nbEtapes?: true
+  departementId?: true
   createdAt?: true
   _all?: true
 }
@@ -184,6 +190,7 @@ export type ProgramGroupByOutputType = {
   code: string
   nom: string
   nbEtapes: number
+  departementId: string | null
   createdAt: Date
   _count: ProgramCountAggregateOutputType | null
   _avg: ProgramAvgAggregateOutputType | null
@@ -215,7 +222,9 @@ export type ProgramWhereInput = {
   code?: Prisma.StringFilter<"Program"> | string
   nom?: Prisma.StringFilter<"Program"> | string
   nbEtapes?: Prisma.IntFilter<"Program"> | number
+  departementId?: Prisma.StringNullableFilter<"Program"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
+  departement?: Prisma.XOR<Prisma.DepartementNullableScalarRelationFilter, Prisma.DepartementWhereInput> | null
   courses?: Prisma.CourseListRelationFilter
 }
 
@@ -224,7 +233,9 @@ export type ProgramOrderByWithRelationInput = {
   code?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   nbEtapes?: Prisma.SortOrder
+  departementId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  departement?: Prisma.DepartementOrderByWithRelationInput
   courses?: Prisma.CourseOrderByRelationAggregateInput
 }
 
@@ -236,7 +247,9 @@ export type ProgramWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProgramWhereInput | Prisma.ProgramWhereInput[]
   nom?: Prisma.StringFilter<"Program"> | string
   nbEtapes?: Prisma.IntFilter<"Program"> | number
+  departementId?: Prisma.StringNullableFilter<"Program"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
+  departement?: Prisma.XOR<Prisma.DepartementNullableScalarRelationFilter, Prisma.DepartementWhereInput> | null
   courses?: Prisma.CourseListRelationFilter
 }, "id" | "code">
 
@@ -245,6 +258,7 @@ export type ProgramOrderByWithAggregationInput = {
   code?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   nbEtapes?: Prisma.SortOrder
+  departementId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ProgramCountOrderByAggregateInput
   _avg?: Prisma.ProgramAvgOrderByAggregateInput
@@ -261,6 +275,7 @@ export type ProgramScalarWhereWithAggregatesInput = {
   code?: Prisma.StringWithAggregatesFilter<"Program"> | string
   nom?: Prisma.StringWithAggregatesFilter<"Program"> | string
   nbEtapes?: Prisma.IntWithAggregatesFilter<"Program"> | number
+  departementId?: Prisma.StringNullableWithAggregatesFilter<"Program"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Program"> | Date | string
 }
 
@@ -270,7 +285,8 @@ export type ProgramCreateInput = {
   nom: string
   nbEtapes: number
   createdAt?: Date | string
-  courses?: Prisma.CourseCreateNestedManyWithoutProgramInput
+  departement?: Prisma.DepartementCreateNestedOneWithoutProgramsInput
+  courses?: Prisma.CourseCreateNestedManyWithoutProgramsInput
 }
 
 export type ProgramUncheckedCreateInput = {
@@ -278,8 +294,9 @@ export type ProgramUncheckedCreateInput = {
   code: string
   nom: string
   nbEtapes: number
+  departementId?: string | null
   createdAt?: Date | string
-  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutProgramInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutProgramsInput
 }
 
 export type ProgramUpdateInput = {
@@ -288,7 +305,8 @@ export type ProgramUpdateInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  courses?: Prisma.CourseUpdateManyWithoutProgramNestedInput
+  departement?: Prisma.DepartementUpdateOneWithoutProgramsNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutProgramsNestedInput
 }
 
 export type ProgramUncheckedUpdateInput = {
@@ -296,8 +314,9 @@ export type ProgramUncheckedUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  departementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  courses?: Prisma.CourseUncheckedUpdateManyWithoutProgramNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutProgramsNestedInput
 }
 
 export type ProgramCreateManyInput = {
@@ -305,6 +324,7 @@ export type ProgramCreateManyInput = {
   code: string
   nom: string
   nbEtapes: number
+  departementId?: string | null
   createdAt?: Date | string
 }
 
@@ -321,7 +341,18 @@ export type ProgramUncheckedUpdateManyInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  departementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProgramListRelationFilter = {
+  every?: Prisma.ProgramWhereInput
+  some?: Prisma.ProgramWhereInput
+  none?: Prisma.ProgramWhereInput
+}
+
+export type ProgramOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ProgramCountOrderByAggregateInput = {
@@ -329,6 +360,7 @@ export type ProgramCountOrderByAggregateInput = {
   code?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   nbEtapes?: Prisma.SortOrder
+  departementId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -341,6 +373,7 @@ export type ProgramMaxOrderByAggregateInput = {
   code?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   nbEtapes?: Prisma.SortOrder
+  departementId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -349,6 +382,7 @@ export type ProgramMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   nbEtapes?: Prisma.SortOrder
+  departementId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -356,23 +390,140 @@ export type ProgramSumOrderByAggregateInput = {
   nbEtapes?: Prisma.SortOrder
 }
 
-export type ProgramScalarRelationFilter = {
-  is?: Prisma.ProgramWhereInput
-  isNot?: Prisma.ProgramWhereInput
+export type ProgramCreateNestedManyWithoutDepartementInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutDepartementInput, Prisma.ProgramUncheckedCreateWithoutDepartementInput> | Prisma.ProgramCreateWithoutDepartementInput[] | Prisma.ProgramUncheckedCreateWithoutDepartementInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutDepartementInput | Prisma.ProgramCreateOrConnectWithoutDepartementInput[]
+  createMany?: Prisma.ProgramCreateManyDepartementInputEnvelope
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
 }
 
-export type ProgramCreateNestedOneWithoutCoursesInput = {
-  create?: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput>
-  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutCoursesInput
-  connect?: Prisma.ProgramWhereUniqueInput
+export type ProgramUncheckedCreateNestedManyWithoutDepartementInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutDepartementInput, Prisma.ProgramUncheckedCreateWithoutDepartementInput> | Prisma.ProgramCreateWithoutDepartementInput[] | Prisma.ProgramUncheckedCreateWithoutDepartementInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutDepartementInput | Prisma.ProgramCreateOrConnectWithoutDepartementInput[]
+  createMany?: Prisma.ProgramCreateManyDepartementInputEnvelope
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
 }
 
-export type ProgramUpdateOneRequiredWithoutCoursesNestedInput = {
-  create?: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput>
-  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutCoursesInput
-  upsert?: Prisma.ProgramUpsertWithoutCoursesInput
-  connect?: Prisma.ProgramWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProgramUpdateToOneWithWhereWithoutCoursesInput, Prisma.ProgramUpdateWithoutCoursesInput>, Prisma.ProgramUncheckedUpdateWithoutCoursesInput>
+export type ProgramUpdateManyWithoutDepartementNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutDepartementInput, Prisma.ProgramUncheckedCreateWithoutDepartementInput> | Prisma.ProgramCreateWithoutDepartementInput[] | Prisma.ProgramUncheckedCreateWithoutDepartementInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutDepartementInput | Prisma.ProgramCreateOrConnectWithoutDepartementInput[]
+  upsert?: Prisma.ProgramUpsertWithWhereUniqueWithoutDepartementInput | Prisma.ProgramUpsertWithWhereUniqueWithoutDepartementInput[]
+  createMany?: Prisma.ProgramCreateManyDepartementInputEnvelope
+  set?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  disconnect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  delete?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  update?: Prisma.ProgramUpdateWithWhereUniqueWithoutDepartementInput | Prisma.ProgramUpdateWithWhereUniqueWithoutDepartementInput[]
+  updateMany?: Prisma.ProgramUpdateManyWithWhereWithoutDepartementInput | Prisma.ProgramUpdateManyWithWhereWithoutDepartementInput[]
+  deleteMany?: Prisma.ProgramScalarWhereInput | Prisma.ProgramScalarWhereInput[]
+}
+
+export type ProgramUncheckedUpdateManyWithoutDepartementNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutDepartementInput, Prisma.ProgramUncheckedCreateWithoutDepartementInput> | Prisma.ProgramCreateWithoutDepartementInput[] | Prisma.ProgramUncheckedCreateWithoutDepartementInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutDepartementInput | Prisma.ProgramCreateOrConnectWithoutDepartementInput[]
+  upsert?: Prisma.ProgramUpsertWithWhereUniqueWithoutDepartementInput | Prisma.ProgramUpsertWithWhereUniqueWithoutDepartementInput[]
+  createMany?: Prisma.ProgramCreateManyDepartementInputEnvelope
+  set?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  disconnect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  delete?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  update?: Prisma.ProgramUpdateWithWhereUniqueWithoutDepartementInput | Prisma.ProgramUpdateWithWhereUniqueWithoutDepartementInput[]
+  updateMany?: Prisma.ProgramUpdateManyWithWhereWithoutDepartementInput | Prisma.ProgramUpdateManyWithWhereWithoutDepartementInput[]
+  deleteMany?: Prisma.ProgramScalarWhereInput | Prisma.ProgramScalarWhereInput[]
+}
+
+export type ProgramCreateNestedManyWithoutCoursesInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput> | Prisma.ProgramCreateWithoutCoursesInput[] | Prisma.ProgramUncheckedCreateWithoutCoursesInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutCoursesInput | Prisma.ProgramCreateOrConnectWithoutCoursesInput[]
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+}
+
+export type ProgramUncheckedCreateNestedManyWithoutCoursesInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput> | Prisma.ProgramCreateWithoutCoursesInput[] | Prisma.ProgramUncheckedCreateWithoutCoursesInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutCoursesInput | Prisma.ProgramCreateOrConnectWithoutCoursesInput[]
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+}
+
+export type ProgramUpdateManyWithoutCoursesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput> | Prisma.ProgramCreateWithoutCoursesInput[] | Prisma.ProgramUncheckedCreateWithoutCoursesInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutCoursesInput | Prisma.ProgramCreateOrConnectWithoutCoursesInput[]
+  upsert?: Prisma.ProgramUpsertWithWhereUniqueWithoutCoursesInput | Prisma.ProgramUpsertWithWhereUniqueWithoutCoursesInput[]
+  set?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  disconnect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  delete?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  update?: Prisma.ProgramUpdateWithWhereUniqueWithoutCoursesInput | Prisma.ProgramUpdateWithWhereUniqueWithoutCoursesInput[]
+  updateMany?: Prisma.ProgramUpdateManyWithWhereWithoutCoursesInput | Prisma.ProgramUpdateManyWithWhereWithoutCoursesInput[]
+  deleteMany?: Prisma.ProgramScalarWhereInput | Prisma.ProgramScalarWhereInput[]
+}
+
+export type ProgramUncheckedUpdateManyWithoutCoursesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput> | Prisma.ProgramCreateWithoutCoursesInput[] | Prisma.ProgramUncheckedCreateWithoutCoursesInput[]
+  connectOrCreate?: Prisma.ProgramCreateOrConnectWithoutCoursesInput | Prisma.ProgramCreateOrConnectWithoutCoursesInput[]
+  upsert?: Prisma.ProgramUpsertWithWhereUniqueWithoutCoursesInput | Prisma.ProgramUpsertWithWhereUniqueWithoutCoursesInput[]
+  set?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  disconnect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  delete?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  connect?: Prisma.ProgramWhereUniqueInput | Prisma.ProgramWhereUniqueInput[]
+  update?: Prisma.ProgramUpdateWithWhereUniqueWithoutCoursesInput | Prisma.ProgramUpdateWithWhereUniqueWithoutCoursesInput[]
+  updateMany?: Prisma.ProgramUpdateManyWithWhereWithoutCoursesInput | Prisma.ProgramUpdateManyWithWhereWithoutCoursesInput[]
+  deleteMany?: Prisma.ProgramScalarWhereInput | Prisma.ProgramScalarWhereInput[]
+}
+
+export type ProgramCreateWithoutDepartementInput = {
+  id?: string
+  code: string
+  nom: string
+  nbEtapes: number
+  createdAt?: Date | string
+  courses?: Prisma.CourseCreateNestedManyWithoutProgramsInput
+}
+
+export type ProgramUncheckedCreateWithoutDepartementInput = {
+  id?: string
+  code: string
+  nom: string
+  nbEtapes: number
+  createdAt?: Date | string
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutProgramsInput
+}
+
+export type ProgramCreateOrConnectWithoutDepartementInput = {
+  where: Prisma.ProgramWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProgramCreateWithoutDepartementInput, Prisma.ProgramUncheckedCreateWithoutDepartementInput>
+}
+
+export type ProgramCreateManyDepartementInputEnvelope = {
+  data: Prisma.ProgramCreateManyDepartementInput | Prisma.ProgramCreateManyDepartementInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProgramUpsertWithWhereUniqueWithoutDepartementInput = {
+  where: Prisma.ProgramWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProgramUpdateWithoutDepartementInput, Prisma.ProgramUncheckedUpdateWithoutDepartementInput>
+  create: Prisma.XOR<Prisma.ProgramCreateWithoutDepartementInput, Prisma.ProgramUncheckedCreateWithoutDepartementInput>
+}
+
+export type ProgramUpdateWithWhereUniqueWithoutDepartementInput = {
+  where: Prisma.ProgramWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProgramUpdateWithoutDepartementInput, Prisma.ProgramUncheckedUpdateWithoutDepartementInput>
+}
+
+export type ProgramUpdateManyWithWhereWithoutDepartementInput = {
+  where: Prisma.ProgramScalarWhereInput
+  data: Prisma.XOR<Prisma.ProgramUpdateManyMutationInput, Prisma.ProgramUncheckedUpdateManyWithoutDepartementInput>
+}
+
+export type ProgramScalarWhereInput = {
+  AND?: Prisma.ProgramScalarWhereInput | Prisma.ProgramScalarWhereInput[]
+  OR?: Prisma.ProgramScalarWhereInput[]
+  NOT?: Prisma.ProgramScalarWhereInput | Prisma.ProgramScalarWhereInput[]
+  id?: Prisma.StringFilter<"Program"> | string
+  code?: Prisma.StringFilter<"Program"> | string
+  nom?: Prisma.StringFilter<"Program"> | string
+  nbEtapes?: Prisma.IntFilter<"Program"> | number
+  departementId?: Prisma.StringNullableFilter<"Program"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
 }
 
 export type ProgramCreateWithoutCoursesInput = {
@@ -381,6 +532,7 @@ export type ProgramCreateWithoutCoursesInput = {
   nom: string
   nbEtapes: number
   createdAt?: Date | string
+  departement?: Prisma.DepartementCreateNestedOneWithoutProgramsInput
 }
 
 export type ProgramUncheckedCreateWithoutCoursesInput = {
@@ -388,6 +540,7 @@ export type ProgramUncheckedCreateWithoutCoursesInput = {
   code: string
   nom: string
   nbEtapes: number
+  departementId?: string | null
   createdAt?: Date | string
 }
 
@@ -396,15 +549,54 @@ export type ProgramCreateOrConnectWithoutCoursesInput = {
   create: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput>
 }
 
-export type ProgramUpsertWithoutCoursesInput = {
+export type ProgramUpsertWithWhereUniqueWithoutCoursesInput = {
+  where: Prisma.ProgramWhereUniqueInput
   update: Prisma.XOR<Prisma.ProgramUpdateWithoutCoursesInput, Prisma.ProgramUncheckedUpdateWithoutCoursesInput>
   create: Prisma.XOR<Prisma.ProgramCreateWithoutCoursesInput, Prisma.ProgramUncheckedCreateWithoutCoursesInput>
-  where?: Prisma.ProgramWhereInput
 }
 
-export type ProgramUpdateToOneWithWhereWithoutCoursesInput = {
-  where?: Prisma.ProgramWhereInput
+export type ProgramUpdateWithWhereUniqueWithoutCoursesInput = {
+  where: Prisma.ProgramWhereUniqueInput
   data: Prisma.XOR<Prisma.ProgramUpdateWithoutCoursesInput, Prisma.ProgramUncheckedUpdateWithoutCoursesInput>
+}
+
+export type ProgramUpdateManyWithWhereWithoutCoursesInput = {
+  where: Prisma.ProgramScalarWhereInput
+  data: Prisma.XOR<Prisma.ProgramUpdateManyMutationInput, Prisma.ProgramUncheckedUpdateManyWithoutCoursesInput>
+}
+
+export type ProgramCreateManyDepartementInput = {
+  id?: string
+  code: string
+  nom: string
+  nbEtapes: number
+  createdAt?: Date | string
+}
+
+export type ProgramUpdateWithoutDepartementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  courses?: Prisma.CourseUpdateManyWithoutProgramsNestedInput
+}
+
+export type ProgramUncheckedUpdateWithoutDepartementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutProgramsNestedInput
+}
+
+export type ProgramUncheckedUpdateManyWithoutDepartementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProgramUpdateWithoutCoursesInput = {
@@ -413,6 +605,7 @@ export type ProgramUpdateWithoutCoursesInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  departement?: Prisma.DepartementUpdateOneWithoutProgramsNestedInput
 }
 
 export type ProgramUncheckedUpdateWithoutCoursesInput = {
@@ -420,6 +613,16 @@ export type ProgramUncheckedUpdateWithoutCoursesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  departementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProgramUncheckedUpdateManyWithoutCoursesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  nbEtapes?: Prisma.IntFieldUpdateOperationsInput | number
+  departementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -459,7 +662,9 @@ export type ProgramSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   code?: boolean
   nom?: boolean
   nbEtapes?: boolean
+  departementId?: boolean
   createdAt?: boolean
+  departement?: boolean | Prisma.Program$departementArgs<ExtArgs>
   courses?: boolean | Prisma.Program$coursesArgs<ExtArgs>
   _count?: boolean | Prisma.ProgramCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["program"]>
@@ -469,7 +674,9 @@ export type ProgramSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   code?: boolean
   nom?: boolean
   nbEtapes?: boolean
+  departementId?: boolean
   createdAt?: boolean
+  departement?: boolean | Prisma.Program$departementArgs<ExtArgs>
 }, ExtArgs["result"]["program"]>
 
 export type ProgramSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -477,7 +684,9 @@ export type ProgramSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   code?: boolean
   nom?: boolean
   nbEtapes?: boolean
+  departementId?: boolean
   createdAt?: boolean
+  departement?: boolean | Prisma.Program$departementArgs<ExtArgs>
 }, ExtArgs["result"]["program"]>
 
 export type ProgramSelectScalar = {
@@ -485,20 +694,27 @@ export type ProgramSelectScalar = {
   code?: boolean
   nom?: boolean
   nbEtapes?: boolean
+  departementId?: boolean
   createdAt?: boolean
 }
 
-export type ProgramOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "nom" | "nbEtapes" | "createdAt", ExtArgs["result"]["program"]>
+export type ProgramOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "nom" | "nbEtapes" | "departementId" | "createdAt", ExtArgs["result"]["program"]>
 export type ProgramInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  departement?: boolean | Prisma.Program$departementArgs<ExtArgs>
   courses?: boolean | Prisma.Program$coursesArgs<ExtArgs>
   _count?: boolean | Prisma.ProgramCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ProgramIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ProgramIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ProgramIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  departement?: boolean | Prisma.Program$departementArgs<ExtArgs>
+}
+export type ProgramIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  departement?: boolean | Prisma.Program$departementArgs<ExtArgs>
+}
 
 export type $ProgramPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Program"
   objects: {
+    departement: Prisma.$DepartementPayload<ExtArgs> | null
     courses: Prisma.$CoursePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -506,6 +722,7 @@ export type $ProgramPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     code: string
     nom: string
     nbEtapes: number
+    departementId: string | null
     createdAt: Date
   }, ExtArgs["result"]["program"]>
   composites: {}
@@ -901,6 +1118,7 @@ readonly fields: ProgramFieldRefs;
  */
 export interface Prisma__ProgramClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  departement<T extends Prisma.Program$departementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Program$departementArgs<ExtArgs>>): Prisma.Prisma__DepartementClient<runtime.Types.Result.GetResult<Prisma.$DepartementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   courses<T extends Prisma.Program$coursesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Program$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -935,6 +1153,7 @@ export interface ProgramFieldRefs {
   readonly code: Prisma.FieldRef<"Program", 'String'>
   readonly nom: Prisma.FieldRef<"Program", 'String'>
   readonly nbEtapes: Prisma.FieldRef<"Program", 'Int'>
+  readonly departementId: Prisma.FieldRef<"Program", 'String'>
   readonly createdAt: Prisma.FieldRef<"Program", 'DateTime'>
 }
     
@@ -1190,6 +1409,10 @@ export type ProgramCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.ProgramCreateManyInput | Prisma.ProgramCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1260,6 +1483,10 @@ export type ProgramUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Programs to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1326,6 +1553,25 @@ export type ProgramDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Programs to delete.
    */
   limit?: number
+}
+
+/**
+ * Program.departement
+ */
+export type Program$departementArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Departement
+   */
+  select?: Prisma.DepartementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Departement
+   */
+  omit?: Prisma.DepartementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartementInclude<ExtArgs> | null
+  where?: Prisma.DepartementWhereInput
 }
 
 /**

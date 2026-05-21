@@ -28,6 +28,10 @@ export type ProfessorMinAggregateOutputType = {
   id: string | null
   userId: string | null
   telephone: string | null
+  ville: string | null
+  siteWeb: string | null
+  linkedIn: string | null
+  resume: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -36,6 +40,10 @@ export type ProfessorMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   telephone: string | null
+  ville: string | null
+  siteWeb: string | null
+  linkedIn: string | null
+  resume: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +52,10 @@ export type ProfessorCountAggregateOutputType = {
   id: number
   userId: number
   telephone: number
+  ville: number
+  siteWeb: number
+  linkedIn: number
+  resume: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -54,6 +66,10 @@ export type ProfessorMinAggregateInputType = {
   id?: true
   userId?: true
   telephone?: true
+  ville?: true
+  siteWeb?: true
+  linkedIn?: true
+  resume?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -62,6 +78,10 @@ export type ProfessorMaxAggregateInputType = {
   id?: true
   userId?: true
   telephone?: true
+  ville?: true
+  siteWeb?: true
+  linkedIn?: true
+  resume?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -70,6 +90,10 @@ export type ProfessorCountAggregateInputType = {
   id?: true
   userId?: true
   telephone?: true
+  ville?: true
+  siteWeb?: true
+  linkedIn?: true
+  resume?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -151,6 +175,10 @@ export type ProfessorGroupByOutputType = {
   id: string
   userId: string
   telephone: string | null
+  ville: string | null
+  siteWeb: string | null
+  linkedIn: string | null
+  resume: string | null
   createdAt: Date
   updatedAt: Date
   _count: ProfessorCountAggregateOutputType | null
@@ -180,6 +208,10 @@ export type ProfessorWhereInput = {
   id?: Prisma.StringFilter<"Professor"> | string
   userId?: Prisma.StringFilter<"Professor"> | string
   telephone?: Prisma.StringNullableFilter<"Professor"> | string | null
+  ville?: Prisma.StringNullableFilter<"Professor"> | string | null
+  siteWeb?: Prisma.StringNullableFilter<"Professor"> | string | null
+  linkedIn?: Prisma.StringNullableFilter<"Professor"> | string | null
+  resume?: Prisma.StringNullableFilter<"Professor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   assignments?: Prisma.AssignmentListRelationFilter
@@ -194,6 +226,10 @@ export type ProfessorOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  ville?: Prisma.SortOrderInput | Prisma.SortOrder
+  siteWeb?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkedIn?: Prisma.SortOrderInput | Prisma.SortOrder
+  resume?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
@@ -211,6 +247,10 @@ export type ProfessorWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ProfessorWhereInput[]
   NOT?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
   telephone?: Prisma.StringNullableFilter<"Professor"> | string | null
+  ville?: Prisma.StringNullableFilter<"Professor"> | string | null
+  siteWeb?: Prisma.StringNullableFilter<"Professor"> | string | null
+  linkedIn?: Prisma.StringNullableFilter<"Professor"> | string | null
+  resume?: Prisma.StringNullableFilter<"Professor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   assignments?: Prisma.AssignmentListRelationFilter
@@ -225,6 +265,10 @@ export type ProfessorOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  ville?: Prisma.SortOrderInput | Prisma.SortOrder
+  siteWeb?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkedIn?: Prisma.SortOrderInput | Prisma.SortOrder
+  resume?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProfessorCountOrderByAggregateInput
@@ -239,6 +283,10 @@ export type ProfessorScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Professor"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Professor"> | string
   telephone?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  ville?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  siteWeb?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  linkedIn?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  resume?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Professor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Professor"> | Date | string
 }
@@ -246,6 +294,10 @@ export type ProfessorScalarWhereWithAggregatesInput = {
 export type ProfessorCreateInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
@@ -260,6 +312,10 @@ export type ProfessorUncheckedCreateInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
@@ -272,6 +328,10 @@ export type ProfessorUncheckedCreateInput = {
 export type ProfessorUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
@@ -286,6 +346,10 @@ export type ProfessorUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -299,6 +363,10 @@ export type ProfessorCreateManyInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -306,6 +374,10 @@ export type ProfessorCreateManyInput = {
 export type ProfessorUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -314,6 +386,10 @@ export type ProfessorUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -327,6 +403,10 @@ export type ProfessorCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  ville?: Prisma.SortOrder
+  siteWeb?: Prisma.SortOrder
+  linkedIn?: Prisma.SortOrder
+  resume?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -335,6 +415,10 @@ export type ProfessorMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  ville?: Prisma.SortOrder
+  siteWeb?: Prisma.SortOrder
+  linkedIn?: Prisma.SortOrder
+  resume?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -343,6 +427,10 @@ export type ProfessorMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  ville?: Prisma.SortOrder
+  siteWeb?: Prisma.SortOrder
+  linkedIn?: Prisma.SortOrder
+  resume?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -457,6 +545,10 @@ export type ProfessorUpdateOneRequiredWithoutAssignmentsNestedInput = {
 export type ProfessorCreateWithoutUserInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
@@ -469,6 +561,10 @@ export type ProfessorCreateWithoutUserInput = {
 export type ProfessorUncheckedCreateWithoutUserInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
@@ -497,6 +593,10 @@ export type ProfessorUpdateToOneWithWhereWithoutUserInput = {
 export type ProfessorUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
@@ -509,6 +609,10 @@ export type ProfessorUpdateWithoutUserInput = {
 export type ProfessorUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -521,6 +625,10 @@ export type ProfessorUncheckedUpdateWithoutUserInput = {
 export type ProfessorCreateWithoutCvExtractionsInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
@@ -534,6 +642,10 @@ export type ProfessorUncheckedCreateWithoutCvExtractionsInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
@@ -561,6 +673,10 @@ export type ProfessorUpdateToOneWithWhereWithoutCvExtractionsInput = {
 export type ProfessorUpdateWithoutCvExtractionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
@@ -574,6 +690,10 @@ export type ProfessorUncheckedUpdateWithoutCvExtractionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -585,6 +705,10 @@ export type ProfessorUncheckedUpdateWithoutCvExtractionsInput = {
 export type ProfessorCreateWithoutExperiencesInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
@@ -598,6 +722,10 @@ export type ProfessorUncheckedCreateWithoutExperiencesInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
@@ -625,6 +753,10 @@ export type ProfessorUpdateToOneWithWhereWithoutExperiencesInput = {
 export type ProfessorUpdateWithoutExperiencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
@@ -638,6 +770,10 @@ export type ProfessorUncheckedUpdateWithoutExperiencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -649,6 +785,10 @@ export type ProfessorUncheckedUpdateWithoutExperiencesInput = {
 export type ProfessorCreateWithoutFormationsInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
@@ -662,6 +802,10 @@ export type ProfessorUncheckedCreateWithoutFormationsInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
@@ -689,6 +833,10 @@ export type ProfessorUpdateToOneWithWhereWithoutFormationsInput = {
 export type ProfessorUpdateWithoutFormationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
@@ -702,6 +850,10 @@ export type ProfessorUncheckedUpdateWithoutFormationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -713,6 +865,10 @@ export type ProfessorUncheckedUpdateWithoutFormationsInput = {
 export type ProfessorCreateWithoutSkillsInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
@@ -726,6 +882,10 @@ export type ProfessorUncheckedCreateWithoutSkillsInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
@@ -753,6 +913,10 @@ export type ProfessorUpdateToOneWithWhereWithoutSkillsInput = {
 export type ProfessorUpdateWithoutSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
@@ -766,6 +930,10 @@ export type ProfessorUncheckedUpdateWithoutSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -777,6 +945,10 @@ export type ProfessorUncheckedUpdateWithoutSkillsInput = {
 export type ProfessorCreateWithoutAssignmentsInput = {
   id?: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
@@ -790,6 +962,10 @@ export type ProfessorUncheckedCreateWithoutAssignmentsInput = {
   id?: string
   userId: string
   telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
@@ -817,6 +993,10 @@ export type ProfessorUpdateToOneWithWhereWithoutAssignmentsInput = {
 export type ProfessorUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
@@ -830,6 +1010,10 @@ export type ProfessorUncheckedUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
@@ -909,6 +1093,10 @@ export type ProfessorSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   userId?: boolean
   telephone?: boolean
+  ville?: boolean
+  siteWeb?: boolean
+  linkedIn?: boolean
+  resume?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   assignments?: boolean | Prisma.Professor$assignmentsArgs<ExtArgs>
@@ -924,6 +1112,10 @@ export type ProfessorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   userId?: boolean
   telephone?: boolean
+  ville?: boolean
+  siteWeb?: boolean
+  linkedIn?: boolean
+  resume?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -933,6 +1125,10 @@ export type ProfessorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   userId?: boolean
   telephone?: boolean
+  ville?: boolean
+  siteWeb?: boolean
+  linkedIn?: boolean
+  resume?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -942,11 +1138,15 @@ export type ProfessorSelectScalar = {
   id?: boolean
   userId?: boolean
   telephone?: boolean
+  ville?: boolean
+  siteWeb?: boolean
+  linkedIn?: boolean
+  resume?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "telephone" | "createdAt" | "updatedAt", ExtArgs["result"]["professor"]>
+export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "telephone" | "ville" | "siteWeb" | "linkedIn" | "resume" | "createdAt" | "updatedAt", ExtArgs["result"]["professor"]>
 export type ProfessorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Professor$assignmentsArgs<ExtArgs>
   cvExtractions?: boolean | Prisma.Professor$cvExtractionsArgs<ExtArgs>
@@ -977,6 +1177,10 @@ export type $ProfessorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: string
     userId: string
     telephone: string | null
+    ville: string | null
+    siteWeb: string | null
+    linkedIn: string | null
+    resume: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["professor"]>
@@ -1411,6 +1615,10 @@ export interface ProfessorFieldRefs {
   readonly id: Prisma.FieldRef<"Professor", 'String'>
   readonly userId: Prisma.FieldRef<"Professor", 'String'>
   readonly telephone: Prisma.FieldRef<"Professor", 'String'>
+  readonly ville: Prisma.FieldRef<"Professor", 'String'>
+  readonly siteWeb: Prisma.FieldRef<"Professor", 'String'>
+  readonly linkedIn: Prisma.FieldRef<"Professor", 'String'>
+  readonly resume: Prisma.FieldRef<"Professor", 'String'>
   readonly createdAt: Prisma.FieldRef<"Professor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Professor", 'DateTime'>
 }

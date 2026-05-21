@@ -213,3 +213,27 @@ export const normalizeInfosProfessor = (infos) => {
     })),
   };
 }
+
+export const normalizeWeights = (weights) => {
+  const sessionWeights = new Map();
+
+  weights.forEach(w => {
+    const sessionId = w.session.id;
+    
+    sessionWeights.set(sessionId, {
+      sessionId,
+      session: w.session.nom.toUpperCase(),
+      annee: w.session.annee,
+      periode: w.session.periode.toUpperCase(),
+      statut: w.session.statut.toUpperCase(),
+      competencesPct: w.competencesPct ?? 40,
+      experiencePct: w.experiencePct ?? 25,
+      formationPct: w.formationPct ?? 20,
+      historiquePct: w.historiquePct ?? 15,
+      total: (w.competencesPct ?? 40) + (w.experiencePct ?? 25) + (w.formationPct ?? 20) + (w.historiquePct ?? 15),
+      isValid: ((w.competencesPct ?? 40) + (w.experiencePct ?? 25) + (w.formationPct ?? 20) + (w.historiquePct ?? 15)) === 100,
+    });
+  });
+
+  return Array.from(sessionWeights.values());
+};

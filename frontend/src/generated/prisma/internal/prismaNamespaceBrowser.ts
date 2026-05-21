@@ -59,6 +59,7 @@ export const ModelName = {
   Formation: 'Formation',
   Skill: 'Skill',
   ProfessorSkill: 'ProfessorSkill',
+  Departement: 'Departement',
   Program: 'Program',
   Course: 'Course',
   CourseSkill: 'CourseSkill',
@@ -121,6 +122,10 @@ export const ProfessorScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   telephone: 'telephone',
+  ville: 'ville',
+  siteWeb: 'siteWeb',
+  linkedIn: 'linkedIn',
+  resume: 'resume',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -150,6 +155,7 @@ export const ExperienceScalarFieldEnum = {
   domaine: 'domaine',
   dateDebut: 'dateDebut',
   dateFin: 'dateFin',
+  Entreprise: 'Entreprise',
   description: 'description',
   createdAt: 'createdAt'
 } as const
@@ -193,11 +199,24 @@ export const ProfessorSkillScalarFieldEnum = {
 export type ProfessorSkillScalarFieldEnum = (typeof ProfessorSkillScalarFieldEnum)[keyof typeof ProfessorSkillScalarFieldEnum]
 
 
+export const DepartementScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  nom: 'nom',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DepartementScalarFieldEnum = (typeof DepartementScalarFieldEnum)[keyof typeof DepartementScalarFieldEnum]
+
+
 export const ProgramScalarFieldEnum = {
   id: 'id',
   code: 'code',
   nom: 'nom',
   nbEtapes: 'nbEtapes',
+  departementId: 'departementId',
   createdAt: 'createdAt'
 } as const
 
@@ -208,7 +227,6 @@ export const CourseScalarFieldEnum = {
   id: 'id',
   code: 'code',
   nom: 'nom',
-  programId: 'programId',
   etape: 'etape',
   isArchived: 'isArchived',
   createdAt: 'createdAt',

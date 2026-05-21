@@ -1,52 +1,51 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 
-/**
- * GET /api/courses
- * 
- * Récupère la liste des cours ou la liste des programmes 
- * selon les paramètres de recherche.
- */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    // 1. Gestion de la requête spécifique pour les programmes
     if (searchParams.get("programs") === "true") {
       const programmes = await prisma.program.findMany({
         orderBy: { nom: "asc" },
-        select: { 
-          id: true, 
-          nom: true, 
-          code: true 
-        }
+        select: { id: true, nom: true, code: true },
       });
-
       return NextResponse.json({ success: true, data: programmes }, { status: 200 });
     }
 
-    // 2. Requête principale pour les cours
+    // Un seul objet include — plusieurs clés include séparées, JS garde seulement la dernière
     const courses = await prisma.course.findMany({
       orderBy: { nom: "asc" },
       include: {
-        programs: {
-          select: {
-            id: true,
-            nom: true
-          }
+        courseSkills: {
+          include: {
+            skill: { select: {  nom: true} },
+          },
         },
-        courseSkills: true 
-      }
+      },
     });
 
+    // Workaround: PrismaPg 7.x driver adapter bug avec l'include implicite M2M.
+    const coursePrograms = await prisma.$queryRaw`
+      SELECT cp."A" AS "courseId", p.id, p.nom, p.code
+      FROM "_CourseToProgram" cp
+      JOIN "Program" p ON p.id = cp."B"
+    `;
 
-    return NextResponse.json({ success: true, data: courses }, { status: 200 });
+    const programsByCourse = {};
+    for (const row of coursePrograms) {
+      if (!programsByCourse[row.courseId]) programsByCourse[row.courseId] = [];
+      programsByCourse[row.courseId].push({ id: row.id, nom: row.nom, code: row.code });
+    }
+
+    const data = courses.map(c => ({ ...c, programs: programsByCourse[c.id] ?? [] }));
+
+    return NextResponse.json({ success: true, data }, { status: 200 });
 
   } catch (error) {
     console.error("[GET_COURSES_ERROR]:", error);
-    
     return NextResponse.json(
-      { success: false, error: "Erreur interne du serveur lors de la récupération des données." }, 
+      { success: false, error: "Erreur interne du serveur lors de la récupération des données." },
       { status: 500 }
     );
   }

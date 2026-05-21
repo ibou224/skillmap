@@ -29,13 +29,14 @@ const NAV_ITEMS = [
   // RH
   { icon: BarChart3,     label: "Accueil",       href: "/dashboard/rh",                      roles: ["RH"],             group: "main"    },
   { icon: FileText,      label: "CVs",           href: "/dashboard/rh/cvs",                  roles: ["RH"],             group: "main"    },
-  { icon: CalendarRange, label: "Sessions",      href: "/dashboard/admin/sessions",             roles: ["RH", "ADMIN"],    group: "gestion" },
-  { icon: Weight,        label: "Pondérations",  href: "/dashboard/rh/weights",              roles: ["RH", "ADMIN"],    group: "gestion" },
+  { icon: CalendarRange, label: "Sessions",      href: "/dashboard/admin/sessions",          roles: ["RH", "ADMIN"],    group: "gestion" },
+  { icon: Weight,        label: "Pondérations",  href: "/dashboard/rh/weights",              roles: ["RH"],    group: "gestion" },
   // ADMIN
   { icon: Home,          label: "Accueil",       href: "/dashboard/admin",                   roles: ["ADMIN"],          group: "main"    },
   { icon: Users,         label: "Utilisateurs",  href: "/dashboard/admin/users",             roles: ["ADMIN"],          group: "admin"   },
   { icon: BookOpen,      label: "Cours",         href: "/dashboard/admin/courses",           roles: ["ADMIN"],          group: "admin"   },
   { icon: ClipboardList, label: "Affectations",  href: "/dashboard/admin/affectations",      roles: ["ADMIN"],          group: "admin"   },
+    { icon: Weight,        label: "Pondérations",  href: "/dashboard/admin/weights",         roles:["ADMIN"],    group: "gestion" },
 ];
 
 const HOME_ROUTES = ["/dashboard/admin", "/dashboard/rh", "/dashboard/professeur"];
