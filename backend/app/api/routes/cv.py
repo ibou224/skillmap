@@ -42,12 +42,18 @@ async def analyze_cv(
     content = await file.read()
 
     # Extraction du texte brut
-    text = extract_text(content, file.content_type)
+   # Extraction du texte brut
+    try:
+        text = extract_text(content, file.content_type)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
     if not text:
         raise HTTPException(
             status_code=422,
             detail="Impossible d'extraire le texte du fichier."
         )
+    
 
     # Extraction des données structurées via le LLM
     cv_data = await extract_cv_data(text)
