@@ -4,7 +4,7 @@
 # d'affectation classées par score décroissant.
 
 from fastapi import APIRouter, HTTPException, Header
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.services.matching import run_matching
 from app.core.config import settings
 
@@ -13,14 +13,14 @@ router = APIRouter()
 #  Schéma de la requête
 
 class RunAssignmentRequest(BaseModel):
-    session_id: str
+    session_id: str = Field(min_length=1, description="Identifiant de la session académique")
     professors: list
     courses: list
-    # Pondérations configurables par le RH (doivent sommer à 1.0)
-    skills_weight: float = 0.40
-    experience_weight: float = 0.25
-    education_weight: float = 0.20
-    history_weight: float = 0.15
+    # Pondérations configurables  entre 0 et 1, somme doit être égale à 1.0
+    skills_weight: float = Field(default=0.40, ge=0.0, le=1.0)
+    experience_weight: float = Field(default=0.25, ge=0.0, le=1.0)
+    education_weight: float = Field(default=0.20, ge=0.0, le=1.0)
+    history_weight: float = Field(default=0.15, ge=0.0, le=1.0)
 
 #  Endpoint principal 
 
@@ -37,25 +37,12 @@ async def calculate_assignments(
     if x_internal_api_key != settings.internal_api_key:
         raise HTTPException(status_code=401, detail="Clé API invalide")
 
-    # Validation session_id non vide
-    if not request.session_id or not request.session_id.strip():
-        raise HTTPException(
-            status_code=400,
-            detail="session_id ne peut pas être vide"
-        )
-
-    # Validation pondérations non négatives
     weights_list = [
         request.skills_weight,
         request.experience_weight,
         request.education_weight,
         request.history_weight
     ]
-    if any(w < 0 for w in weights_list):
-        raise HTTPException(
-            status_code=400,
-            detail="Les pondérations ne peuvent pas être négatives"
-        )
 
     # Validation que les pondérations somment à 1.0
     total = round(sum(weights_list), 2)
