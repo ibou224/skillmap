@@ -23,8 +23,8 @@ ALLOWED_TYPES = [
 async def analyze_cv(
     file: UploadFile = File(...),
     x_internal_api_key: str = Header(...),
-    professor_id: str = Header(None),
-    user_id: str = Header(None)
+    professor_id: str = Header(None, alias="professor-id"),
+    user_id: str = Header(None, alias="user-id")
 ):
     """
     Reçoit un CV (PDF ou Word), extrait le texte, appelle le LLM,

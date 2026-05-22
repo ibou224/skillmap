@@ -25,10 +25,10 @@ def save_cv_extraction(professor_id: str, file_name: str, file_path: str, raw_te
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute("""
-                INSERT INTO "CvExtraction" (id, "professorId", "fileName", "filePath", "rawText", status, "extractedAt", "createdAt")
-                VALUES (gen_random_uuid(), %s, %s, %s, %s, 'EXTRACTED', NOW(), NOW())
+                INSERT INTO "CvExtraction" (id, "professorId", "fileName", "filePath", status, "extractedAt", "createdAt")
+                VALUES (gen_random_uuid(), %s, %s, %s, 'EXTRACTED', NOW(), NOW())
                 RETURNING id
-            """, (professor_id, file_name, file_path, raw_text))
+            """, (professor_id, file_name, file_path))
             result = cur.fetchone()
             conn.commit()
             return str(result["id"])
