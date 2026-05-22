@@ -1,11 +1,12 @@
 # cv.py
 # Endpoint FastAPI pour l'upload et l'analyse automatique des CV.
-# Reçoit un fichier PDF ou Word, extrait le texte et appelle le LLM
-# pour retourner les données structurées.
+# Reçoit un fichier PDF ou Word, extrait le texte, appelle le LLM
+# et sauvegarde les données en base PostgreSQL.
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, Header
 from app.services.parser import extract_text
 from app.services.llm import extract_cv_data
+from app.services.database import save_cv_extraction, save_professor_skills
 from app.core.config import settings
 
 router = APIRouter()
@@ -21,11 +22,13 @@ ALLOWED_TYPES = [
 @router.post("/")
 async def analyze_cv(
     file: UploadFile = File(...),
-    x_internal_api_key: str = Header(...)
+    x_internal_api_key: str = Header(...),
+    professor_id: str = Header(None),
+    user_id: str = Header(None)
 ):
     """
-    Reçoit un CV (PDF ou Word), extrait le texte et retourne
-    les données structurées via le LLM.
+    Reçoit un CV (PDF ou Word), extrait le texte, appelle le LLM,
+    sauvegarde les données en base et retourne les données structurées.
     """
     # Vérification de la clé API interne
     if x_internal_api_key != settings.internal_api_key:
@@ -41,8 +44,7 @@ async def analyze_cv(
     # Lecture du contenu du fichier
     content = await file.read()
 
-    # Extraction du texte brut
-   # Extraction du texte brut
+    # Extraction du texte brut avec messages d'erreur précis
     try:
         text = extract_text(content, file.content_type)
     except ValueError as e:
@@ -53,12 +55,36 @@ async def analyze_cv(
             status_code=422,
             detail="Impossible d'extraire le texte du fichier."
         )
-    
 
     # Extraction des données structurées via le LLM
     cv_data = await extract_cv_data(text)
 
+    #  Sauvegarde en base si professor_id fourni 
+    extraction_id = None
+    if professor_id:
+        try:
+            # Sauvegarder l'extraction CV
+            extraction_id = save_cv_extraction(
+                professor_id=professor_id,
+                file_name=file.filename,
+                file_path=f"uploads/{file.filename}",
+                raw_text=text
+            )
+
+            # Sauvegarder les compétences extraites
+            if cv_data.get("skills"):
+                save_professor_skills(
+                    professor_id=professor_id,
+                    skills=cv_data["skills"]
+                )
+
+        except Exception as e:
+            # La sauvegarde BDD échoue mais on retourne quand même les données
+            print(f"Erreur sauvegarde BDD : {e}")
+
     return {
         "filename": file.filename,
-        "cv_data": cv_data
+        "extraction_id": extraction_id,
+        "cv_data": cv_data,
+        "saved": extraction_id is not None
     }
