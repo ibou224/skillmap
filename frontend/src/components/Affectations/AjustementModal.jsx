@@ -5,6 +5,7 @@ import { X, Check } from "lucide-react";
 import { cn } from "@/lib/utils_Affectation";
 import { MOCK_COURSES } from "@/lib/constants-Affectation";
 import { scoreBarColor, scoreTextColor } from "@/lib/utils_Affectation";
+import { useCourses } from "@/hooks/useCourses";
 
 // ── Mini barre de score (réutilisée dans le modal) ────────────────────────────
 function ScoreBar({ score }) {
@@ -40,7 +41,7 @@ function ScoreBar({ score }) {
  *   onSave: (id: string, updates: { cours, notes? }) => void
  * }} props
  */
-export default function AjustementModal({ isOpen, proposal, onClose, onSave }) {
+export default function AjustementModal({ isOpen, proposal, onClose, onSave,courses }) {
   const [selectedCoursId, setSelectedCoursId] = useState("");
   const [notes,           setNotes]           = useState("");
 
@@ -63,7 +64,7 @@ export default function AjustementModal({ isOpen, proposal, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const cours = MOCK_COURSES.find((c) => c.id === selectedCoursId);
+    const cours = courses.find((c) => c.id === selectedCoursId);
     if (!cours) return;
     // TODO: PATCH /api/assignments/:id { coursId: cours.id, notes }
     onSave(proposal.id, { cours, notes: notes.trim() || undefined });
@@ -150,7 +151,7 @@ export default function AjustementModal({ isOpen, proposal, onClose, onSave }) {
               className={inputCls}
             >
               <option value="">Sélectionner un cours…</option>
-              {MOCK_COURSES.map((c) => (
+              {courses.map((c) => (
                 <option key={c.id} value={c.id} disabled={c.id === proposal.cours.id}>
                   {c.nom} ({c.code}){c.id === proposal.cours.id ? " — actuel" : ""}
                 </option>

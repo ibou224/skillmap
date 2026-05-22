@@ -223,9 +223,9 @@ export const normalizeWeights = (weights) => {
     sessionWeights.set(sessionId, {
       sessionId,
       session: w.session.nom.toUpperCase(),
-      annee: w.session.annee,
-      periode: w.session.periode.toUpperCase(),
-      statut: w.session.statut.toUpperCase(),
+      annee: w.session.annee ?? null,
+      periode: w.session.periode?.toUpperCase() ?? null,
+      statut: w.session.statut?.toUpperCase() ?? null,
       competencesPct: w.competencesPct ?? 40,
       experiencePct: w.experiencePct ?? 25,
       formationPct: w.formationPct ?? 20,

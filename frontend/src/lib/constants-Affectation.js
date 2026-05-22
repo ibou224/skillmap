@@ -30,47 +30,47 @@ export const PONDERATIONS_DEFAUT = {
   historique:  { label: "Historique",  weight: 15, min: 0,  max: 30, icon: Clock        },
 };
 
-export const MOCK_PROGRAMS = [
-  { id: "p1", code: "PI",  nom: "Programmation informatique"                },
-  { id: "p2", code: "IAI", nom: "Intelligence artificielle et informatique" },
-  { id: "p3", code: "RS",  nom: "Réseaux et sécurité"                       },
-];
+// export const MOCK_PROGRAMS = [
+//   { id: "p1", code: "PI",  nom: "Programmation informatique"                },
+//   { id: "p2", code: "IAI", nom: "Intelligence artificielle et informatique" },
+//   { id: "p3", code: "RS",  nom: "Réseaux et sécurité"                       },
+// ];
 
-export const MOCK_COURSES = [
-  { id: "c1", code: "420-1A3", nom: "Programmation Web",     etape: 1, duree: 3 },
-  { id: "c2", code: "420-2B4", nom: "Base de données",       etape: 2, duree: 3 },
-  { id: "c3", code: "420-3C5", nom: "IA Appliquée",          etape: 3, duree: 4 },
-  { id: "c4", code: "420-4E7", nom: "Réseaux Informatiques", etape: 4, duree: 3 },
-  { id: "c5", code: "420-5F8", nom: "Sécurité Informatique", etape: 5, duree: 3 },
-];
+// export const MOCK_COURSES = [
+//   { id: "c1", code: "420-1A3", nom: "Programmation Web",     etape: 1, duree: 3 },
+//   { id: "c2", code: "420-2B4", nom: "Base de données",       etape: 2, duree: 3 },
+//   { id: "c3", code: "420-3C5", nom: "IA Appliquée",          etape: 3, duree: 4 },
+//   { id: "c4", code: "420-4E7", nom: "Réseaux Informatiques", etape: 4, duree: 3 },
+//   { id: "c5", code: "420-5F8", nom: "Sécurité Informatique", etape: 5, duree: 3 },
+// ];
 
-export const MOCK_PROFESSORS = [
-  {
-    id: "prof1", prenom: "Jean", nom: "Dupont",
-    email: "jean.dupont@cegep.qc.ca",
-    competences: ["JavaScript", "React", "Node.js"],
-    experience: 8, formation: "Maîtrise",
-    historique: ["420-1A3", "420-2B4"],
-  },
-  {
-    id: "prof2", prenom: "Marie", nom: "Curie",
-    email: "marie.curie@cegep.qc.ca",
-    competences: ["Python", "Machine Learning", "TensorFlow"],
-    experience: 12, formation: "Doctorat",
-    historique: ["420-3C5"],
-  },
-  {
-    id: "prof3", prenom: "Paul", nom: "Martin",
-    email: "paul.martin@cegep.qc.ca",
-    competences: ["Cisco", "Sécurité", "Linux"],
-    experience: 6, formation: "Baccalauréat",
-    historique: [],
-  },
-  {
-    id: "prof4", prenom: "Sophie", nom: "Lefebvre",
-    email: "sophie.lefebvre@cegep.qc.ca",
-    competences: ["SQL", "PostgreSQL", "MongoDB"],
-    experience: 5, formation: "Maîtrise",
-    historique: ["420-2B4"],
-  },
-];
+// export const MOCK_PROFESSORS = [
+//   {
+//     id: "prof1", prenom: "Jean", nom: "Dupont",
+//     email: "jean.dupont@cegep.qc.ca",
+//     competences: ["JavaScript", "React", "Node.js"],
+//     experience: 8, formation: "Maîtrise",
+//     historique: ["420-1A3", "420-2B4"],
+//   },
+//   {
+//     id: "prof2", prenom: "Marie", nom: "Curie",
+//     email: "marie.curie@cegep.qc.ca",
+//     competences: ["Python", "Machine Learning", "TensorFlow"],
+//     experience: 12, formation: "Doctorat",
+//     historique: ["420-3C5"],
+//   },
+//   {
+//     id: "prof3", prenom: "Paul", nom: "Martin",
+//     email: "paul.martin@cegep.qc.ca",
+//     competences: ["Cisco", "Sécurité", "Linux"],
+//     experience: 6, formation: "Baccalauréat",
+//     historique: [],
+//   },
+//   {
+//     id: "prof4", prenom: "Sophie", nom: "Lefebvre",
+//     email: "sophie.lefebvre@cegep.qc.ca",
+//     competences: ["SQL", "PostgreSQL", "MongoDB"],
+//     experience: 5, formation: "Maîtrise",
+//     historique: ["420-2B4"],
+//   },
+// ];

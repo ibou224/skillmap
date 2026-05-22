@@ -30,25 +30,10 @@ export async function PUT(request) {
       );
     }
 
-    const existingWeight = await prisma.weightsConfig.findUnique({
+    const weight = await prisma.weightsConfig.upsert({
       where: { sessionId },
-    });
-
-    if (!existingWeight) {
-      return NextResponse.json(
-        { success: false, message: "Pondération non trouvée." },
-        { status: 404 },
-      );
-    }
-
-    const weight = await prisma.weightsConfig.update({
-      where: { sessionId },
-      data: {
-        competencesPct,
-        experiencePct,
-        formationPct,
-        historiquePct,
-      },
+      create: { sessionId, competencesPct, experiencePct, formationPct, historiquePct },
+      update: { competencesPct, experiencePct, formationPct, historiquePct },
     });
 
     return NextResponse.json({

@@ -12,9 +12,11 @@ import { PONDERATIONS_DEFAUT } from "@/lib/constants-Affectation";
 import { useSessions } from "@/hooks/useSessions";
 import { useWeights } from "@/hooks/useWeight";
 import { useAffectations } from "@/hooks/useAffectations";
+import {useCourses} from "@/hooks/useCourses";
 
 export default function AffectationPage() {
   const { sessions, fetchSessions } = useSessions();
+  const { programmes, fetchProgrammes,courses } = useCourses();
   const {
     analyseAffectations,
     fetchAffectations,
@@ -44,6 +46,7 @@ export default function AffectationPage() {
   useEffect(() => {
     fetchSessions();
     fetchAffectations();
+    fetchProgrammes();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 2. Quand la session change → charger ses pondérations
@@ -200,6 +203,7 @@ export default function AffectationPage() {
         showWeights={showWeights}
         onToggleWeights={() => setShowWeights((v) => !v)}
         sessions={sessions}
+        programmes={programmes}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
@@ -235,6 +239,7 @@ export default function AffectationPage() {
         proposal={editProposal}
         onClose={() => setEditProposal(null)}
         onSave={handleSaveAdjustment}
+        courses={courses}
       />
 
       {toast && (

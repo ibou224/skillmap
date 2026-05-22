@@ -3,18 +3,20 @@
 import { useState, useEffect, useMemo } from "react";
 import { Scale, Save, RotateCcw, AlertTriangle, Info, CheckCircle } from "lucide-react";
 
-import { CRITERES, SESSIONS_MOCK } from "@/constants/constantes";
+import { CRITERES } from "@/constants/constantes";
 import { CritereCard } from "./component/CritereCard";
 import { TotalIndicator } from "./component/TotalIndicator";
 import { ScoreFormula } from "./component/ScoreFormula";
 import { useWeights } from "@/hooks/useWeight";
+import { useSessions } from "@/hooks/useSessions";
 
 const DEFAULT_WEIGHTS = { competencesPct: 40, experiencePct: 25, formationPct: 20, historiquePct: 15 };
 
 export default function WeightsConfigPage() {
-  const { weights: allWeights, fetchWeights, updateWeight } = useWeights();
+  const { weights: allWeights, fetchWeights, updateWeight, isLoading: weightsLoading, error: weightsError } = useWeights();
+  const { sessions, fetchSessions } = useSessions();
 
-  const [selectedSession, setSelectedSession] = useState(SESSIONS_MOCK[0].id);
+  const [selectedSession, setSelectedSession] = useState(null);
   const [draftWeights, setDraftWeights] = useState(null);
   const [editingField, setEditingField] = useState(null);
   const [tempWeights, setTempWeights] = useState(DEFAULT_WEIGHTS);
@@ -22,8 +24,17 @@ export default function WeightsConfigPage() {
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Charge les poids au montage
-  useEffect(() => { fetchWeights(); }, [fetchWeights]);
+  useEffect(() => {
+    fetchWeights();
+    fetchSessions();
+  }, [fetchWeights, fetchSessions]);
+
+  // Sélectionne automatiquement la première session une fois chargées
+  useEffect(() => {
+    if (!selectedSession && sessions.length > 0) {
+      setSelectedSession(sessions[0].id);
+    }
+  }, [sessions, selectedSession]);
 
   const baseWeights = useMemo(() => {
     const found = allWeights.find(w => w.sessionId === selectedSession);
@@ -36,7 +47,7 @@ export default function WeightsConfigPage() {
 
   const total = Object.values(weights).reduce((sum, val) => sum + val, 0);
   const isValid = total === 100;
-  const currentSession = SESSIONS_MOCK.find(s => s.id === selectedSession);
+  const currentSession = sessions.find(s => s.id === selectedSession);
 
   const startEdit = (field) => {
     setEditingField(field);
@@ -108,7 +119,7 @@ export default function WeightsConfigPage() {
           Session académique
         </label>
         <div className="flex gap-2 flex-wrap">
-          {SESSIONS_MOCK.map((session) => (
+          {sessions.map((session) => (
             <button
               key={session.id}
               onClick={() => changeSession(session.id)}
@@ -126,6 +137,16 @@ export default function WeightsConfigPage() {
           ))}
         </div>
       </div>
+
+      {/* ─── Erreur chargement poids ─── */}
+      {weightsError && (
+        <div className="flex items-center gap-2 px-4 py-3 bg-red-50 rounded-xl border border-red-100">
+          <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+          <p className="text-sm text-red-700">
+            Impossible de charger les pondérations : <strong>{weightsError}</strong>
+          </p>
+        </div>
+      )}
 
       {/* ─── Info session ─── */}
       {currentSession && (

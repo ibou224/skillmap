@@ -15,6 +15,7 @@ export const useWeights = () => {
             const data = await res.json();
             if (!data.success) throw new Error(data.message || "Erreur inconnue");
             setWeights(data.data);
+            return data.data;
         } catch (err) {
             setError(err.message || "Erreur inconnue");
         } finally {
@@ -32,9 +33,10 @@ export const useWeights = () => {
             formationPct: newWeights.formationPct,
             historiquePct: newWeights.historiquePct,
         };
-        if (!isValidateWeights(newConfiguration).valid) {
-            setError(isValidateWeights(newConfiguration).message);
-            return;
+        const validation = isValidateWeights(newConfiguration);
+        if (!validation.valid) {
+            setError(validation.message);
+            throw new Error(validation.message);
         }
         try {
             const res = await fetch("/api/weights/update", {

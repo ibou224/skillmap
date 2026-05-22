@@ -20,23 +20,23 @@ export const calcWeightedScore = (detail, weights) => {
 };
 
 // ── Génération des propositions mockées ─────────────────────────────────────
-export const generateProposals = (weights) =>
-  MOCK_COURSES.map((cours, idx) => {
-    const prof   = MOCK_PROFESSORS[idx % MOCK_PROFESSORS.length];
-    const skills = prof.competences.some((c) =>
-      cours.nom.toLowerCase().includes(c.toLowerCase())
-    ) ? 90 : 60;
-    const exp    = prof.experience >= 5 ? 85 : 50;
-    const edu    = prof.formation === "Doctorat" ? 95 : prof.formation === "Maîtrise" ? 85 : 70;
-    const hist   = prof.historique.includes(cours.code) ? 100 : 0;
-    const detail = { skills, experience: exp, education: edu, history: hist };
+// export const generateProposals = (weights,courses) =>
+//   courses.map((cours, idx) => {
+//     const prof   = MOCK_PROFESSORS[idx % MOCK_PROFESSORS.length];
+//     const skills = prof.competences.some((c) =>
+//       cours.nom.toLowerCase().includes(c.toLowerCase())
+//     ) ? 90 : 60;
+//     const exp    = prof.experience >= 5 ? 85 : 50;
+//     const edu    = prof.formation === "Doctorat" ? 95 : prof.formation === "Maîtrise" ? 85 : 70;
+//     const hist   = prof.historique.includes(cours.code) ? 100 : 0;
+//     const detail = { skills, experience: exp, education: edu, history: hist };
 
-    return {
-      id:          `prop-${idx + 1}`,
-      cours,
-      professeur:  prof,
-      score:       calcWeightedScore(detail, weights),
-      scoreDetail: detail,
-      statut:      idx === 3 ? "FINALISEE" : idx === 1 ? "AJUSTEE" : "PROPOSEE",
-    };
-  });
+//     return {
+//       id:          `prop-${idx + 1}`,
+//       cours,
+//       professeur:  prof,
+//       score:       calcWeightedScore(detail, weights),
+//       scoreDetail: detail,
+//       statut:      idx === 3 ? "FINALISEE" : idx === 1 ? "AJUSTEE" : "PROPOSEE",
+//     };
+//   });

@@ -3,16 +3,9 @@
 import { Layers, Settings, Play, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils_Affectation";
 import { PONDERATIONS_DEFAUT } from "@/lib/constants-Affectation";
-import {useCourses} from "@/hooks/useCourses";
-import {useSessions} from "@/hooks/useSessions";
+
 import { useEffect } from "react";
 
-
-/**
- * En-tête de la page affectations.
- * Contient : titre, sélecteurs session/programme, bouton lancer,
- * et panneau pondérations configurable (toggle).
- */
 export default function AffectationHeader({
   sessionId,
   programId,
@@ -24,17 +17,13 @@ export default function AffectationHeader({
   weights,
   onWeightChange,
   showWeights,
-  onToggleWeights
+  onToggleWeights,
+  sessions = [],
+  programmes = [],
 }) {
   const totalWeight  = Object.values(weights).reduce((s, w) => s + w.weight, 0);
   const weightsValid = totalWeight === 100;
-  const { programmes,fetchProgrammes } = useCourses();
-  const { sessions, fetchSessions } = useSessions();
-
-  useEffect(() => {
-    fetchProgrammes();
-    fetchSessions();
-  }, [fetchProgrammes, fetchSessions]);
+  
   return (
     <header className="relative overflow-hidden bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-8 sm:px-8">
       {/* Décor lumineux */}
