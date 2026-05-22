@@ -8,6 +8,7 @@ import re
 import httpx
 from openai import OpenAI
 from app.core.config import settings
+import asyncio
 
 #  Prompt d'extraction 
 
@@ -65,27 +66,40 @@ def _get_llm_client() -> OpenAI:
 #  Extraction principale 
 
 async def extract_cv_data(cv_text: str) -> dict:
-    # Appelle le LLM avec le texte du CV et retourne les données structurées
+    # Appelle le LLM dans un thread séparé pour ne pas bloquer FastAPI
     try:
-        client = _get_llm_client()
-        prompt = CV_EXTRACTION_PROMPT.replace("{cv_text}", cv_text)
-
-        response = client.chat.completions.create(
-            model=settings.llm_model,
-            messages=[
-                {"role": "system", "content": "You are a CV parsing expert. Return only valid JSON."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=settings.llm_temperature,
-            timeout=30
-        )
-
-        raw = response.choices[0].message.content
-        return json.loads(raw)
-
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(None, _call_llm, cv_text)
+        return result
     except Exception as e:
         print(f"LLM échoué ({e}), utilisation du fallback regex")
         return _fallback_extraction(cv_text)
+
+def _call_llm(cv_text: str) -> dict:
+    # Appel synchrone au LLM — exécuté dans un thread séparé
+    client = _get_llm_client()
+    prompt = CV_EXTRACTION_PROMPT.replace("{cv_text}", cv_text)
+
+    response = client.chat.completions.create(
+        model=settings.llm_model,
+        messages=[
+            {"role": "system", "content": "You are a CV parsing expert. Return only valid JSON."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=settings.llm_temperature,
+        timeout=30
+    )
+
+    raw = response.choices[0].message.content
+    # Nettoyer les balises markdown si présentes
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    raw = raw.strip()
+
+    return json.loads(raw)
 
 #  Fallback regex 
 
