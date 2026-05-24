@@ -95,6 +95,14 @@ export async function POST(request) {
         loginAttempts: 0,
       },
     });
+    
+    if(normalizedRole === "PROFESSEUR"){
+      await prisma.professor.create({
+        data:{
+          userId: newUser.id,
+        }
+      })
+    }
 
     const { passwordHash: _, ...userWithoutPassword } = newUser;
 

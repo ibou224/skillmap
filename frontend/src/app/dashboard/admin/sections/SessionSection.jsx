@@ -125,6 +125,8 @@ useEffect(() => {
       nom: formData.nom,
       dateDebut: formData.dateDebut || null,
       dateFin: formData.dateFin || null,
+      saison: formData.saison,
+      annee: formData.annee,
     };
 
     try {

@@ -53,7 +53,7 @@ export async function GET(request) {
     const [sessions, total] = await Promise.all([
       prisma.session.findMany({
         where,
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ dateDebut: "desc" }, { createdAt: "desc" }],
         include: {
           _count: { select: { assignments: true } },
         },
@@ -115,12 +115,22 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { nom, dateDebut, dateFin } = body;
+    const { nom, dateDebut, dateFin, saison, annee } = body;
+    console.log("Données reçues pour création de session:", body);
 
     // Validation : nom obligatoire
     if (!nom || typeof nom !== "string" || nom.trim() === "") {
       return NextResponse.json(
         { success: false, message: "Le nom de la session est obligatoire." },
+        { status: 400 },
+      );
+    }
+
+    // Validation : période (enum)
+    const PERIODES_VALIDES = ["AUTOMNE", "HIVER", "ETE"];
+    if (saison && !PERIODES_VALIDES.includes(saison.toUpperCase())) {
+      return NextResponse.json(
+        { success: false, message: `Période invalide. Valeurs acceptées : ${PERIODES_VALIDES.join(", ")}.` },
         { status: 400 },
       );
     }
@@ -166,6 +176,8 @@ export async function POST(request) {
     const session = await prisma.session.create({
       data: {
         nom: nom.trim(),
+        periode: saison ? saison.toUpperCase() : null,
+        annee: annee ? parseInt(annee, 10) : null,
         dateDebut: debutUTC,
         dateFin: finUTC,
       },
