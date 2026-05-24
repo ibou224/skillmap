@@ -42,10 +42,10 @@ export async function POST(request) {
     // Le backend n'accepte que 4 poids qui doivent sommer à 1.0
     const total = comp + exp + form + hist;
     const weights = {
-      competences_pct: comp / total,
-      experience_pct:  exp  / total,
-      formation_pct:   form / total,
-      historique_pct:  hist / total,
+      skills_weight:     comp / total,
+      experience_weight: exp  / total,
+      education_weight:  form / total,
+      history_weight:    hist / total,
     };
 
     // 2. Professeurs actifs avec tout leur profil

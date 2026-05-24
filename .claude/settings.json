@@ -5,7 +5,10 @@
       "Bash(node -e \"require\\('fs'\\).unlinkSync\\('_tmp_checksum.sql'\\)\")",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\" -Recurse -Force)",
       "Bash(Select-Object -First 50)",
-      "Bash(Format-Table FullName)"
+      "Bash(Format-Table FullName)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)"
     ]
   }
 }

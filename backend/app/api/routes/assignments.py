@@ -21,7 +21,7 @@ class RunAssignmentRequest(BaseModel):
     experience_pct: float = 0.40
     formation_pct: float = 0.00
 
-#  Endpoint principal 
+#  Endpoint principal
 
 @router.post("/run")
 async def calculate_assignments(

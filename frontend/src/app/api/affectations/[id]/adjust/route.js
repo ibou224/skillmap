@@ -17,7 +17,7 @@ export async function PATCH(request, { params }) {
     );
   }
 
-  const { coursId, notes } = body;
+  const { coursId } = body;
   if (!coursId) {
     return NextResponse.json(
       { success: false, message: "Le champ 'coursId' est requis." },
@@ -48,7 +48,6 @@ export async function PATCH(request, { params }) {
       where: { id },
       data: {
         courseId: coursId,
-        notes: notes || null,
         statut: "AJUSTEE",
       },
     });

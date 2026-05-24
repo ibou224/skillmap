@@ -76,7 +76,7 @@ model Experience {
   domaine     String
   dateDebut   DateTime
   dateFin     DateTime?
-  Entreprise   String
+  Entreprise  String
   description String?
   createdAt   DateTime  @default(now())
   professor   Professor @relation(fields: [professorId], references: [id])
@@ -146,7 +146,7 @@ model Course {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   assignments  Assignment[]
-  programs      Program []    
+  programs     Program[]
   courseSkills CourseSkill[]
 }
 

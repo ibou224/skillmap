@@ -30,7 +30,7 @@ export async function GET(request, { params }) {
     const session = await prisma.session.findUnique({
       where: { id },
       include: {
-        _count: { select: { groupes: true, affectations: true } },
+        _count: { select: { assignments: true } },
       },
     });
 
@@ -41,7 +41,12 @@ export async function GET(request, { params }) {
       );
     }
 
-    return NextResponse.json({ success: true, data: session }, { status: 200 });
+    const sessionMapped = {
+      ...session,
+      _count: { affectations: session._count.assignments, groupes: 0 },
+    };
+
+    return NextResponse.json({ success: true, data: sessionMapped }, { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/sessions/[id]:", error);
     return NextResponse.json(
