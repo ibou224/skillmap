@@ -82,7 +82,7 @@ export const initialCvData = {
   siteWeb: "",
   linkedin: "",
   resume: "",
-  competences: "",
+  competences: [],
   langues: "",
   experiences: [],
   formations: [],
@@ -145,6 +145,7 @@ export const SESSIONS_MOCK = [
 
 export const SAISONS = [
   { value: "Hiver", label: "Hiver" },
-  { value: "Été", label: "Été" },
+  { value: "Ete", label: "Été" },
   { value: "Automne", label: "Automne" },
+  { value: "Printemps", label: "Printemps" },
 ];

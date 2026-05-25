@@ -2,6 +2,25 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";
 
+/**
+ * Ajuste le cours associé à une affectation existante.
+ *
+ * Réservé aux RH et administrateurs. Remplace le cours de l'affectation et
+ * passe son statut à `AJUSTEE` pour indiquer qu'elle a été modifiée manuellement.
+ *
+ * @route PATCH /api/affectations/[id]/adjust
+ *
+ * @param {Request} request - La requête HTTP avec le corps JSON.
+ * @param {{ params: { id: string } }} context - L'identifiant de l'affectation dans l'URL.
+ *
+ * @body {string} coursId - Identifiant du nouveau cours à associer.
+ *
+ * @returns {200} L'affectation mise à jour.
+ * @returns {400} Corps invalide ou `coursId` manquant.
+ * @returns {401|403} Non connecté ou rôle insuffisant.
+ * @returns {404} Affectation ou cours introuvable.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function PATCH(request, { params }) {
   const { error } = await requireRole("RH", "ADMIN");
   if (error) return error;

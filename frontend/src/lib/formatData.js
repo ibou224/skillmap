@@ -78,7 +78,7 @@ export function buildStructuredData(fieldsArray) {
     linkedin: "",
     resume: "",
     competences: [],   
-    langues: [], 
+    langues: [],
     experiences: [],
     formations: [], 
   };
@@ -186,7 +186,7 @@ export const groupBySession = (courses) => {
 }
 
 export const normalizeInfosProfessor = (infos) => {
-  const { user, skills, experiences, formations, telephone, ville, siteWeb, linkedIn, resume } = infos;
+  const { user, skills, experiences, formations, telephone, ville, siteWeb, linkedIn, resume, langues, cvExtractions } = infos;
 
   return {
     prenom: user.prenom,
@@ -197,8 +197,8 @@ export const normalizeInfosProfessor = (infos) => {
     siteWeb: siteWeb || "",
     linkedin: linkedIn || "",
     resume: resume || "",
-    competences: skills.map((s) => s.skill.nom),
-    langues: [],
+    competences: skills.map((s) => ({ nom: s.skill.nom, niveau: s.niveau ?? "DEBUTANT" })),
+    langues: langues ?? [],
     experiences: experiences.map((e) => ({
       poste: e.poste,
       entreprise: e.Entreprise,
@@ -211,6 +211,7 @@ export const normalizeInfosProfessor = (infos) => {
       etablissement: f.etablissement,
       anneeObtention: String(f.anneeObtention),
     })),
+    cvStatut: cvExtractions?.[0]?.status ?? null,
   };
 }
 

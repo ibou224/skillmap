@@ -1,61 +1,36 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Search, RefreshCw, AlertCircle, BookOpen, Calendar, Layers, GraduationCap, CheckCircle2 } from "lucide-react";
 import { StatCell } from "@/components/ui/StatCell";
 import { SessionCard } from "../components/Affectation/SessionCard";
 import { useCvs } from "@/hooks/useProfessor";
 
 export default function AffectationSection() {
- const [sessions, setSessions] = useState([]);
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  //const { affectations: sessions, isLoadingAffectations: loading, affectationsError: error, fetchAffectations } = useCvs();
+  const { affectations, isLoadingAffectations: loading, affectationsError: error, fetchAffectations } = useCvs();
 
 
-  const fetchHistory = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+const sessions = Object.values(
+  (affectations ?? []).reduce((acc, aff) => {
+    const sid = aff.session.id;
+    if (!acc[sid]) acc[sid] = { ...aff.session, cours: [] };
+    acc[sid].cours.push({
+      code: aff.course.code,
+      nom: aff.course.nom,
+      programme: aff.course.programs?.[0]?.code ?? "—",
+      etape: aff.course.etape,
+      statut: aff.statut,
+    });
+    return acc;
+  }, {}),
+);
 
-    try {
-      await new Promise(r => setTimeout(r, 600));
-      setSessions([
-        {
-          id: "s1", nom: "A2026", annee: 2026, periode: "AUTOMNE", statut: "ACTIVE",
-          dateDebut: "2026-09-01", dateFin: "2026-12-18",
-          cours: [
-            { code: "420-1A3", nom: "Programmation Web", programme: "PI", etape: 1, statut: "FINALISEE" },
-            { code: "420-2B4", nom: "Base de données", programme: "PI", etape: 2, statut: "FINALISEE" },
-            { code: "420-3C5", nom: "IA Appliquée", programme: "IAI", etape: 3, statut: "AJUSTEE" },
-          ],
-        },
-        {
-          id: "s2", nom: "H2026", annee: 2026, periode: "HIVER", statut: "ARCHIVEE",
-          dateDebut: "2026-01-15", dateFin: "2026-04-30",
-          cours: [
-            { code: "420-1A3", nom: "Programmation Web", programme: "PI", etape: 1, statut: "FINALISEE" },
-            { code: "420-4E7", nom: "Réseaux Informatiques", programme: "PI", etape: 4, statut: "FINALISEE" },
-          ],
-        },
-        {
-          id: "s3", nom: "A2025", annee: 2025, periode: "AUTOMNE", statut: "ARCHIVEE",
-          dateDebut: "2025-09-01", dateFin: "2025-12-18",
-          cours: [
-            { code: "420-1A3", nom: "Programmation Web", programme: "PI", etape: 1, statut: "AJUSTEE" },
-            { code: "420-4E7", nom: "Réseaux Informatiques", programme: "PI", etape: 4, statut: "FINALISEE" },
-          ],
-        },
-      ]);
-    } catch (err) {
-      setError(err.message || "Erreur de chargement");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  useEffect(() => { fetchHistory(); }, [fetchHistory]);
+  useEffect(() => {
+    fetchAffectations();
+  }, [fetchAffectations]);
 
   const toggle = id => setExpanded(prev => prev === id ? null : id);
 
@@ -88,7 +63,7 @@ export default function AffectationSection() {
             </div>
             <h1 className="text-3xl font-bold text-white">Historique</h1>
             <p className="text-sm text-slate-400 mt-2 font-light">
-              Consultez l'ensemble de vos affectations par session
+              Consultez l&apos;ensemble de vos affectations par session
             </p>
           </div>
           
@@ -98,7 +73,7 @@ export default function AffectationSection() {
               {sessions.length} session{sessions.length > 1 ? "s" : ""}
             </span>
             <button
-              onClick={fetchHistory}
+              onClick={fetchAffectations}
               disabled={loading}
               className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white flex items-center justify-center transition-all backdrop-blur-sm disabled:opacity-50"
             >
@@ -130,16 +105,16 @@ export default function AffectationSection() {
       {loading && (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <RefreshCw className="w-6 h-6 text-emerald-500 animate-spin" />
-          <p className="text-sm text-slate-500 dark:text-slate-400">Chargement de l'historique...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Chargement de l&apos;historique...</p>
         </div>
       )}
 
       {error && !loading && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-8 text-center">
           <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-3" />
-          <p className="text-sm font-medium text-red-700 dark:text-red-400">{error}</p>
+          <p className="text-sm font-medium text-red-700 dark:text-red-400">{error?.message ?? "Erreur de chargement"}</p>
           <button
-            onClick={fetchHistory}
+            onClick={fetchAffectations}
             className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 rounded-xl text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900/60 transition-colors"
           >
             <RefreshCw className="w-4 h-4" /> Réessayer

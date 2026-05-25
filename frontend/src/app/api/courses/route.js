@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 
+/**
+ * Récupère la liste des cours ou des programmes selon le paramètre de requête.
+ *
+ * Si `?programs=true` est passé, retourne uniquement la liste des programmes
+ * (id, nom, code), triée alphabétiquement. Sinon, retourne tous les cours
+ * avec leurs compétences et leurs programmes associés.
+ *
+ * @route GET /api/courses
+ *
+ * @param {Request} request - La requête HTTP.
+ * @queryParam {string} [programs] - Passer `"true"` pour ne retourner que les programmes.
+ *
+ * @returns {200} Liste des cours (avec compétences et programmes) ou liste des programmes seuls.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);

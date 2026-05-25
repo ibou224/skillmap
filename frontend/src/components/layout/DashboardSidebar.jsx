@@ -5,7 +5,7 @@ import {
   Home, LogOut, ChevronLeft, ChevronRight,
   BookOpen, ClipboardList, FileText,
   BarChart3, Lightbulb, Users, CalendarRange, Weight,
-  Users2,
+  Users2, History,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,7 +25,8 @@ const NAV_ITEMS = [
   { icon: FileText,      label: "Mon CV",             href: "/dashboard/professeur/cv",           roles: ["PROFESSEUR"], group: "main"    },
   { icon: ClipboardList, label: "Mes Affectations",  href: "/dashboard/professeur/affectations", roles: ["PROFESSEUR"], group: "main"    },
   { icon: Lightbulb,     label: "Compétences",   href: "/dashboard/professeur/competences",  roles: ["PROFESSEUR"], group: "main"    },
-  { icon: Users2,     label: "Mon Profil",   href: "/dashboard/professeur/profil",         roles: ["PROFESSEUR"], group: "main"    },
+  { icon: Users2,     label: "Mon Profil",    href: "/dashboard/professeur/profil",         roles: ["PROFESSEUR"], group: "main"    },
+  { icon: History,    label: "Historique CV",  href: "/dashboard/professeur/historique",    roles: ["PROFESSEUR"], group: "main"    },
   // RH
   { icon: BarChart3,     label: "Accueil",       href: "/dashboard/rh",                      roles: ["RH"],             group: "main"    },
   { icon: FileText,      label: "CVs",           href: "/dashboard/rh/cvs",                  roles: ["RH"],             group: "main"    },

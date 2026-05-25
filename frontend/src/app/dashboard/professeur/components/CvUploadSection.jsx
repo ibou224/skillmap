@@ -10,6 +10,7 @@ import { ExperiencesEditor } from "./ExperiencesEditor";
 import { FormationsEditor } from "./FormationsEditor";
 import { StringArrayEditor } from "./StringArrayEditor";
 import PersonalInfos from "./PersonalInfos";
+import { SkillsEditor } from "./SkillsEditor";
 
 export default function CvUploadSection({ onValidated }) {
   const [uploadState, setUploadState] = useState("idle");
@@ -165,7 +166,7 @@ export default function CvUploadSection({ onValidated }) {
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
                 Compétences techniques
               </h3>
-              <StringArrayEditor
+              <SkillsEditor
                 items={cvData.competences}
                 onChange={(newComp) => setCvData(prev => ({ ...prev, competences: newComp }))}
                 placeholder="Ex : React, Node.js"

@@ -2,6 +2,22 @@ import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";
 
+/**
+ * Récupère le profil complet du professeur connecté.
+ *
+ * Réservé aux professeurs. Charge en une requête toutes les données liées :
+ * informations personnelles, compétences, expériences, formations et
+ * extractions de CV.
+ *
+ * @route GET /api/users
+ *
+ * @param {Request} request - La requête HTTP.
+ *
+ * @returns {200} Le profil complet du professeur connecté.
+ * @returns {401|403} Non connecté ou rôle insuffisant.
+ * @returns {404} Profil professeur introuvable.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function GET(request) {
   const { session, error } = await requireRole("PROFESSEUR");
   if (error) return error;

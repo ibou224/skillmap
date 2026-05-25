@@ -58,7 +58,8 @@ export type NiveauDiplome = (typeof NiveauDiplome)[keyof typeof NiveauDiplome]
 export const Periode = {
   AUTOMNE: 'AUTOMNE',
   HIVER: 'HIVER',
-  ETE: 'ETE'
+  ETE: 'ETE',
+  PRINTEMPS: 'PRINTEMPS'
 } as const
 
 export type Periode = (typeof Periode)[keyof typeof Periode]

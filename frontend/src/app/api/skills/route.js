@@ -2,6 +2,17 @@ import {NextResponse} from "next/server";
 import prisma from "@/lib/prisma.js";
 import {isValidString} from "@/lib/validation.js";
 
+/**
+ * Récupère la liste de toutes les compétences disponibles.
+ *
+ * Retourne uniquement l'identifiant et le nom de chaque compétence,
+ * triés alphabétiquement. Aucune restriction de rôle.
+ *
+ * @route GET /api/skills
+ *
+ * @returns {200} Liste des compétences `{ id, nom }[]`.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function GET(request) {
   try {
     const skills = await prisma.skill.findMany({

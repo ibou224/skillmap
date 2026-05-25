@@ -127,7 +127,7 @@ export async function POST(request) {
     }
 
     // Validation : période (enum)
-    const PERIODES_VALIDES = ["AUTOMNE", "HIVER", "ETE"];
+    const PERIODES_VALIDES = ["AUTOMNE", "HIVER", "ETE", "PRINTEMPS"];
     if (saison && !PERIODES_VALIDES.includes(saison.toUpperCase())) {
       return NextResponse.json(
         { success: false, message: `Période invalide. Valeurs acceptées : ${PERIODES_VALIDES.join(", ")}.` },
@@ -183,6 +183,16 @@ export async function POST(request) {
       },
       include: {
         _count: { select: { assignments: true } },
+      },
+    });
+
+    await prisma.weightsConfig.create({
+      data: {
+        sessionId: session.id,
+        competencesPct: 40,
+        experiencePct: 25,
+        formationPct: 20,
+        historiquePct: 15,
       },
     });
 

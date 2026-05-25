@@ -1,62 +1,29 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import {Edit3, FileText} from "lucide-react";
+import { useEffect } from "react";
+import { Edit3, FileText } from "lucide-react";
 import Link from "next/link";
-import CoordonneProfil  from "../components/CoordonneProfil";
+import CoordonneProfil from "../components/CoordonneProfil";
 import FormationList from "../components/FormationList";
 import ExperienceTimeline from "../components/ExperienceTimeline";
 import SkillsList from "../components/SkillsList";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 import SectionCard from "@/components/ui/SectionCard";
 import ProfileHeader from "../components/ProfileHeader";
+import { useCvs } from "@/hooks/useProfessor";
 
 
 export default function ProfilPage() {
-  const [cvData, setCvData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState(null);
-
-  const fetchCV = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/professeur/cv");
-      if (!res.ok) throw new Error("Impossible de charger le CV");
-      setCvData(await res.json());
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const {
+    infos: cvData,
+    isLoadingInfos: loading,
+    infosError: error,
+    fetchInfos,
+  } = useCvs();
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setCvData({
-        prenom: "Marie", 
-        nom: "Dupont",
-        email: "marie.dupont@cegep.qc.ca",
-        telephone: "613-555-0192",
-        ville: "Montréal, QC",
-        siteWeb: "https://mariedupont.dev",
-        linkedin: "https://linkedin.com/in/mariedupont",
-        resume: "Professeure d'informatique passionnée avec plus de 8 ans d'expérience en développement logiciel. Spécialisée en programmation Web et en intelligence artificielle.",
-        competences: ["React","Node.js","Python","SQL","Docker","Enseignement","Gestion de projet"],
-        langues: ["Français (natif)","Anglais (courant)","Espagnol (intermédiaire)"],
-        experiences: [
-          { poste:"Professeure en informatique", entreprise:"Cégep de Saint-Hyacinthe", debut:"2020-09", fin:"", description:"Enseignement des cours de programmation Web, base de données et IA. Développement de matériel pédagogique." },
-          { poste:"Développeuse fullstack", entreprise:"Solutions Web Inc.", debut:"2016-01", fin:"2020-08", description:"Conception et développement d'applications web pour des clients variés. Mise en place de pipelines CI/CD." },
-        ],
-        formations: [
-          { diplome:"Maîtrise en informatique", etablissement:"Université de Montréal", anneeObtention:"2015" },
-          { diplome:"Baccalauréat en génie logiciel", etablissement:"Université Laval", anneeObtention:"2012" },
-        ],
-      });
-      setLoading(false);
-    }, 500);
-    return () => clearTimeout(t);
-  }, []);
+    fetchInfos();
+  }, [fetchInfos]);
 
   if (loading) return <LoadingSkeleton />;
 
@@ -74,25 +41,23 @@ export default function ProfilPage() {
   return (
     <div className="space-y-5">
 
-    {/* ── EN-TÊTE ── */}
-        <ProfileHeader
+      {/* ── EN-TÊTE ── */}
+      <ProfileHeader
         prenom={cvData.prenom}
         nom={cvData.nom}
-        totalExp={cvData.experiences.length}
-        competencesCount={cvData.competences.length}
-        formationsCount={cvData.formations.length}
-        languesCount={cvData.langues.length}
-        onRefresh={fetchCV}
-        />
+        totalExp={cvData.experiences?.length ?? 0}
+        competencesCount={cvData.competences?.length ?? 0}
+        formationsCount={cvData.formations?.length ?? 0}
+        languesCount={cvData.langues?.length ?? 0}
+        onRefresh={fetchInfos}
+      />
 
       {/* ── GRILLE PRINCIPALE ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-        
+
         {/* ─ Colonne gauche ─ */}
         <div className="space-y-5">
-          {/* Avatar + coordonnées */}
-         <CoordonneProfil user={cvData} />
-          {/* Langues */}
+          <CoordonneProfil user={cvData} />
           <SectionCard title="Langues" dotColor="bg-blue-300">
             <SkillsList items={cvData.langues} variant="blue" emptyMessage="Aucune langue renseignée." />
           </SectionCard>
@@ -100,27 +65,23 @@ export default function ProfilPage() {
 
         {/* ─ Colonne droite ─ */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Résumé */}
           <SectionCard title="Résumé professionnel">
             <p className="text-[13.5px] text-slate-500 leading-relaxed font-light">
               {cvData.resume || "Aucun résumé renseigné."}
             </p>
           </SectionCard>
 
-          {/* Compétences */}
-            <SectionCard title="Compétences" dotColor="bg-blue-300">
-                <SkillsList items={cvData.competences} variant="green" emptyMessage="Aucune compétence renseignée." />
-            </SectionCard>
+          <SectionCard title="Compétences" dotColor="bg-blue-300">
+            <SkillsList items={cvData.competences} variant="green" emptyMessage="Aucune compétence renseignée." />
+          </SectionCard>
 
-          {/* Expériences */}
-            <SectionCard title="Expériences professionnelles">
-                <ExperienceTimeline experiences={cvData.experiences} />
-            </SectionCard>
+          <SectionCard title="Expériences professionnelles">
+            <ExperienceTimeline experiences={cvData.experiences} />
+          </SectionCard>
 
-          {/* Formations */}
-            <SectionCard title="Formations" dotColor="bg-amber-400">
-                <FormationList formations={cvData.formations} />
-            </SectionCard>
+          <SectionCard title="Formations" dotColor="bg-amber-400">
+            <FormationList formations={cvData.formations} />
+          </SectionCard>
         </div>
       </div>
     </div>

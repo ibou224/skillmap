@@ -1,8 +1,26 @@
-// app/api/affectations/[id]/route.js
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";
 
+/**
+ * Met à jour le statut d'une affectation.
+ *
+ * Réservé aux RH et administrateurs. Le statut doit être l'une des valeurs
+ * autorisées : `PROPOSEE`, `AJUSTEE` ou `FINALISEE`.
+ *
+ * @route PATCH /api/affectations/[id]
+ *
+ * @param {Request} request - La requête HTTP avec le corps JSON.
+ * @param {{ params: { id: string } }} context - L'identifiant de l'affectation dans l'URL.
+ *
+ * @body {"PROPOSEE"|"AJUSTEE"|"FINALISEE"} statut - Nouveau statut de l'affectation.
+ *
+ * @returns {200} L'affectation mise à jour.
+ * @returns {400} Corps invalide ou statut manquant/non autorisé.
+ * @returns {401|403} Non connecté ou rôle insuffisant.
+ * @returns {404} Affectation introuvable.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function PATCH(request, { params }) {
   const { error } = await requireRole("RH", "ADMIN");
   if (error) return error;

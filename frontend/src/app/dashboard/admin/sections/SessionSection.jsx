@@ -31,6 +31,7 @@ export default function SessionSection() {
     createSession,
     updateSession,
     deleteSession,
+    activateSession,
   } = useSessions();
 
   // ── ÉTATS UI ──
@@ -253,6 +254,11 @@ useEffect(() => {
             sessions={sessions}
             onEdit={openEdit}
             onDelete={(s) => setSessionToDelete(s)}
+            onActivate={async (s) => {
+              const result = await activateSession(s.id);
+              if (result.success) setSuccessMessage(`Session "${s.nom}" activée.`);
+              else setLocalError(result.message);
+            }}
           />
         )}
 

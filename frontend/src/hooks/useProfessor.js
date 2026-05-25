@@ -41,7 +41,7 @@ export function useCvs() {
     formData.append("file", file);
 
     try {
-      const response = await fetch(EXTRACT_API_URL, {
+      const response = await fetch("/api/extract-cv", {
         method: "POST",
         body: formData,
       });
@@ -95,7 +95,7 @@ export function useCvs() {
     setIsSaving(true);
     setInfosError(null);
     try {
-      const response = await fetch("/api/professor/me", {
+      const response = await fetch("/api/professor/cvs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

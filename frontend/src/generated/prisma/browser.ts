@@ -33,6 +33,11 @@ export type AuditLog = Prisma.AuditLogModel
  */
 export type Professor = Prisma.ProfessorModel
 /**
+ * Model CvSnapshot
+ * 
+ */
+export type CvSnapshot = Prisma.CvSnapshotModel
+/**
  * Model CvExtraction
  * 
  */

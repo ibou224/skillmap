@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   AuditLog: 'AuditLog',
   Professor: 'Professor',
+  CvSnapshot: 'CvSnapshot',
   CvExtraction: 'CvExtraction',
   Experience: 'Experience',
   Formation: 'Formation',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "auditLog" | "professor" | "cvExtraction" | "experience" | "formation" | "skill" | "professorSkill" | "departement" | "program" | "course" | "courseSkill" | "session" | "weightsConfig" | "assignment"
+    modelProps: "user" | "auditLog" | "professor" | "cvSnapshot" | "cvExtraction" | "experience" | "formation" | "skill" | "professorSkill" | "departement" | "program" | "course" | "courseSkill" | "session" | "weightsConfig" | "assignment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -637,6 +638,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProfessorCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProfessorCountAggregateOutputType> | number
+        }
+      }
+    }
+    CvSnapshot: {
+      payload: Prisma.$CvSnapshotPayload<ExtArgs>
+      fields: Prisma.CvSnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CvSnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CvSnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.CvSnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CvSnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.CvSnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.CvSnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.CvSnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CvSnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.CvSnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>
+        }
+        update: {
+          args: Prisma.CvSnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.CvSnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CvSnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CvSnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.CvSnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CvSnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.CvSnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCvSnapshot>
+        }
+        groupBy: {
+          args: Prisma.CvSnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CvSnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CvSnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CvSnapshotCountAggregateOutputType> | number
         }
       }
     }
@@ -1609,11 +1684,24 @@ export const ProfessorScalarFieldEnum = {
   siteWeb: 'siteWeb',
   linkedIn: 'linkedIn',
   resume: 'resume',
+  langues: 'langues',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProfessorScalarFieldEnum = (typeof ProfessorScalarFieldEnum)[keyof typeof ProfessorScalarFieldEnum]
+
+
+export const CvSnapshotScalarFieldEnum = {
+  id: 'id',
+  professorId: 'professorId',
+  version: 'version',
+  label: 'label',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type CvSnapshotScalarFieldEnum = (typeof CvSnapshotScalarFieldEnum)[keyof typeof CvSnapshotScalarFieldEnum]
 
 
 export const CvExtractionScalarFieldEnum = {
@@ -2126,6 +2214,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   auditLog?: Prisma.AuditLogOmit
   professor?: Prisma.ProfessorOmit
+  cvSnapshot?: Prisma.CvSnapshotOmit
   cvExtraction?: Prisma.CvExtractionOmit
   experience?: Prisma.ExperienceOmit
   formation?: Prisma.FormationOmit

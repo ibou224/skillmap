@@ -1,7 +1,6 @@
 'use client'
 
 import { signIn, signOut } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { isValidEmail } from '@/lib/validation'
 
@@ -26,7 +25,6 @@ import { isValidEmail } from '@/lib/validation'
  * }} Les utilitaires d'authentification.
  */
 export function useLogin() {
-  const router = useRouter()
   const [error, setError]     = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -66,12 +64,12 @@ export function useLogin() {
 
     setIsLoading(false)
     if (result?.error) {
-      setError(result.message)
+      setError(result.code || 'Identifiants incorrects. Veuillez réessayer.')
       setTimeout(() => setError(''), 3000)
       return
     }
 
-    router.push('/')
+    window.location.assign('/dashboard')
   }
 
   /**

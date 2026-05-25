@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   AuditLog: 'AuditLog',
   Professor: 'Professor',
+  CvSnapshot: 'CvSnapshot',
   CvExtraction: 'CvExtraction',
   Experience: 'Experience',
   Formation: 'Formation',
@@ -126,11 +127,24 @@ export const ProfessorScalarFieldEnum = {
   siteWeb: 'siteWeb',
   linkedIn: 'linkedIn',
   resume: 'resume',
+  langues: 'langues',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProfessorScalarFieldEnum = (typeof ProfessorScalarFieldEnum)[keyof typeof ProfessorScalarFieldEnum]
+
+
+export const CvSnapshotScalarFieldEnum = {
+  id: 'id',
+  professorId: 'professorId',
+  version: 'version',
+  label: 'label',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type CvSnapshotScalarFieldEnum = (typeof CvSnapshotScalarFieldEnum)[keyof typeof CvSnapshotScalarFieldEnum]
 
 
 export const CvExtractionScalarFieldEnum = {

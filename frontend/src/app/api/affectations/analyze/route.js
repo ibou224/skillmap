@@ -5,7 +5,30 @@ import { requireRole } from "@/lib/permission.js";
 const BACKEND_URL    = process.env.BACKEND_URL    ?? "http://localhost:8000";
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY ?? "";
 
-// ── Route POST /api/affectations/analyze ─────────────────────────────────────
+/**
+ * Lance l'analyse automatique des affectations via le backend FastAPI.
+ *
+ * Réservé aux RH et administrateurs. Le processus est le suivant :
+ * 1. Récupère les pondérations configurées pour la session (ou les valeurs par défaut).
+ * 2. Charge les professeurs actifs et les cours non archivés (filtrés par programme si fourni).
+ * 3. Envoie les données au backend FastAPI qui calcule les meilleures correspondances.
+ * 4. Conserve uniquement la meilleure proposition par cours.
+ * 5. Remplace les affectations existantes de la session en base de données.
+ * 6. Retourne les propositions enrichies (nom du professeur, détail du cours, score).
+ *
+ * @route POST /api/affectations/analyze
+ *
+ * @param {Request} request - La requête HTTP avec le corps JSON.
+ *
+ * @body {string}  sessionId          - Identifiant de la session pour laquelle générer les affectations.
+ * @body {string}  [programId]        - Filtre optionnel : restreint les cours à un programme donné.
+ *
+ * @returns {200} Liste des propositions d'affectation générées et sauvegardées.
+ * @returns {400} Corps de requête invalide ou `sessionId` manquant.
+ * @returns {401|403} Non connecté ou rôle insuffisant.
+ * @returns {404} Aucun professeur actif ou aucun cours actif trouvé.
+ * @returns {500} Erreur interne ou erreur retournée par le backend FastAPI.
+ */
 export async function POST(request) {
   const { error } = await requireRole("RH", "ADMIN");
   if (error) return error;
@@ -222,6 +245,13 @@ export async function POST(request) {
 
 // ── Utilitaires ───────────────────────────────────────────────────────────────
 
+/**
+ * Calcule le nombre total d'années d'expérience à partir d'une liste d'expériences.
+ * Les expériences sans date de fin sont considérées comme en cours (jusqu'à aujourd'hui).
+ *
+ * @param {Array<{ dateDebut: string, dateFin?: string }>} experiences
+ * @returns {number} Nombre d'années (peut être décimal).
+ */
 function calcYearsExperience(experiences) {
   const now = Date.now();
   return experiences.reduce((total, exp) => {
@@ -231,6 +261,13 @@ function calcYearsExperience(experiences) {
   }, 0);
 }
 
+/**
+ * Retourne le diplôme le plus élevé parmi une liste de formations.
+ * L'ordre est : DOCTORATE > MASTERS > BACHELORS > DEC > OTHER.
+ *
+ * @param {Array<{ niveauDiplome: string }>} formations
+ * @returns {string|null} Le niveau du meilleur diplôme, ou `null` si vide.
+ */
 function getBestDiploma(formations) {
   if (!formations.length) return null;
   const order = ["DOCTORATE", "MASTERS", "BACHELORS", "DEC", "OTHER"];

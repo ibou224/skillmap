@@ -38,7 +38,12 @@ The JSON must follow this exact schema:
       "description": "string or null"
     }
   ],
-  "skills": ["string"],
+  "skills": [
+    {
+      "nom": "string",
+      "niveau": "one of: DEBUTANT, INTERMEDIAIRE, AVANCE"
+    }
+  ],
   "languages": ["string"],
   "totalYearsExperience": "number or null"
 }

@@ -46,14 +46,26 @@ model Professor {
   siteWeb       String?
   linkedIn      String?
   resume        String?
+  langues       String[]
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   assignments   Assignment[]
   cvExtractions CvExtraction[]
   experiences   Experience[]
   formations    Formation[]
+  snapshots     CvSnapshot[]
   user          User             @relation(fields: [userId], references: [id])
   skills        ProfessorSkill[]
+}
+
+model CvSnapshot {
+  id          String    @id @default(uuid())
+  professorId String
+  version     Int
+  label       String
+  data        Json
+  createdAt   DateTime  @default(now())
+  professor   Professor @relation(fields: [professorId], references: [id])
 }
 
 model CvExtraction {
@@ -237,6 +249,7 @@ enum Periode {
   AUTOMNE
   HIVER
   ETE
+  PRINTEMPS
 }
 
 enum SessionStatut {

@@ -1,35 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import PersonalInfos from "./PersonalInfos";
 import { ExperiencesEditor } from "./ExperiencesEditor";
 import { FormationsEditor } from "./FormationsEditor";
 import { StringArrayEditor } from "./StringArrayEditor";
+import { SkillsEditor } from "./SkillsEditor";
 
-export default function CvManualSection({ onSave }) {
+export default function CvManualSection({ onSave, initialData = null }) {
   const [manualForm, setManualForm] = useState({
-    prenom: "",
-    nom: "",
-    email: "",
-    telephone: "",
-    ville: "",
-    siteWeb: "",
-    linkedin: "",
-    resume: "",
-    competences: [],
-    langues: [],
+    prenom:     initialData?.prenom     ?? "",
+    nom:        initialData?.nom        ?? "",
+    email:      initialData?.email      ?? "",
+    telephone:  initialData?.telephone  ?? "",
+    ville:      initialData?.ville      ?? "",
+    siteWeb:    initialData?.siteWeb    ?? "",
+    linkedin:   initialData?.linkedin   ?? "",
+    resume:     initialData?.resume     ?? "",
+    competences: initialData?.competences ?? [],
+    langues:    initialData?.langues    ?? [],
   });
 
-  const [experiences, setExperiences] = useState([
-    { id: 1, poste: "", entreprise: "", debut: "", fin: "", description: "" },
-  ]);
+  const [experiences, setExperiences] = useState(
+    initialData?.experiences?.length
+      ? initialData.experiences.map((e, i) => ({ id: i + 1, ...e }))
+      : [{ id: 1, poste: "", entreprise: "", debut: "", fin: "", description: "" }]
+  );
 
-  const [formations, setFormations] = useState([
-    { id: 1, diplome: "", etablissement: "", anneeObtention: "" },
-  ]);
+  const [formations, setFormations] = useState(
+    initialData?.formations?.length
+      ? initialData.formations.map((f, i) => ({ id: i + 1, ...f }))
+      : [{ id: 1, diplome: "", etablissement: "", anneeObtention: "" }]
+  );
 
   const [saved, setSaved] = useState(false);
+
+  // Synchronise les champs si initialData arrive après le premier rendu (chargement async)
+  useEffect(() => {
+    if (!initialData) return;
+    setManualForm({
+      prenom:      initialData.prenom     ?? "",
+      nom:         initialData.nom        ?? "",
+      email:       initialData.email      ?? "",
+      telephone:   initialData.telephone  ?? "",
+      ville:       initialData.ville      ?? "",
+      siteWeb:     initialData.siteWeb    ?? "",
+      linkedin:    initialData.linkedin   ?? "",
+      resume:      initialData.resume     ?? "",
+      competences: initialData.competences ?? [],
+      langues:     initialData.langues    ?? [],
+    });
+    setExperiences(
+      initialData.experiences?.length
+        ? initialData.experiences.map((e, i) => ({ id: i + 1, ...e }))
+        : [{ id: 1, poste: "", entreprise: "", debut: "", fin: "", description: "" }]
+    );
+    setFormations(
+      initialData.formations?.length
+        ? initialData.formations.map((f, i) => ({ id: i + 1, ...f }))
+        : [{ id: 1, diplome: "", etablissement: "", anneeObtention: "" }]
+    );
+  }, [initialData]);
 
   const handleSubmit = () => {
     // Combine les données en un seul objet structuré, comme pour le téléversement
@@ -63,7 +95,7 @@ export default function CvManualSection({ onSave }) {
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1 block">
               Compétences techniques
             </label>
-            <StringArrayEditor
+            <SkillsEditor
               items={manualForm.competences}
               onChange={(newComp) =>
                 setManualForm((prev) => ({ ...prev, competences: newComp }))

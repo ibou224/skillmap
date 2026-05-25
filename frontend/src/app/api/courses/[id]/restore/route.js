@@ -1,7 +1,21 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 
-// ── POST /api/courses/[id]/restore ────────────────────────────────────────────
+/**
+ * Restaure un cours précédemment archivé.
+ *
+ * Passe le champ `isArchived` à `false`. Aucune vérification de rôle
+ * n'est appliquée sur cette route.
+ *
+ * @route POST /api/courses/[id]/restore
+ *
+ * @param {Request} _ - La requête HTTP (non utilisée).
+ * @param {{ params: { id: string } }} context - L'identifiant du cours dans l'URL.
+ *
+ * @returns {200} Le cours restauré avec ses programmes.
+ * @returns {404} Cours introuvable.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function POST(_, { params }) {
   const { id } = await params;
   try {

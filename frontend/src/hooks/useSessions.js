@@ -243,6 +243,25 @@ export function useSessions() {
     }
   }, []);
 
+  const activateSession = useCallback(async (id) => {
+    if (!id) return { success: false, message: "ID manquant." };
+    try {
+      const response = await fetch(`/api/sessions/${id}/activate`, { method: "PUT" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Erreur lors de l'activation.");
+      setSessions((prev) =>
+        prev.map((s) => {
+          if (s.id === id)    return { ...s, statut: "ACTIVE" };
+          if (s.statut === "ACTIVE") return { ...s, statut: "ARCHIVEE" };
+          return s;
+        })
+      );
+      return { success: true, data: result.data };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  }, []);
+
   return {
     sessions,
     pagination,
@@ -252,6 +271,7 @@ export function useSessions() {
     createSession,
     updateSession,
     deleteSession,
+    activateSession,
     setSessions,
     setError,
   };

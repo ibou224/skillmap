@@ -23,7 +23,7 @@ export default function SkillsList({
     <div className="flex flex-wrap gap-2">
       {items.map((item, i) => (
         <Badge key={i} variant={variant}>
-          {item}
+          {typeof item === "string" ? item : item.nom}
         </Badge>
       ))}
     </div>

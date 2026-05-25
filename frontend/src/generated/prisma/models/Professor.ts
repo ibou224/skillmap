@@ -56,6 +56,7 @@ export type ProfessorCountAggregateOutputType = {
   siteWeb: number
   linkedIn: number
   resume: number
+  langues: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -94,6 +95,7 @@ export type ProfessorCountAggregateInputType = {
   siteWeb?: true
   linkedIn?: true
   resume?: true
+  langues?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +181,7 @@ export type ProfessorGroupByOutputType = {
   siteWeb: string | null
   linkedIn: string | null
   resume: string | null
+  langues: string[]
   createdAt: Date
   updatedAt: Date
   _count: ProfessorCountAggregateOutputType | null
@@ -212,12 +215,14 @@ export type ProfessorWhereInput = {
   siteWeb?: Prisma.StringNullableFilter<"Professor"> | string | null
   linkedIn?: Prisma.StringNullableFilter<"Professor"> | string | null
   resume?: Prisma.StringNullableFilter<"Professor"> | string | null
+  langues?: Prisma.StringNullableListFilter<"Professor">
   createdAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   assignments?: Prisma.AssignmentListRelationFilter
   cvExtractions?: Prisma.CvExtractionListRelationFilter
   experiences?: Prisma.ExperienceListRelationFilter
   formations?: Prisma.FormationListRelationFilter
+  snapshots?: Prisma.CvSnapshotListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   skills?: Prisma.ProfessorSkillListRelationFilter
 }
@@ -230,12 +235,14 @@ export type ProfessorOrderByWithRelationInput = {
   siteWeb?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedIn?: Prisma.SortOrderInput | Prisma.SortOrder
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
+  langues?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
   cvExtractions?: Prisma.CvExtractionOrderByRelationAggregateInput
   experiences?: Prisma.ExperienceOrderByRelationAggregateInput
   formations?: Prisma.FormationOrderByRelationAggregateInput
+  snapshots?: Prisma.CvSnapshotOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   skills?: Prisma.ProfessorSkillOrderByRelationAggregateInput
 }
@@ -251,12 +258,14 @@ export type ProfessorWhereUniqueInput = Prisma.AtLeast<{
   siteWeb?: Prisma.StringNullableFilter<"Professor"> | string | null
   linkedIn?: Prisma.StringNullableFilter<"Professor"> | string | null
   resume?: Prisma.StringNullableFilter<"Professor"> | string | null
+  langues?: Prisma.StringNullableListFilter<"Professor">
   createdAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
   assignments?: Prisma.AssignmentListRelationFilter
   cvExtractions?: Prisma.CvExtractionListRelationFilter
   experiences?: Prisma.ExperienceListRelationFilter
   formations?: Prisma.FormationListRelationFilter
+  snapshots?: Prisma.CvSnapshotListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   skills?: Prisma.ProfessorSkillListRelationFilter
 }, "id" | "userId">
@@ -269,6 +278,7 @@ export type ProfessorOrderByWithAggregationInput = {
   siteWeb?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedIn?: Prisma.SortOrderInput | Prisma.SortOrder
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
+  langues?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProfessorCountOrderByAggregateInput
@@ -287,6 +297,7 @@ export type ProfessorScalarWhereWithAggregatesInput = {
   siteWeb?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   linkedIn?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   resume?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  langues?: Prisma.StringNullableListFilter<"Professor">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Professor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Professor"> | Date | string
 }
@@ -298,12 +309,14 @@ export type ProfessorCreateInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   user: Prisma.UserCreateNestedOneWithoutProfessorInput
   skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
 }
@@ -316,12 +329,14 @@ export type ProfessorUncheckedCreateInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
 }
 
@@ -332,12 +347,14 @@ export type ProfessorUpdateInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
 }
@@ -350,12 +367,14 @@ export type ProfessorUncheckedUpdateInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUncheckedUpdateManyWithoutProfessorNestedInput
 }
 
@@ -367,6 +386,7 @@ export type ProfessorCreateManyInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -378,6 +398,7 @@ export type ProfessorUpdateManyMutationInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -390,6 +411,7 @@ export type ProfessorUncheckedUpdateManyInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -397,6 +419,14 @@ export type ProfessorUncheckedUpdateManyInput = {
 export type ProfessorNullableScalarRelationFilter = {
   is?: Prisma.ProfessorWhereInput | null
   isNot?: Prisma.ProfessorWhereInput | null
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type ProfessorCountOrderByAggregateInput = {
@@ -407,6 +437,7 @@ export type ProfessorCountOrderByAggregateInput = {
   siteWeb?: Prisma.SortOrder
   linkedIn?: Prisma.SortOrder
   resume?: Prisma.SortOrder
+  langues?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -470,6 +501,29 @@ export type ProfessorUncheckedUpdateOneWithoutUserNestedInput = {
   delete?: Prisma.ProfessorWhereInput | boolean
   connect?: Prisma.ProfessorWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfessorUpdateToOneWithWhereWithoutUserInput, Prisma.ProfessorUpdateWithoutUserInput>, Prisma.ProfessorUncheckedUpdateWithoutUserInput>
+}
+
+export type ProfessorCreatelanguesInput = {
+  set: string[]
+}
+
+export type ProfessorUpdatelanguesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ProfessorCreateNestedOneWithoutSnapshotsInput = {
+  create?: Prisma.XOR<Prisma.ProfessorCreateWithoutSnapshotsInput, Prisma.ProfessorUncheckedCreateWithoutSnapshotsInput>
+  connectOrCreate?: Prisma.ProfessorCreateOrConnectWithoutSnapshotsInput
+  connect?: Prisma.ProfessorWhereUniqueInput
+}
+
+export type ProfessorUpdateOneRequiredWithoutSnapshotsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfessorCreateWithoutSnapshotsInput, Prisma.ProfessorUncheckedCreateWithoutSnapshotsInput>
+  connectOrCreate?: Prisma.ProfessorCreateOrConnectWithoutSnapshotsInput
+  upsert?: Prisma.ProfessorUpsertWithoutSnapshotsInput
+  connect?: Prisma.ProfessorWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfessorUpdateToOneWithWhereWithoutSnapshotsInput, Prisma.ProfessorUpdateWithoutSnapshotsInput>, Prisma.ProfessorUncheckedUpdateWithoutSnapshotsInput>
 }
 
 export type ProfessorCreateNestedOneWithoutCvExtractionsInput = {
@@ -549,12 +603,14 @@ export type ProfessorCreateWithoutUserInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
 }
 
@@ -565,12 +621,14 @@ export type ProfessorUncheckedCreateWithoutUserInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
 }
 
@@ -597,12 +655,14 @@ export type ProfessorUpdateWithoutUserInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
 }
 
@@ -613,6 +673,96 @@ export type ProfessorUncheckedUpdateWithoutUserInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
+  cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfessorNestedInput
+  formations?: Prisma.FormationUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
+  skills?: Prisma.ProfessorSkillUncheckedUpdateManyWithoutProfessorNestedInput
+}
+
+export type ProfessorCreateWithoutSnapshotsInput = {
+  id?: string
+  telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
+  cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
+  formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  user: Prisma.UserCreateNestedOneWithoutProfessorInput
+  skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
+}
+
+export type ProfessorUncheckedCreateWithoutSnapshotsInput = {
+  id?: string
+  userId: string
+  telephone?: string | null
+  ville?: string | null
+  siteWeb?: string | null
+  linkedIn?: string | null
+  resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
+  cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
+  formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
+}
+
+export type ProfessorCreateOrConnectWithoutSnapshotsInput = {
+  where: Prisma.ProfessorWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfessorCreateWithoutSnapshotsInput, Prisma.ProfessorUncheckedCreateWithoutSnapshotsInput>
+}
+
+export type ProfessorUpsertWithoutSnapshotsInput = {
+  update: Prisma.XOR<Prisma.ProfessorUpdateWithoutSnapshotsInput, Prisma.ProfessorUncheckedUpdateWithoutSnapshotsInput>
+  create: Prisma.XOR<Prisma.ProfessorCreateWithoutSnapshotsInput, Prisma.ProfessorUncheckedCreateWithoutSnapshotsInput>
+  where?: Prisma.ProfessorWhereInput
+}
+
+export type ProfessorUpdateToOneWithWhereWithoutSnapshotsInput = {
+  where?: Prisma.ProfessorWhereInput
+  data: Prisma.XOR<Prisma.ProfessorUpdateWithoutSnapshotsInput, Prisma.ProfessorUncheckedUpdateWithoutSnapshotsInput>
+}
+
+export type ProfessorUpdateWithoutSnapshotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
+  cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
+  formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
+  skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
+}
+
+export type ProfessorUncheckedUpdateWithoutSnapshotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
@@ -629,11 +779,13 @@ export type ProfessorCreateWithoutCvExtractionsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   user: Prisma.UserCreateNestedOneWithoutProfessorInput
   skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
 }
@@ -646,11 +798,13 @@ export type ProfessorUncheckedCreateWithoutCvExtractionsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
 }
 
@@ -677,11 +831,13 @@ export type ProfessorUpdateWithoutCvExtractionsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
 }
@@ -694,11 +850,13 @@ export type ProfessorUncheckedUpdateWithoutCvExtractionsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUncheckedUpdateManyWithoutProfessorNestedInput
 }
 
@@ -709,11 +867,13 @@ export type ProfessorCreateWithoutExperiencesInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   user: Prisma.UserCreateNestedOneWithoutProfessorInput
   skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
 }
@@ -726,11 +886,13 @@ export type ProfessorUncheckedCreateWithoutExperiencesInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
 }
 
@@ -757,11 +919,13 @@ export type ProfessorUpdateWithoutExperiencesInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
 }
@@ -774,11 +938,13 @@ export type ProfessorUncheckedUpdateWithoutExperiencesInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUncheckedUpdateManyWithoutProfessorNestedInput
 }
 
@@ -789,11 +955,13 @@ export type ProfessorCreateWithoutFormationsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   user: Prisma.UserCreateNestedOneWithoutProfessorInput
   skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
 }
@@ -806,11 +974,13 @@ export type ProfessorUncheckedCreateWithoutFormationsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
 }
 
@@ -837,11 +1007,13 @@ export type ProfessorUpdateWithoutFormationsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
 }
@@ -854,11 +1026,13 @@ export type ProfessorUncheckedUpdateWithoutFormationsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUncheckedUpdateManyWithoutProfessorNestedInput
 }
 
@@ -869,12 +1043,14 @@ export type ProfessorCreateWithoutSkillsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   user: Prisma.UserCreateNestedOneWithoutProfessorInput
 }
 
@@ -886,12 +1062,14 @@ export type ProfessorUncheckedCreateWithoutSkillsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutProfessorInput
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
 }
 
 export type ProfessorCreateOrConnectWithoutSkillsInput = {
@@ -917,12 +1095,14 @@ export type ProfessorUpdateWithoutSkillsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
 }
 
@@ -934,12 +1114,14 @@ export type ProfessorUncheckedUpdateWithoutSkillsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutProfessorNestedInput
   cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
 }
 
 export type ProfessorCreateWithoutAssignmentsInput = {
@@ -949,11 +1131,13 @@ export type ProfessorCreateWithoutAssignmentsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   cvExtractions?: Prisma.CvExtractionCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotCreateNestedManyWithoutProfessorInput
   user: Prisma.UserCreateNestedOneWithoutProfessorInput
   skills?: Prisma.ProfessorSkillCreateNestedManyWithoutProfessorInput
 }
@@ -966,11 +1150,13 @@ export type ProfessorUncheckedCreateWithoutAssignmentsInput = {
   siteWeb?: string | null
   linkedIn?: string | null
   resume?: string | null
+  langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   cvExtractions?: Prisma.CvExtractionUncheckedCreateNestedManyWithoutProfessorInput
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfessorInput
   formations?: Prisma.FormationUncheckedCreateNestedManyWithoutProfessorInput
+  snapshots?: Prisma.CvSnapshotUncheckedCreateNestedManyWithoutProfessorInput
   skills?: Prisma.ProfessorSkillUncheckedCreateNestedManyWithoutProfessorInput
 }
 
@@ -997,11 +1183,13 @@ export type ProfessorUpdateWithoutAssignmentsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cvExtractions?: Prisma.CvExtractionUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUpdateManyWithoutProfessorNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUpdateManyWithoutProfessorNestedInput
 }
@@ -1014,11 +1202,13 @@ export type ProfessorUncheckedUpdateWithoutAssignmentsInput = {
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cvExtractions?: Prisma.CvExtractionUncheckedUpdateManyWithoutProfessorNestedInput
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfessorNestedInput
   formations?: Prisma.FormationUncheckedUpdateManyWithoutProfessorNestedInput
+  snapshots?: Prisma.CvSnapshotUncheckedUpdateManyWithoutProfessorNestedInput
   skills?: Prisma.ProfessorSkillUncheckedUpdateManyWithoutProfessorNestedInput
 }
 
@@ -1032,6 +1222,7 @@ export type ProfessorCountOutputType = {
   cvExtractions: number
   experiences: number
   formations: number
+  snapshots: number
   skills: number
 }
 
@@ -1040,6 +1231,7 @@ export type ProfessorCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   cvExtractions?: boolean | ProfessorCountOutputTypeCountCvExtractionsArgs
   experiences?: boolean | ProfessorCountOutputTypeCountExperiencesArgs
   formations?: boolean | ProfessorCountOutputTypeCountFormationsArgs
+  snapshots?: boolean | ProfessorCountOutputTypeCountSnapshotsArgs
   skills?: boolean | ProfessorCountOutputTypeCountSkillsArgs
 }
 
@@ -1084,6 +1276,13 @@ export type ProfessorCountOutputTypeCountFormationsArgs<ExtArgs extends runtime.
 /**
  * ProfessorCountOutputType without action
  */
+export type ProfessorCountOutputTypeCountSnapshotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CvSnapshotWhereInput
+}
+
+/**
+ * ProfessorCountOutputType without action
+ */
 export type ProfessorCountOutputTypeCountSkillsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ProfessorSkillWhereInput
 }
@@ -1097,12 +1296,14 @@ export type ProfessorSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   siteWeb?: boolean
   linkedIn?: boolean
   resume?: boolean
+  langues?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   assignments?: boolean | Prisma.Professor$assignmentsArgs<ExtArgs>
   cvExtractions?: boolean | Prisma.Professor$cvExtractionsArgs<ExtArgs>
   experiences?: boolean | Prisma.Professor$experiencesArgs<ExtArgs>
   formations?: boolean | Prisma.Professor$formationsArgs<ExtArgs>
+  snapshots?: boolean | Prisma.Professor$snapshotsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   skills?: boolean | Prisma.Professor$skillsArgs<ExtArgs>
   _count?: boolean | Prisma.ProfessorCountOutputTypeDefaultArgs<ExtArgs>
@@ -1116,6 +1317,7 @@ export type ProfessorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   siteWeb?: boolean
   linkedIn?: boolean
   resume?: boolean
+  langues?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1129,6 +1331,7 @@ export type ProfessorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   siteWeb?: boolean
   linkedIn?: boolean
   resume?: boolean
+  langues?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1142,16 +1345,18 @@ export type ProfessorSelectScalar = {
   siteWeb?: boolean
   linkedIn?: boolean
   resume?: boolean
+  langues?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "telephone" | "ville" | "siteWeb" | "linkedIn" | "resume" | "createdAt" | "updatedAt", ExtArgs["result"]["professor"]>
+export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "telephone" | "ville" | "siteWeb" | "linkedIn" | "resume" | "langues" | "createdAt" | "updatedAt", ExtArgs["result"]["professor"]>
 export type ProfessorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Professor$assignmentsArgs<ExtArgs>
   cvExtractions?: boolean | Prisma.Professor$cvExtractionsArgs<ExtArgs>
   experiences?: boolean | Prisma.Professor$experiencesArgs<ExtArgs>
   formations?: boolean | Prisma.Professor$formationsArgs<ExtArgs>
+  snapshots?: boolean | Prisma.Professor$snapshotsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   skills?: boolean | Prisma.Professor$skillsArgs<ExtArgs>
   _count?: boolean | Prisma.ProfessorCountOutputTypeDefaultArgs<ExtArgs>
@@ -1170,6 +1375,7 @@ export type $ProfessorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     cvExtractions: Prisma.$CvExtractionPayload<ExtArgs>[]
     experiences: Prisma.$ExperiencePayload<ExtArgs>[]
     formations: Prisma.$FormationPayload<ExtArgs>[]
+    snapshots: Prisma.$CvSnapshotPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
     skills: Prisma.$ProfessorSkillPayload<ExtArgs>[]
   }
@@ -1181,6 +1387,7 @@ export type $ProfessorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     siteWeb: string | null
     linkedIn: string | null
     resume: string | null
+    langues: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["professor"]>
@@ -1581,6 +1788,7 @@ export interface Prisma__ProfessorClient<T, Null = never, ExtArgs extends runtim
   cvExtractions<T extends Prisma.Professor$cvExtractionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Professor$cvExtractionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CvExtractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   experiences<T extends Prisma.Professor$experiencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Professor$experiencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   formations<T extends Prisma.Professor$formationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Professor$formationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FormationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  snapshots<T extends Prisma.Professor$snapshotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Professor$snapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CvSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   skills<T extends Prisma.Professor$skillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Professor$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfessorSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1619,6 +1827,7 @@ export interface ProfessorFieldRefs {
   readonly siteWeb: Prisma.FieldRef<"Professor", 'String'>
   readonly linkedIn: Prisma.FieldRef<"Professor", 'String'>
   readonly resume: Prisma.FieldRef<"Professor", 'String'>
+  readonly langues: Prisma.FieldRef<"Professor", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Professor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Professor", 'DateTime'>
 }
@@ -2115,6 +2324,30 @@ export type Professor$formationsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.FormationScalarFieldEnum | Prisma.FormationScalarFieldEnum[]
+}
+
+/**
+ * Professor.snapshots
+ */
+export type Professor$snapshotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CvSnapshot
+   */
+  select?: Prisma.CvSnapshotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CvSnapshot
+   */
+  omit?: Prisma.CvSnapshotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CvSnapshotInclude<ExtArgs> | null
+  where?: Prisma.CvSnapshotWhereInput
+  orderBy?: Prisma.CvSnapshotOrderByWithRelationInput | Prisma.CvSnapshotOrderByWithRelationInput[]
+  cursor?: Prisma.CvSnapshotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CvSnapshotScalarFieldEnum | Prisma.CvSnapshotScalarFieldEnum[]
 }
 
 /**

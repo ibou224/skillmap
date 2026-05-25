@@ -2,7 +2,30 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 import { isValidString } from '@/lib/validation';
 
-// ── PUT /api/courses/[id] ─────────────────────────────────────────────────────
+/**
+ * Modifie un cours existant.
+ *
+ * Met à jour le nom, le code, l'étape, les programmes associés et les compétences
+ * requises. Si `courseSkills` est fourni, les compétences existantes sont entièrement
+ * remplacées (delete + recreate). Aucune vérification de rôle n'est appliquée.
+ *
+ * @route PUT /api/courses/[id]
+ *
+ * @param {Request} request - La requête HTTP avec le corps JSON.
+ * @param {{ params: { id: string } }} context - L'identifiant du cours dans l'URL.
+ *
+ * @body {string}   nom          - Nouveau nom du cours (sans caractères spéciaux).
+ * @body {string}   [code]       - Code du cours. Doit être unique si différent de l'actuel.
+ * @body {number}   etape        - Étape du cours, entier entre 1 et 6.
+ * @body {string[]} [programIds] - Liste des identifiants de programmes à associer.
+ * @body {Array}    [courseSkills] - Liste des compétences requises (remplace l'existant).
+ *
+ * @returns {200} Le cours mis à jour avec ses programmes.
+ * @returns {400} Nom invalide ou étape hors plage.
+ * @returns {404} Cours introuvable.
+ * @returns {409} Le code est déjà utilisé par un autre cours (P2002).
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function PUT(request, { params }) {
   const { id } = await params;
   try {
@@ -75,7 +98,22 @@ export async function PUT(request, { params }) {
   }
 }
 
-// ── DELETE /api/courses/[id] — archivage logique ──────────────────────────────
+/**
+ * Archive logiquement un cours (suppression douce).
+ *
+ * Passe le champ `isArchived` à `true`. Le cours reste en base de données
+ * et peut être restauré via POST /api/courses/[id]/restore.
+ * Aucune vérification de rôle n'est appliquée.
+ *
+ * @route DELETE /api/courses/[id]
+ *
+ * @param {Request} _ - La requête HTTP (non utilisée).
+ * @param {{ params: { id: string } }} context - L'identifiant du cours dans l'URL.
+ *
+ * @returns {200} Le cours archivé.
+ * @returns {404} Cours introuvable.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function DELETE(_, { params }) {
   const { id } = await params;
   try {

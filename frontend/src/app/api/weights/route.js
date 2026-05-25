@@ -3,6 +3,21 @@ import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";
 import {normalizeWeights} from "@/lib/formatData";
 
+/**
+ * Récupère toutes les configurations de pondération avec les informations de session.
+ *
+ * Réservé aux administrateurs et RH. Les résultats sont triés par date de début
+ * de session décroissante (session la plus récente en premier) et normalisés
+ * via `normalizeWeights` avant d'être retournés.
+ *
+ * @route GET /api/weights
+ *
+ * @param {Request} request - La requête HTTP.
+ *
+ * @returns {200} Liste des configurations de pondération avec leurs sessions.
+ * @returns {401|403} Non connecté ou rôle insuffisant.
+ * @returns {500} Erreur interne du serveur.
+ */
 export async function GET(request) {
   const { session, error } = await requireRole("ADMIN", "RH");
   if (error) return error;

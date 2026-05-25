@@ -6,9 +6,15 @@
 "use client";
 
 import React from "react";
-import { Pencil, Trash2,CalendarX } from "lucide-react";
+import { Pencil, Trash2, CalendarX, Zap } from "lucide-react";
 import { useCallback } from "react";
 import { Button } from "../ui/Button";
+
+const STATUT_STYLE = {
+  ACTIVE:    { bg: "bg-emerald-50", text: "text-emerald-700", label: "Active" },
+  PLANIFIEE: { bg: "bg-amber-50",   text: "text-amber-700",   label: "Planifiée" },
+  ARCHIVEE:  { bg: "bg-slate-100",  text: "text-slate-500",   label: "Archivée" },
+};
 
 /**
  * Affiche les sessions dans un tableau avec leurs compteurs.
@@ -19,7 +25,7 @@ import { Button } from "../ui/Button";
  * @param {Function} props.onDelete - Supprime une session.
  * @returns {JSX.Element} Tableau des sessions.
  */
-export default function SessionTable({ sessions = [], onEdit, onDelete }) {
+export default function SessionTable({ sessions = [], onEdit, onDelete, onActivate }) {
   const formatDate = useCallback((dateStr) => {
     if (!dateStr) return "—";
     return new Date(dateStr).toLocaleDateString("fr-CA", {
@@ -59,7 +65,7 @@ export default function SessionTable({ sessions = [], onEdit, onDelete }) {
           <tbody className="divide-y divide-slate-50">
             {sessions.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-5 py-10 text-center text-slate-400">
+                <td colSpan={7} className="px-5 py-10 text-center text-slate-400">
                   <div className="flex flex-col items-center gap-3 text-slate-400">
                     <CalendarX className="mx-auto mb-2 w-8 h-8" />
                     <p className="text-sm">Aucune session disponible</p>

@@ -11,6 +11,7 @@
 export type * from './models/User'
 export type * from './models/AuditLog'
 export type * from './models/Professor'
+export type * from './models/CvSnapshot'
 export type * from './models/CvExtraction'
 export type * from './models/Experience'
 export type * from './models/Formation'

@@ -1,21 +1,61 @@
 // pages/cv.jsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CvUploadSection from "../components/CvUploadSection";
 import CvManualSection from "../components/CvManualSection";
+import {useCvs} from "@/hooks/useProfessor";
+
 
 export default function CvPage() {
   const [activeTab, setActiveTab] = useState("upload");
+  const { saveInfos, isSaving, infos, fetchInfos } = useCvs();
 
-  const handleUploadValidated = (editValues) => {
-    // TODO: POST vers /api/cv/validate avec editValues
-    console.log("Upload validated", editValues);
-  };
+  useEffect(() => { fetchInfos(); }, [fetchInfos]);
 
-  const handleManualSave = (data) => {
-    // TODO: POST vers /api/cv/manual avec data (manualForm, experiences, formations)
-    console.log("Manual saved", data);
-  };
+
+ const handleUploadValidated = async (cvData) => {
+   await saveInfos({
+     profile: {
+       telephone: cvData.telephone,
+       ville: cvData.ville,
+       siteWeb: cvData.siteWeb,
+       linkedin: cvData.linkedin,
+       resume: cvData.resume,
+     },
+     experiences: cvData.experiences,
+     formations: cvData.formations,
+     competences: (cvData.competences ?? []).map((comp) => ({
+       nom:comp.nom,
+       categorie: "autre",
+       niveau: comp.niveau ?? "DEBUTANT",
+       anneesExp: 0,
+       source: "EXTRACTION_IA",
+     })),
+   });
+ };
+
+const handleManualSave = async (cvData) => {
+  await saveInfos({
+    profile: {
+      telephone: cvData.telephone,
+      ville: cvData.ville,
+      siteWeb: cvData.siteWeb,
+      linkedin: cvData.linkedin,
+      resume: cvData.resume,
+      langues: cvData.langues ?? [],
+    },
+    experiences: cvData.experiences,
+    formations: cvData.formations,
+    competences: (cvData.competences ?? []).map((comp) => ({
+      nom: comp.nom,
+      categorie: "autre",
+      niveau: comp.niveau ?? "DEBUTANT",
+      anneesExp: 0,
+      source: "SAISIE_MANUELLE",
+    })),
+  });
+};
+
 
   return (
     <div className="space-y-6">
@@ -43,7 +83,7 @@ export default function CvPage() {
 
       {/* Contenu */}
       {activeTab === "upload" && <CvUploadSection onValidated={handleUploadValidated} />}
-      {activeTab === "manual" && <CvManualSection onSave={handleManualSave} />}
+      {activeTab === "manual" && <CvManualSection onSave={handleManualSave} initialData={infos} />}
     </div>
   );
 }

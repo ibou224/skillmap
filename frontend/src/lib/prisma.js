@@ -10,9 +10,7 @@ const globalForPrisma = globalThis
 // Si la connexion n'existe pas encore, on la crée
 if (!globalForPrisma.prisma) {
   // On configure la connexion à la base de données PostgreSQL
-  const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
-  })
+  const adapter = new PrismaPg(process.env.DATABASE_URL)
 
   globalForPrisma.prisma = new PrismaClient({
     adapter,
