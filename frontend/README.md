@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SkillMap — Frontend
 
-## Getting Started
+Application de gestion des affectations d'enseignants, construite avec Next.js 16 App Router.
 
-First, run the development server:
+## Stack technique
+
+| Couche          | Technologie                       |
+| --------------- | --------------------------------- |
+| Framework       | Next.js 16.2 (App Router)         |
+| Authentification| NextAuth v5 (beta)                |
+| Base de données | PostgreSQL 16 + Prisma 7          |
+| Styles          | Tailwind CSS v4                   |
+| Backend IA      | FastAPI (service interne Docker)  |
+| Tests           | Vitest                            |
+
+## Prérequis
+
+- Node.js 20+
+- Docker + Docker Compose (pour PostgreSQL et FastAPI)
+- Fichier `.env.local` configuré (voir `.env.example`)
+
+## Démarrage
+
+### Avec Docker (recommandé)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Depuis la racine du projet (dossier parent de frontend/)
+docker compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Services lancés :
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- `http://localhost:3000` — Next.js
+- `http://localhost:8000` — FastAPI (algorithme d'affectation)
+- `http://localhost:5432` — PostgreSQL
+- `http://localhost:5050` — pgAdmin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### En local (développement)
 
-## Learn More
+```bash
+# Installer les dépendances
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Appliquer le schéma Prisma
+npx prisma migrate dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Lancer le serveur de développement
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+L'application est disponible sur [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## Scripts disponibles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run dev     # Serveur de développement avec hot-reload
+npm run build   # Build de production
+npm run start   # Démarrer le build de production
+npm run lint    # Linter ESLint
+npm run test    # Tests Vitest
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Variables d'environnement
+
+Créer un fichier `.env.local` à la racine de `frontend/` :
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/skillmap
+NEXTAUTH_SECRET=your-secret-here
+NEXTAUTH_URL=http://localhost:3000
+FASTAPI_INTERNAL_URL=http://localhost:8000
+INTERNAL_API_KEY=your-api-key-here
+```
+
+## Architecture
+
+```text
+src/
+├── app/              # Routes Next.js (App Router) — pages et API routes
+│   ├── api/          # Routes API (auth, affectations, weights, history…)
+│   └── dashboard/    # Pages dashboard (admin, rh, professeur)
+├── features/         # Sections métier (une par page, usage unique)
+├── components/       # Composants UI réutilisables
+│   ├── ui/           # Composants génériques (boutons, modales…)
+│   ├── layout/       # Sidebar, Header
+│   └── professeur/   # Composants spécifiques au rôle professeur
+├── hooks/            # Hooks React (fetch, état)
+├── lib/              # Utilitaires (prisma, auth, permissions, formatData)
+└── constants/        # Constantes partagées (statuts, CRUD options)
+```
+
+## Rôles utilisateur
+
+| Rôle          | Accès                                                          |
+| ------------- | -------------------------------------------------------------- |
+| `PROFESSEUR`  | Son profil, CV, compétences, affectations                      |
+| `RH`          | CVs professeurs, affectations, pondérations, historique        |
+| `ADMIN`       | Tout + gestion utilisateurs, cours, sessions, compétences, logs|

@@ -172,6 +172,33 @@ function formatDate(date) {
 }
 
 /**
+ * Normalise les affectations depuis le format aplati (flattenAssignments)
+ * Regroupe par session — compatible avec la sortie de /api/affectations
+ * @param {Array} flatAssignments - Affectations aplaties (clés: sessionId, sessionNom, cours, professeur)
+ * @returns {Array} Sessions normalisées avec leurs cours
+ */
+export function normalizeAssignmentsProf(assignment) {
+  const sessionsMap = new Map();
+
+  assignment.forEach((aff) => {
+    const { sessionId, sessionNom, sessionStatut, statut, score, cours } = aff;
+    if (!sessionsMap.has(sessionId)) {
+      sessionsMap.set(sessionId, { id: sessionId, nom: sessionNom, statut: sessionStatut, cours: [] });
+    }
+    sessionsMap.get(sessionId).cours.push({
+      code:       cours.code,
+      nom:        cours.nom,
+      programme:  cours.programmes?.[0]?.code ?? "—",
+      etape:      cours.etape,
+      statut,
+      score,
+    });
+  });
+
+  return Array.from(sessionsMap.values());
+}
+
+/**
  * Groupe les cours par session
  */
 export const groupBySession = (courses) => {

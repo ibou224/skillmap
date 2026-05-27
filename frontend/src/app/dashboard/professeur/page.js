@@ -1,4 +1,4 @@
-import HomeSection from "./sections/HomeSection";
+import HomeSection from "@/features/professeur/HomeSection";
 
 export default function ProfesseurDashboard() {
   return (

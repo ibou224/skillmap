@@ -1,90 +1,71 @@
-# SkillMap — Tâches restantes
+# SkillMap - Taches restantes
 
-> Dernière analyse : 2026-05-25
-
----
-
-## 🔴 CRITIQUE — Bloquant
-
-### 1. Page Pondérations RH manquante
-- [ ] Créer `/dashboard/rh/weights/page.jsx` (réutiliser la section ADMIN)
-- [ ] Corriger le lien sidebar RH : `/dashboard/rh/weights` (déjà dans sidebar, page manquante)
-- [ ] Vérifier que `/api/weights` et `/api/weights/update` sont accessibles au rôle RH
-
-### 2. RH — Accès aux affectations
-- [ ] Créer `/dashboard/rh/affectations/page.jsx`
-- [ ] Créer une section `RhAffectationSection.jsx` (vue lecture + actions RH)
-- [ ] Ajouter l'entrée dans la sidebar RH (`group: "gestion"`)
-- [ ] Vérifier que `/api/affectations` autorise le rôle RH (`requireRole`)
+> Derniere analyse : 2026-05-26
+> Estimation MVP : ~88-90% selon le cahier de conception.
 
 ---
 
-## 🟠 FONCTIONNALITÉS MAJEURES
+## Critique - Bloquant
 
-### 3. Programmes — ADMIN (section vide)
-- [ ] Implémenter `programsSection.jsx` (actuellement 0 lignes)
-- [ ] Créer l'UI : tableau liste programmes + bouton Ajouter + modale Créer/Modifier
-- [ ] Créer `POST /api/programs` — créer un programme
-- [ ] Créer `PUT /api/programs/[id]` — modifier un programme
-- [ ] Créer `DELETE /api/programs/[id]` — supprimer/archiver un programme
-- [ ] Relier les cours à leur programme dans la vue Admin Cours
+### 2. Mauvaise variable d'environnement pour FastAPI
 
-### 4. Logs d'audit — ADMIN (section vide)
-- [ ] Implémenter `logsSection.jsx` (actuellement 0 lignes)
-- [ ] Créer `GET /api/admin/logs` — lister les entrées `AuditLog` avec pagination
-- [ ] UI : tableau avec colonnes action / utilisateur / date / détails
-- [ ] Ajouter filtres : par rôle, par type d'action, par date
+- [ ] Dans `frontend/src/app/api/affectations/analyze/route.js`, le code utilise `BACKEND_URL` alors que Docker injecte `FASTAPI_INTERNAL_URL`.
+- [ ] Remplacer `BACKEND_URL` par `FASTAPI_INTERNAL_URL` (ou harmoniser les deux dans `.env` et `docker-compose.yml`).
+- [ ] Verifier que l'endpoint appele est bien `/calculate-assignments/` (FastAPI) et non `/calculate-assignments/run`.
+- [ ] Ajouter une gestion d'erreur claire si FastAPI est indisponible.
 
-### 5. Paramètres IA — persistance
-- [ ] Créer `PUT /api/admin/settings` — sauvegarder config LLM (model, temperature, score_min)
-- [ ] Créer `GET /api/admin/settings` — charger la config actuelle
-- [ ] Brancher le bouton "Enregistrer" dans `settingsSection.jsx` sur cette API
-- [ ] Stocker la config en DB (nouveau modèle `AppSettings` ou table clé-valeur)
+### 3. FastAPI expose publiquement
 
-### 6. Catalogue de compétences — CRUD ADMIN
-- [ ] Créer `POST /api/skills` — ajouter une compétence au catalogue
-- [ ] Créer `PUT /api/skills/[id]` — modifier une compétence
-- [ ] Créer `DELETE /api/skills/[id]` — supprimer une compétence
-- [ ] Créer une UI dans le dashboard Admin pour gérer le catalogue
-  - Tableau des compétences existantes
-  - Formulaire d'ajout / modale de modification
+- [ ] Dans `docker-compose.yml`, changer `"8000:8000"` en `"127.0.0.1:8000:8000"` pour bloquer l'acces externe.
+- [ ] Verifier que `INTERNAL_API_KEY` est obligatoire sur toutes les routes FastAPI sensibles.
 
 ---
 
-## 🟡 AMÉLIORATIONS IMPORTANTES
+## Fonctionnalites majeures
 
-### 7. Profil professeur — édition indépendante
-- [ ] Créer `PUT /api/professor/profile` — modifier uniquement téléphone / ville / linkedin / siteWeb sans toucher au CV
-- [ ] Mettre à jour `ProfilSection.jsx` pour utiliser cette API au lieu du endpoint CV complet
+### 4. Page Ponderations RH manquante
 
-### 8. Nommage endpoint cours
-- [ ] Renommer `/api/courses/Add/route.js` → `/api/courses/route.js` (méthode POST)
-- [ ] Mettre à jour `useCourses.js` pour appeler `POST /api/courses` au lieu de `/api/courses/Add`
+- [ ] Creer `frontend/src/app/dashboard/rh/weights/page.jsx`.
+- [ ] Reutiliser `features/weights/WeightsConfigPage` (deja utilise par l'admin, les permissions API autorisent deja RH).
+- [ ] Verifier que le lien sidebar RH `/dashboard/rh/weights` fonctionne apres creation.
 
-### 9. Page upload CV redondante
-- [ ] Vérifier si `/dashboard/professeur/cv/upload/page.jsx` est encore utilisée
-- [ ] Si non, supprimer la page et retirer le lien éventuel
+### 5. Programmes - CRUD incomplet
 
----
-
-## 🔵 NICE TO HAVE (hors scope MVP)
-
-- [ ] Export CV en PDF
-- [ ] Photo de profil professeur
-- [ ] Notifications (email ou in-app) lors d'une affectation validée
-- [ ] Validation côté client des URLs (linkedin, siteWeb) et du téléphone
-- [ ] Pagination sur la liste des cours et des utilisateurs
-- [ ] Tests automatisés (API routes + composants critiques)
+- [ ] Implementer `frontend/src/features/admin/programsSection.jsx` (fichier vide).
+- [ ] Creer l'UI : tableau, recherche, creation, modification, suppression.
+- [ ] Ajouter `POST /api/programs` pour creer un programme (route actuelle = GET uniquement).
+- [ ] Ajouter `PUT /api/programs/[id]` et `DELETE /api/programs/[id]`.
+- [ ] Ajouter validation serveur : code unique, nom requis, etapes valide.
+- [ ] Ajouter logs d'audit sur CREATE/UPDATE/DELETE programme.
 
 ---
 
-## ✅ Déjà implémenté
+## Securite et conformite
 
-- [x] Auth NextAuth (login / logout / session)
-- [x] Dashboard Professeur : accueil, Mon CV (upload + manuel), affectations, compétences, profil, historique CV
-- [x] Versioning CV (CvSnapshot, restore, UI HistoriqueCvSection)
-- [x] Dashboard Admin : utilisateurs CRUD, cours CRUD + restore, sessions CRUD + activation, affectations, pondérations
-- [x] Dashboard RH : stats accueil, liste CVs + validation
-- [x] Backend FastAPI : extract-cv, calculate-assignments
-- [x] Algorithme de matching et affectation automatique
-- [x] Pondérations configurables par session
+### 8. CSRF, cookies et production
+
+- [ ] Verifier la configuration NextAuth en production : cookies Secure, HttpOnly, SameSite.
+- [ ] Verifier l'expiration d'inactivite demandee par le cahier.
+- [ ] Verifier que les secrets obligatoires sont absents du repo et documentes dans `.env.example`.
+
+### 12. Tests automatises
+
+- [ ] Ajouter tests unitaires pour l'algorithme de matching/scoring.
+- [ ] Ajouter tests e2e : login -> upload CV -> validation -> lancement affectations -> finalisation.
+
+### 14. UX et finition
+
+- [ ] Ajouter etats vides utiles sur les sections encore manquantes (programmes).
+- [ ] Ajouter confirmations avant suppressions et actions irreversibles (programmes, utilisateurs).
+- [ ] Verifier responsive mobile/tablette sur les dashboards.
+
+---
+
+## Nice to have - Hors MVP
+
+- [ ] Notifications email ou in-app lors d'une affectation finalisee.
+- [ ] Photo de profil professeur.
+- [ ] Export Excel en plus du CSV/PDF.
+- [ ] Tableau de bord analytique plus avance pour RH/Admin.
+- [ ] Pagination serveur sur les grandes listes.
+- [ ] Validation client avancee : telephone, LinkedIn, site web.

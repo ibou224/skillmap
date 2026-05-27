@@ -1,49 +1,18 @@
 "use client";
 
 import {signOut } from "next-auth/react";
-import {
-  Home, LogOut, ChevronLeft, ChevronRight,
-  BookOpen, ClipboardList, FileText,
-  BarChart3, Lightbulb, Users, CalendarRange, Weight,
-  Users2, History,
-} from "lucide-react";
+import { useState } from "react";
+import {LogOut, ChevronLeft, ChevronRight} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
+import { NAV_ITEMS, GROUP_LABELS, GROUP_ORDER, HOME_ROUTES } from "@/constants/sideBarConstante.js";
 
-const GROUP_LABELS = {
-  main:    "Navigation",
-  gestion: "Gestion",
-  admin:   "Administration",
-};
-
-const GROUP_ORDER = ["main", "gestion", "admin"];
-
-const NAV_ITEMS = [
-  // PROFESSEUR
-  { icon: Home,          label: "Accueil",          href: "/dashboard/professeur",              roles: ["PROFESSEUR"], group: "main"    },
-  { icon: FileText,      label: "Mon CV",             href: "/dashboard/professeur/cv",           roles: ["PROFESSEUR"], group: "main"    },
-  { icon: ClipboardList, label: "Mes Affectations",  href: "/dashboard/professeur/affectations", roles: ["PROFESSEUR"], group: "main"    },
-  { icon: Lightbulb,     label: "Compétences",   href: "/dashboard/professeur/competences",  roles: ["PROFESSEUR"], group: "main"    },
-  { icon: Users2,     label: "Mon Profil",    href: "/dashboard/professeur/profil",         roles: ["PROFESSEUR"], group: "main"    },
-  { icon: History,    label: "Historique CV",  href: "/dashboard/professeur/historique",    roles: ["PROFESSEUR"], group: "main"    },
-  // RH
-  { icon: BarChart3,     label: "Accueil",       href: "/dashboard/rh",                      roles: ["RH"],             group: "main"    },
-  { icon: FileText,      label: "CVs",           href: "/dashboard/rh/cvs",                  roles: ["RH"],             group: "main"    },
-  { icon: CalendarRange, label: "Sessions",      href: "/dashboard/admin/sessions",          roles: ["RH", "ADMIN"],    group: "gestion" },
-  { icon: Weight,        label: "Pondérations",  href: "/dashboard/rh/weights",              roles: ["RH"],    group: "gestion" },
-  // ADMIN
-  { icon: Home,          label: "Accueil",       href: "/dashboard/admin",                   roles: ["ADMIN"],          group: "main"    },
-  { icon: Users,         label: "Utilisateurs",  href: "/dashboard/admin/users",             roles: ["ADMIN"],          group: "admin"   },
-  { icon: BookOpen,      label: "Cours",         href: "/dashboard/admin/courses",           roles: ["ADMIN"],          group: "admin"   },
-  { icon: ClipboardList, label: "Affectations",  href: "/dashboard/admin/affectations",      roles: ["ADMIN"],          group: "admin"   },
-    { icon: Weight,        label: "Pondérations",  href: "/dashboard/admin/weights",         roles:["ADMIN"],    group: "gestion" },
-];
-
-const HOME_ROUTES = ["/dashboard/admin", "/dashboard/rh", "/dashboard/professeur"];
 
 export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onLogout }) {
   const pathname = usePathname();
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const filtered = NAV_ITEMS.filter((item) => role && item.roles.includes(role));
 
@@ -59,7 +28,8 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
   };
 
   return (
-    <aside className={`fixed top-0 left-0 h-screen z-50 flex flex-col
+    <>
+        <aside className={`fixed top-0 left-0 h-screen z-50 flex flex-col
       bg-[linear-gradient(180deg,#4b9a5e_0%,#135d55,#1f6a5b_100%)]
       border-r border-white/10 shadow-[6px_0_20px_rgba(0,0,0,0.08)]
       transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}
@@ -116,7 +86,7 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
                       </span>
                     )}
                     {active && (
-                      <span className={`w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)] shrink-0
+                      <span className={`w-2 h-2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)] shrink-0
                         ${isCollapsed ? "absolute top-1.5 right-1.5" : "ml-auto"}`} />
                     )}
                   </Link>
@@ -130,7 +100,7 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
       {/* Déconnexion */}
       <div className="px-3 py-2 border-t border-white/10 shrink-0">
         <button
-          onClick={onLogout}
+          onClick={() => { setShowLogoutModal(true); }}
           title={isCollapsed ? "Déconnexion" : undefined}
           className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer
             text-white/65 hover:bg-red-100 hover:text-red-700 transition-all duration-200 group
@@ -154,5 +124,16 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
         }
       </button>
     </aside>
+
+          {/* Modale confirmation logout */}
+          <ConfirmModal
+            isOpen={showLogoutModal}
+            title="Confirmation de déconnexion"
+            message="Souhaitez-vous vraiment quitter votre session ? Assurez-vous d'avoir enregistré vos modifications."
+            onConfirm={() => { setShowLogoutModal(false); onLogout?.(); }}
+            onCancel={() => setShowLogoutModal(false)}
+            isLoading={false}
+          />
+    </>
   );
 }

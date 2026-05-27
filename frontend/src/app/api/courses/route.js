@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
+import { isValidString } from '@/lib/validation.js';
+import { requireRole } from '@/lib/permission.js';
 
 /**
  * Récupère la liste des cours ou des programmes selon le paramètre de requête.
@@ -17,6 +19,9 @@ import prisma from '@/lib/prisma.js';
  * @returns {500} Erreur interne du serveur.
  */
 export async function GET(request) {
+  const { error } = await requireRole("ADMIN", "RH");
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
 

@@ -1,9 +1,0 @@
-import ProfilSection from "../sections/ProfilSection";
-
-export default function ProfilPage() {
-  return (
-    <div className="p-6">
-      <ProfilSection />
-    </div>
-  );
-}

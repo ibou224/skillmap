@@ -1,30 +1,16 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { isValidRole } from "@/lib/validation.js";
-import { requireRole } from "@/lib/permission.js";
+import { requireRole, getIp } from "@/lib/permission.js";
 
 /**
  * Modifie le rôle et le statut d'un utilisateur.
  *
- * Réservé aux administrateurs. Si l'utilisateur est réactivé (`estActif: true`),
- * le compteur de tentatives de connexion est remis à zéro.
- *
  * @route PUT /api/admin/users/[id]
- *
- * @param {Request} request - La requête HTTP avec le corps JSON.
- * @param {{ params: { id: string } }} context - L'identifiant de l'utilisateur dans l'URL.
- *
- * @body {boolean} estActif - `true` pour activer le compte, `false` pour le désactiver.
- * @body {string}  role     - Nouveau rôle : `ADMIN`, `RH` ou `PROFESSEUR`.
- *
- * @returns {200} L'utilisateur mis à jour (sans le mot de passe).
- * @returns {400} Identifiant manquant, champs absents ou rôle invalide.
- * @returns {401|403} Non connecté ou non administrateur.
- * @returns {404} Utilisateur introuvable.
- * @returns {500} Erreur interne du serveur.
+ * @access ADMIN
  */
 export async function PUT(request, { params }) {
-  const { error } = await requireRole("ADMIN");
+  const { session, error } = await requireRole("ADMIN");
   if (error) return error;
 
   try {
@@ -71,6 +57,24 @@ export async function PUT(request, { params }) {
       select: { id: true, email: true, nom: true, prenom: true, role: true, isActive: true },
     });
 
+    await prisma.auditLog.create({
+      data: {
+        action: "UPDATE",
+        entityType: "USER",
+        entityId: id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Profil utilisateur mis à jour",
+          cible: user.email,
+          nouveauRole: updatedUser.role,
+          estActif: updatedUser.isActive,
+        },
+        ipAddress: getIp(request),
+      },
+    });
+
     return NextResponse.json({
       success: true,
       message: "Le profil de l'utilisateur a été mis à jour avec succès.",
@@ -89,23 +93,11 @@ export async function PUT(request, { params }) {
 /**
  * Supprime définitivement un utilisateur.
  *
- * Réservé aux administrateurs. Contrairement à la désactivation, cette opération
- * est irréversible. La suppression est bloquée si l'utilisateur possède des
- * enregistrements liés (contrainte de clé étrangère Prisma P2003).
- *
  * @route DELETE /api/admin/users/[id]
- *
- * @param {Request} request - La requête HTTP.
- * @param {{ params: { id: string } }} context - L'identifiant de l'utilisateur dans l'URL.
- *
- * @returns {200} Confirmation de suppression avec le nom de l'utilisateur.
- * @returns {400} Identifiant manquant.
- * @returns {401|403} Non connecté ou non administrateur.
- * @returns {404} Utilisateur introuvable.
- * @returns {500} Erreur interne du serveur.
+ * @access ADMIN
  */
 export async function DELETE(request, { params }) {
-  const { error } = await requireRole("ADMIN");
+  const { session, error } = await requireRole("ADMIN");
   if (error) return error;
 
   try {
@@ -125,13 +117,27 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    await prisma.user.delete({
-      where: { id },
+    await prisma.user.delete({ where: { id } });
+
+    await prisma.auditLog.create({
+      data: {
+        action: "DELETE",
+        entityType: "USER",
+        entityId: id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Compte utilisateur supprimé définitivement",
+          cible: user.email,
+        },
+        ipAddress: getIp(request),
+      },
     });
 
     return NextResponse.json({
       success: true,
-      message: `Le compte de ${user.prenom} ${user.nom} a été désactivé.`,
+      message: `Le compte de ${user.prenom} ${user.nom} a été supprimé.`,
     });
 
   } catch (err) {

@@ -1,4 +1,4 @@
-import Affectationsection from "../sections/AffectationSection";
+import Affectationsection from "@/features/professeur/AffectationSection";
 
 export default function AffectationsPage() {
   return (

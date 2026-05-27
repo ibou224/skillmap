@@ -1,4 +1,4 @@
-import CvStatusSection from "../sections/cvStatutSection.jsx";
+import CvStatusSection from "@/features/professeur/cvStatutSection";
 
 export default function CvPage() {
   return (

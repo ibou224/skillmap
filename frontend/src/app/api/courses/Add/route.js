@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma.js";
 import { isValidString } from '@/lib/validation';
+import { requireRole, getIp } from '@/lib/permission.js';
 
 /**
  * Gère la route POST /api/courses/add — crée un nouveau cours et l'associe à un ou plusieurs programmes.
@@ -18,6 +19,9 @@ import { isValidString } from '@/lib/validation';
  * @returns {Promise<NextResponse>} Réponse JSON avec le cours créé.
  */
 export async function POST(request) {
+  const { session, error } = await requireRole("ADMIN", "RH");
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { nom, code, programIds, etape, courseSkills } = body;
@@ -94,6 +98,23 @@ export async function POST(request) {
       JOIN "Program" p ON p.id = cp."B"
       WHERE cp."A" = ${nouveauCours.id}
     `;
+
+    await prisma.auditLog.create({
+      data: {
+        action: "CREATE",
+        entityType: "COURS",
+        entityId: nouveauCours.id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Cours créé",
+          nom: nouveauCours.nom,
+          code: nouveauCours.code,
+        },
+        ipAddress: getIp(request),
+      },
+    });
 
     return NextResponse.json({
       success: true,

@@ -1,4 +1,4 @@
-import HistoriqueCvSection from "../sections/HistoriqueCvSection";
+import HistoriqueCvSection from "@/features/professeur/HistoriqueCvSection";
 
 export default function HistoriquePage() {
   return <HistoriqueCvSection />;

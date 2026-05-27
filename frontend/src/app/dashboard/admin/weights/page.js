@@ -1,4 +1,4 @@
-import WeightsSection from "../../weights/Weights"
+import WeightsSection from "@/features/weights/WeightsConfigPage"
 
 export default function WeightsPage() {
   return (
