@@ -74,6 +74,61 @@ def save_professor_skills(professor_id: str, skills: list) -> None:
     finally:
         conn.close()
 
+#  Sauvegarde affectations 
+
+def save_assignments(session_id: str, assignments: list) -> int:
+    """
+    Sauvegarde les propositions d'affectation en base avec statut PROPOSEE.
+    Supprime d'abord les propositions existantes pour la session (idempotent).
+    Retourne le nombre d'affectations insérées.
+    """
+    if not assignments:
+        return 0
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            # Supprimer les propositions existantes pour cette session
+            cur.execute("""
+                DELETE FROM "Assignment"
+                WHERE "sessionId" = %s AND statut = 'PROPOSEE'
+            """, (session_id,))
+
+            # Insérer les nouvelles propositions
+            for proposal in assignments:
+                cur.execute("""
+                    INSERT INTO "Assignment" (
+                        id,
+                        "sessionId",
+                        "professorId",
+                        "courseId",
+                        score,
+                        "scoreDetail",
+                        statut,
+                        "createdAt",
+                        "updatedAt"
+                    )
+                    VALUES (
+                        gen_random_uuid(),
+                        %s, %s, %s, %s,
+                        %s::jsonb,
+                        'PROPOSEE',
+                        NOW(), NOW()
+                    )
+                    ON CONFLICT ("sessionId", "professorId", "courseId") DO NOTHING
+                """, (
+                    session_id,
+                    proposal["professor_id"],
+                    proposal["course_id"],
+                    proposal["score"],
+                    psycopg2.extras.Json(proposal.get("score_detail", {})),
+                ))
+
+            conn.commit()
+            return len(assignments)
+    finally:
+        conn.close()
+
 #  Récupérer professeur par userId 
 
 def get_professor_by_user_id(user_id: str) -> dict:
