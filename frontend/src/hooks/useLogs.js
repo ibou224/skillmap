@@ -1,26 +1,27 @@
 import { useState, useCallback } from "react";
 
+/**
+ * Récupère tous les logs d'audit depuis l'API.
+ * Le filtrage et la pagination sont gérés par le composant appelant.
+ */
 export default function useLogs() {
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs]     = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]   = useState(null);
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch("/api/admin/logs");
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(
-          data.message,
-        );
-      setLogs(data.data);
+      const res = await fetch("/api/admin/logs");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || `Erreur ${res.status}`);
+      setLogs(data.data ?? []);
       return data.data;
     } catch (err) {
       console.error("Erreur lors de la récupération des logs :", err);
-      setError("Erreur lors de la récupération des logs.");
+      setError(err.message);
+      setLogs([]);
     } finally {
       setLoading(false);
     }

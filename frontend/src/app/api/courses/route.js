@@ -33,34 +33,19 @@ export async function GET(request) {
       return NextResponse.json({ success: true, data: programmes }, { status: 200 });
     }
 
-    // Un seul objet include — plusieurs clés include séparées, JS garde seulement la dernière
     const courses = await prisma.course.findMany({
       orderBy: { nom: "asc" },
       include: {
         courseSkills: {
           include: {
-            skill: { select: {  nom: true} },
+            skill: { select: { nom: true } },
           },
         },
+        programs: { select: { id: true, nom: true, code: true } },
       },
     });
 
-    // Workaround: PrismaPg 7.x driver adapter bug avec l'include implicite M2M.
-    const coursePrograms = await prisma.$queryRaw`
-      SELECT cp."A" AS "courseId", p.id, p.nom, p.code
-      FROM "_CourseToProgram" cp
-      JOIN "Program" p ON p.id = cp."B"
-    `;
-
-    const programsByCourse = {};
-    for (const row of coursePrograms) {
-      if (!programsByCourse[row.courseId]) programsByCourse[row.courseId] = [];
-      programsByCourse[row.courseId].push({ id: row.id, nom: row.nom, code: row.code });
-    }
-
-    const data = courses.map(c => ({ ...c, programs: programsByCourse[c.id] ?? [] }));
-
-    return NextResponse.json({ success: true, data }, { status: 200 });
+    return NextResponse.json({ success: true, data: courses }, { status: 200 });
 
   } catch (error) {
     console.error("[GET_COURSES_ERROR]:", error);

@@ -1,10 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   fmtDate,
   normalizeAssignmentsProf,
   normalizeWeights,
   normalizeField,
+  buildStructuredData,
 } from "@/lib/formatData";
+
+// lucide-react n'est pas nécessaire dans l'environnement de test
+vi.mock("lucide-react", () => ({ Snowflake: () => null, Sun: () => null }));
 
 // ---------------------------------------------------------------------------
 // fmtDate
@@ -215,5 +219,111 @@ describe("normalizeWeights", () => {
     ]);
     expect(result).toHaveLength(1);
     expect(result[0].competencesPct).toBe(60);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildStructuredData
+// ---------------------------------------------------------------------------
+describe("buildStructuredData", () => {
+  it("returns default empty structure for empty input", () => {
+    const result = buildStructuredData([]);
+    expect(result.prenom).toBe("");
+    expect(result.nom).toBe("");
+    expect(result.email).toBe("");
+    expect(result.competences).toEqual([]);
+    expect(result.experiences).toEqual([]);
+    expect(result.formations).toEqual([]);
+    expect(result.langues).toEqual([]);
+  });
+
+  it("maps simple text fields via LABEL_MAPPING", () => {
+    const fields = [
+      { label: "prénom",   type: "text", parsedValue: "Alice",              value: "Alice" },
+      { label: "nom",      type: "text", parsedValue: "Tremblay",           value: "Tremblay" },
+      { label: "email",    type: "text", parsedValue: "alice@example.com",  value: "alice@example.com" },
+      { label: "téléphone",type: "text", parsedValue: "613-555-0100",       value: "613-555-0100" },
+      { label: "ville",    type: "text", parsedValue: "Ottawa",             value: "Ottawa" },
+    ];
+    const result = buildStructuredData(fields);
+    expect(result.prenom).toBe("Alice");
+    expect(result.nom).toBe("Tremblay");
+    expect(result.email).toBe("alice@example.com");
+    expect(result.telephone).toBe("613-555-0100");
+    expect(result.ville).toBe("Ottawa");
+  });
+
+  it("maps competences from a parsed array field", () => {
+    const comps = [{ nom: "JavaScript", niveau: "AVANCE" }, { nom: "Python", niveau: "INTERMEDIAIRE" }];
+    const fields = [{ label: "compétences", type: "array", parsedValue: comps, value: JSON.stringify(comps) }];
+    const result = buildStructuredData(fields);
+    expect(result.competences).toEqual(comps);
+  });
+
+  it("falls back to JSON.parse for array fields whose type is not 'array'", () => {
+    const langues = ["Français (natif)", "Anglais (courant)"];
+    const fields = [{ label: "langues", type: "text", parsedValue: JSON.stringify(langues), value: JSON.stringify(langues) }];
+    const result = buildStructuredData(fields);
+    expect(result.langues).toEqual(langues);
+  });
+
+  it("sets array to [] when JSON.parse fails on array fields", () => {
+    const fields = [
+      { label: "expériences", type: "text", parsedValue: "invalide", value: "invalide" },
+      { label: "formations",  type: "text", parsedValue: "invalide", value: "invalide" },
+    ];
+    const result = buildStructuredData(fields);
+    expect(result.experiences).toEqual([]);
+    expect(result.formations).toEqual([]);
+  });
+
+  it("injects incremental id into experiences without one", () => {
+    const exps = [
+      { poste: "Dev Senior",    entreprise: "ACME" },
+      { poste: "Tech Lead",     entreprise: "CORP" },
+    ];
+    const fields = [{ label: "expériences", type: "array", parsedValue: exps, value: JSON.stringify(exps) }];
+    const result = buildStructuredData(fields);
+    expect(result.experiences[0].id).toBe(1);
+    expect(result.experiences[1].id).toBe(2);
+  });
+
+  it("preserves existing id on experiences", () => {
+    const exps = [{ id: 42, poste: "Dev", entreprise: "ACME" }];
+    const fields = [{ label: "expériences", type: "array", parsedValue: exps, value: JSON.stringify(exps) }];
+    const result = buildStructuredData(fields);
+    expect(result.experiences[0].id).toBe(42);
+  });
+
+  it("normalises formations (diplome, etablissement, anneeObtention, id)", () => {
+    const forms = [{ diplome: "BAC Informatique", etablissement: "Université d'Ottawa", anneeObtention: "2020" }];
+    const fields = [{ label: "formations", type: "array", parsedValue: forms, value: JSON.stringify(forms) }];
+    const result = buildStructuredData(fields);
+    expect(result.formations[0]).toMatchObject({
+      id:             1,
+      diplome:        "BAC Informatique",
+      etablissement:  "Université d'Ottawa",
+      anneeObtention: "2020",
+    });
+  });
+
+  it("uses form.annee as fallback for anneeObtention", () => {
+    const forms = [{ diplome: "DEC", etablissement: "Cégep", annee: "2018" }];
+    const fields = [{ label: "formations", type: "array", parsedValue: forms, value: JSON.stringify(forms) }];
+    const result = buildStructuredData(fields);
+    expect(result.formations[0].anneeObtention).toBe("2018");
+  });
+
+  it("uses parsedValue for unknown labels (passthrough)", () => {
+    const fields = [{ label: "custom_field", type: "text", parsedValue: "ma valeur", value: "ma valeur" }];
+    const result = buildStructuredData(fields);
+    expect(result["custom_field"]).toBe("ma valeur");
+  });
+
+  it("is case-insensitive on labels (lowercase trim)", () => {
+    const fields = [{ label: "  PRÉNOM  ", type: "text", parsedValue: "Bob", value: "Bob" }];
+    const result = buildStructuredData(fields);
+    // label normalisé → clé "prenom" via LABEL_MAPPING
+    expect(result.prenom).toBe("Bob");
   });
 });

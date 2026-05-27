@@ -41,6 +41,7 @@ export type AssignmentMinAggregateOutputType = {
   courseId: string | null
   score: number | null
   statut: $Enums.AssignmentStatut | null
+  notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +53,7 @@ export type AssignmentMaxAggregateOutputType = {
   courseId: string | null
   score: number | null
   statut: $Enums.AssignmentStatut | null
+  notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -64,6 +66,7 @@ export type AssignmentCountAggregateOutputType = {
   score: number
   scoreDetail: number
   statut: number
+  notes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -85,6 +88,7 @@ export type AssignmentMinAggregateInputType = {
   courseId?: true
   score?: true
   statut?: true
+  notes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -96,6 +100,7 @@ export type AssignmentMaxAggregateInputType = {
   courseId?: true
   score?: true
   statut?: true
+  notes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -108,6 +113,7 @@ export type AssignmentCountAggregateInputType = {
   score?: true
   scoreDetail?: true
   statut?: true
+  notes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -207,6 +213,7 @@ export type AssignmentGroupByOutputType = {
   score: number
   scoreDetail: runtime.JsonValue
   statut: $Enums.AssignmentStatut
+  notes: string | null
   createdAt: Date
   updatedAt: Date
   _count: AssignmentCountAggregateOutputType | null
@@ -242,6 +249,7 @@ export type AssignmentWhereInput = {
   score?: Prisma.FloatFilter<"Assignment"> | number
   scoreDetail?: Prisma.JsonFilter<"Assignment">
   statut?: Prisma.EnumAssignmentStatutFilter<"Assignment"> | $Enums.AssignmentStatut
+  notes?: Prisma.StringNullableFilter<"Assignment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
@@ -257,6 +265,7 @@ export type AssignmentOrderByWithRelationInput = {
   score?: Prisma.SortOrder
   scoreDetail?: Prisma.SortOrder
   statut?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   course?: Prisma.CourseOrderByWithRelationInput
@@ -276,6 +285,7 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   score?: Prisma.FloatFilter<"Assignment"> | number
   scoreDetail?: Prisma.JsonFilter<"Assignment">
   statut?: Prisma.EnumAssignmentStatutFilter<"Assignment"> | $Enums.AssignmentStatut
+  notes?: Prisma.StringNullableFilter<"Assignment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
@@ -291,6 +301,7 @@ export type AssignmentOrderByWithAggregationInput = {
   score?: Prisma.SortOrder
   scoreDetail?: Prisma.SortOrder
   statut?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AssignmentCountOrderByAggregateInput
@@ -311,6 +322,7 @@ export type AssignmentScalarWhereWithAggregatesInput = {
   score?: Prisma.FloatWithAggregatesFilter<"Assignment"> | number
   scoreDetail?: Prisma.JsonWithAggregatesFilter<"Assignment">
   statut?: Prisma.EnumAssignmentStatutWithAggregatesFilter<"Assignment"> | $Enums.AssignmentStatut
+  notes?: Prisma.StringNullableWithAggregatesFilter<"Assignment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Assignment"> | Date | string
 }
@@ -320,6 +332,7 @@ export type AssignmentCreateInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutAssignmentsInput
@@ -335,6 +348,7 @@ export type AssignmentUncheckedCreateInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -344,6 +358,7 @@ export type AssignmentUpdateInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -359,6 +374,7 @@ export type AssignmentUncheckedUpdateInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -371,6 +387,7 @@ export type AssignmentCreateManyInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -380,6 +397,7 @@ export type AssignmentUpdateManyMutationInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -392,6 +410,7 @@ export type AssignmentUncheckedUpdateManyInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -420,6 +439,7 @@ export type AssignmentCountOrderByAggregateInput = {
   score?: Prisma.SortOrder
   scoreDetail?: Prisma.SortOrder
   statut?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -435,6 +455,7 @@ export type AssignmentMaxOrderByAggregateInput = {
   courseId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   statut?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -446,6 +467,7 @@ export type AssignmentMinOrderByAggregateInput = {
   courseId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   statut?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -597,6 +619,7 @@ export type AssignmentCreateWithoutProfessorInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutAssignmentsInput
@@ -610,6 +633,7 @@ export type AssignmentUncheckedCreateWithoutProfessorInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -651,6 +675,7 @@ export type AssignmentScalarWhereInput = {
   score?: Prisma.FloatFilter<"Assignment"> | number
   scoreDetail?: Prisma.JsonFilter<"Assignment">
   statut?: Prisma.EnumAssignmentStatutFilter<"Assignment"> | $Enums.AssignmentStatut
+  notes?: Prisma.StringNullableFilter<"Assignment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
 }
@@ -660,6 +685,7 @@ export type AssignmentCreateWithoutCourseInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   professor: Prisma.ProfessorCreateNestedOneWithoutAssignmentsInput
@@ -673,6 +699,7 @@ export type AssignmentUncheckedCreateWithoutCourseInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -708,6 +735,7 @@ export type AssignmentCreateWithoutSessionInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutAssignmentsInput
@@ -721,6 +749,7 @@ export type AssignmentUncheckedCreateWithoutSessionInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -758,6 +787,7 @@ export type AssignmentCreateManyProfessorInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -767,6 +797,7 @@ export type AssignmentUpdateWithoutProfessorInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -780,6 +811,7 @@ export type AssignmentUncheckedUpdateWithoutProfessorInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -791,6 +823,7 @@ export type AssignmentUncheckedUpdateManyWithoutProfessorInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -802,6 +835,7 @@ export type AssignmentCreateManyCourseInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -811,6 +845,7 @@ export type AssignmentUpdateWithoutCourseInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   professor?: Prisma.ProfessorUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -824,6 +859,7 @@ export type AssignmentUncheckedUpdateWithoutCourseInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -835,6 +871,7 @@ export type AssignmentUncheckedUpdateManyWithoutCourseInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -846,6 +883,7 @@ export type AssignmentCreateManySessionInput = {
   score: number
   scoreDetail: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: $Enums.AssignmentStatut
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -855,6 +893,7 @@ export type AssignmentUpdateWithoutSessionInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -868,6 +907,7 @@ export type AssignmentUncheckedUpdateWithoutSessionInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -879,6 +919,7 @@ export type AssignmentUncheckedUpdateManyWithoutSessionInput = {
   score?: Prisma.FloatFieldUpdateOperationsInput | number
   scoreDetail?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   statut?: Prisma.EnumAssignmentStatutFieldUpdateOperationsInput | $Enums.AssignmentStatut
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -893,6 +934,7 @@ export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   score?: boolean
   scoreDetail?: boolean
   statut?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
@@ -908,6 +950,7 @@ export type AssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   score?: boolean
   scoreDetail?: boolean
   statut?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
@@ -923,6 +966,7 @@ export type AssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   score?: boolean
   scoreDetail?: boolean
   statut?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
@@ -938,11 +982,12 @@ export type AssignmentSelectScalar = {
   score?: boolean
   scoreDetail?: boolean
   statut?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "professorId" | "courseId" | "score" | "scoreDetail" | "statut" | "createdAt" | "updatedAt", ExtArgs["result"]["assignment"]>
+export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "professorId" | "courseId" | "score" | "scoreDetail" | "statut" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["assignment"]>
 export type AssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
   professor?: boolean | Prisma.ProfessorDefaultArgs<ExtArgs>
@@ -974,6 +1019,7 @@ export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     score: number
     scoreDetail: runtime.JsonValue
     statut: $Enums.AssignmentStatut
+    notes: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["assignment"]>
@@ -1409,6 +1455,7 @@ export interface AssignmentFieldRefs {
   readonly score: Prisma.FieldRef<"Assignment", 'Float'>
   readonly scoreDetail: Prisma.FieldRef<"Assignment", 'Json'>
   readonly statut: Prisma.FieldRef<"Assignment", 'AssignmentStatut'>
+  readonly notes: Prisma.FieldRef<"Assignment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Assignment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Assignment", 'DateTime'>
 }

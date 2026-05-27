@@ -112,7 +112,7 @@ export async function POST(request) {
             })),
             experiences: professor.experiences.map((e) => ({
               poste: e.poste,
-              entreprise: e.Entreprise,
+              entreprise: e.entreprise,
               debut: e.dateDebut
                 ? new Date(e.dateDebut).toISOString().slice(0, 7)
                 : "",
@@ -155,7 +155,7 @@ export async function POST(request) {
               professorId: professor.id,
               poste: exp.poste,
               domaine: exp.domaine || "",
-              Entreprise: exp.entreprise,
+              entreprise: exp.entreprise,
               dateDebut: new Date(exp.debut + "-01"),
               dateFin: exp.fin ? new Date(exp.fin + "-01") : null,
               description: exp.description,

@@ -20,6 +20,10 @@ export default function AffectationHeader({
   onToggleWeights,
   sessions = [],
   programmes = [],
+  topN = 5,
+  onTopNChange,
+  minScore = 0,
+  onMinScoreChange,
 }) {
   const totalWeight  = Object.values(weights).reduce((s, w) => s + w.weight, 0);
   const weightsValid = totalWeight === 100;
@@ -154,6 +158,60 @@ export default function AffectationHeader({
                 </div>
               );
             })}
+          </div>
+
+          {/* Séparateur + filtres de volume */}
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <p className="text-xs font-medium text-white/70 mb-3">Filtres de volume des propositions</p>
+            <div className="flex flex-wrap gap-6">
+
+              {/* Top N */}
+              <div>
+                <label htmlFor="filter-topn" className="block text-xs text-white/70 mb-1.5">
+                  Meilleurs profs par cours
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="filter-topn"
+                    type="number"
+                    min={1}
+                    max={20}
+                    step={1}
+                    value={topN}
+                    onChange={(e) => onTopNChange?.(Math.min(20, Math.max(1, Number(e.target.value))))}
+                    className="w-16 px-2 py-1.5 text-xs bg-white/10 border border-white/20 text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-white/50"
+                  />
+                  <span className="text-[11px] text-white/50">top (1–20)</span>
+                </div>
+              </div>
+
+              {/* Score minimum */}
+              <div>
+                <label htmlFor="filter-minscore" className="block text-xs text-white/70 mb-1.5">
+                  Score minimum
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="filter-minscore"
+                    type="number"
+                    min={0}
+                    max={95}
+                    step={5}
+                    value={minScore}
+                    onChange={(e) => onMinScoreChange?.(Math.min(95, Math.max(0, Number(e.target.value))))}
+                    className="w-16 px-2 py-1.5 text-xs bg-white/10 border border-white/20 text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-white/50"
+                  />
+                  <span className="text-[11px] text-white/50">% (0–95)</span>
+                </div>
+              </div>
+
+              {/* Aperçu */}
+              <div className="flex items-end pb-0.5">
+                <p className="text-[11px] text-white/40 italic">
+                  Max ≈ top {topN} par cours · éliminer &lt; {minScore}%
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

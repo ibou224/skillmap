@@ -60,7 +60,7 @@ const handleManualSave = async (cvData) => {
   return (
     <div className="space-y-6">
       {/* Bannière */}
-      <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-gradient-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
+      <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
         <h1 className="relative text-2xl sm:text-3xl font-black text-white">Mon CV</h1>
         <p className="relative text-white/70 text-sm mt-1">Téléversez votre CV ou renseignez-le manuellement.</p>

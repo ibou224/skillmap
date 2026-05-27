@@ -68,7 +68,11 @@ export const isValidFile = (file) => {
     return { valid: true, message: "Le fichier est valide." };
 }
 
-const LIMITES = {
+/**
+ * Bornes autorisées pour chaque critère de pondération.
+ * Source de vérité unique — importée également par les constantes UI.
+ */
+export const WEIGHT_BOUNDS = {
   competencesPct: { min: 20, max: 80 },
   experiencePct:  { min: 10, max: 80 },
   formationPct:   { min: 0,  max: 30 },
@@ -93,7 +97,7 @@ export function isValidateWeights(weights) {
   }
   
   for (const [champ, valeur] of Object.entries({ competencesPct, experiencePct, formationPct, historiquePct })) {
-    const { min, max } = LIMITES[champ];
+    const { min, max } = WEIGHT_BOUNDS[champ];
     if (!Number.isInteger(valeur) || valeur < min || valeur > max) {
       return {
         valid: false,

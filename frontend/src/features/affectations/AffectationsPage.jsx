@@ -15,36 +15,37 @@ import { useWeights } from "@/hooks/useWeights";
 import { useAffectations } from "@/hooks/useAffectations";
 import { useCourses } from "@/hooks/useCourses";
 
+const PAGE_SIZE = 50;
+
 export default function AffectationPage() {
-  const { sessions, fetchSessions } = useSessions();
-  const { programmes, fetchProgrammes, courses, fetchCourses } = useCourses();
+  const { sessions, fetchSessions }                              = useSessions();
+  const { programmes, fetchProgrammes, courses, fetchCourses }   = useCourses();
   const {
-    analyseAffectations,
-    fetchAffectations,
-    proposals,
-    loading,
-    error,
-    updateAssignmentStatus,
-    saveAdjustment,
+    analyseAffectations, fetchAffectations,
+    proposals, loading, error,
+    updateAssignmentStatus, saveAdjustment,
     finalizeSessionAssignments,
   } = useAffectations();
   const { updateWeight, fetchWeights } = useWeights();
 
-  const [localWeights, setLocalWeights] = useState(PONDERATIONS_DEFAUT);
-  const [sessionId, setSessionId] = useState("");
-  const [programId, setProgramId] = useState("");
-  const [hasRun, setHasRun] = useState(false);
-  const [search, setSearch] = useState("");
-  const [filterStatut, setFilterStatut] = useState("");
-  const [expandedId, setExpandedId] = useState(null);
-  const [editProposal, setEditProposal] = useState(null);
+  const [localWeights, setLocalWeights]           = useState(PONDERATIONS_DEFAUT);
+  const [topN, setTopN]                           = useState(5);
+  const [minScore, setMinScore]                   = useState(25);
+  const [sessionId, setSessionId]                 = useState("");
+  const [programId, setProgramId]                 = useState("");
+  const [hasRun, setHasRun]                       = useState(false);
+  const [search, setSearch]                       = useState("");
+  const [filterStatut, setFilterStatut]           = useState("");
+  const [page, setPage]                           = useState(1);
+  const [expandedId, setExpandedId]               = useState(null);
+  const [editProposal, setEditProposal]           = useState(null);
   const [pendingAdjustment, setPendingAdjustment] = useState(null);
   const [confirmFinalizeAll, setConfirmFinalizeAll] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [showWeights, setShowWeights] = useState(false);
+  const [actionLoading, setActionLoading]         = useState(false);
+  const [toast, setToast]                         = useState(null);
+  const [showWeights, setShowWeights]             = useState(false);
 
-  const totalWeight = Object.values(localWeights).reduce((s, w) => s + w.weight, 0);
+  const totalWeight  = Object.values(localWeights).reduce((s, w) => s + w.weight, 0);
   const weightsValid = totalWeight === 100;
 
   useEffect(() => {
@@ -63,9 +64,9 @@ export default function AffectationPage() {
         if (found) {
           setLocalWeights({
             competences: { ...PONDERATIONS_DEFAUT.competences, weight: found.competencesPct },
-            experience:  { ...PONDERATIONS_DEFAUT.experience,  weight: found.experiencePct },
-            formation:   { ...PONDERATIONS_DEFAUT.formation,   weight: found.formationPct },
-            historique:  { ...PONDERATIONS_DEFAUT.historique,  weight: found.historiquePct },
+            experience:  { ...PONDERATIONS_DEFAUT.experience,  weight: found.experiencePct  },
+            formation:   { ...PONDERATIONS_DEFAUT.formation,   weight: found.formationPct   },
+            historique:  { ...PONDERATIONS_DEFAUT.historique,  weight: found.historiquePct  },
           });
         } else {
           setLocalWeights(PONDERATIONS_DEFAUT);
@@ -76,6 +77,8 @@ export default function AffectationPage() {
     };
     loadWeights();
   }, [sessionId, fetchWeights]);
+
+  // ── Données dérivées ───────────────────────────────────────────────────────
 
   const proposalsForSession = useMemo(() => {
     if (!sessionId) return [];
@@ -96,23 +99,23 @@ export default function AffectationPage() {
     });
   }, [proposalsForSession, search, filterStatut]);
 
+  const totalPages        = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage       = Math.min(page, totalPages);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   const finalizeInfo = useMemo(() => {
-    const proposed = proposalsForSession.filter((p) => p.statut === "PROPOSEE").length;
-    const adjusted = proposalsForSession.filter((p) => p.statut === "AJUSTEE").length;
+    const proposed  = proposalsForSession.filter((p) => p.statut === "PROPOSEE").length;
+    const adjusted  = proposalsForSession.filter((p) => p.statut === "AJUSTEE").length;
     const finalized = proposalsForSession.filter((p) => p.statut === "FINALISEE").length;
 
-    if (!sessionId) {
-      return { canFinalize: false, reason: "Sélectionnez une session.", proposed, adjusted, finalized };
-    }
-    if (proposalsForSession.length === 0) {
-      return { canFinalize: false, reason: "Aucune affectation à finaliser.", proposed, adjusted, finalized };
-    }
-    if (adjusted === 0) {
-      return { canFinalize: false, reason: "Aucune affectation ajustée à finaliser.", proposed, adjusted, finalized };
-    }
+    if (!sessionId)                       return { canFinalize: false, reason: "Sélectionnez une session.",       proposed, adjusted, finalized };
+    if (proposalsForSession.length === 0) return { canFinalize: false, reason: "Aucune affectation à finaliser.", proposed, adjusted, finalized };
+    if (adjusted === 0)                   return { canFinalize: false, reason: "Aucune affectation ajustée à finaliser.", proposed, adjusted, finalized };
 
     return { canFinalize: true, reason: "", proposed, adjusted, finalized };
   }, [proposalsForSession, sessionId]);
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
 
   const handleRun = useCallback(async () => {
     if (!sessionId || !programId) {
@@ -120,10 +123,7 @@ export default function AffectationPage() {
       return;
     }
     if (!weightsValid) {
-      setToast({
-        message: `Les pondérations doivent totaliser 100% (actuellement ${totalWeight}%)`,
-        type: "error",
-      });
+      setToast({ message: `Les pondérations doivent totaliser 100% (actuellement ${totalWeight}%)`, type: "error" });
       return;
     }
 
@@ -141,15 +141,16 @@ export default function AffectationPage() {
 
     setExpandedId(null);
     setHasRun(true);
+    setPage(1);
 
     try {
-      await analyseAffectations(sessionId, programId);
+      await analyseAffectations(sessionId, programId, topN, minScore);
       await fetchAffectations();
       setToast({ message: "Analyse terminée avec succès", type: "success" });
     } catch (err) {
       setToast({ message: err.message, type: "error" });
     }
-  }, [sessionId, programId, weightsValid, totalWeight, localWeights, updateWeight, analyseAffectations, fetchAffectations]);
+  }, [sessionId, programId, weightsValid, totalWeight, localWeights, topN, minScore, updateWeight, analyseAffectations, fetchAffectations]);
 
   const handleAction = useCallback(
     async (action, id) => {
@@ -171,19 +172,16 @@ export default function AffectationPage() {
     [proposals, updateAssignmentStatus]
   );
 
-  const handleSaveAdjustment = useCallback(
-    (id, updates) => {
-      setPendingAdjustment({ id, updates });
-    },
-    []
-  );
+  const handleSaveAdjustment = useCallback((id, updates) => {
+    setPendingAdjustment({ id, updates });
+  }, []);
 
   const handleConfirmAdjustment = useCallback(async () => {
     if (!pendingAdjustment) return;
     setActionLoading(true);
     try {
       await saveAdjustment(pendingAdjustment.id, pendingAdjustment.updates);
-      setToast({ message: "Ajustement enregistre", type: "success" });
+      setToast({ message: "Ajustement enregistré", type: "success" });
       setEditProposal(null);
       setPendingAdjustment(null);
     } catch (err) {
@@ -200,7 +198,7 @@ export default function AffectationPage() {
       const result = await finalizeSessionAssignments(sessionId);
       setExpandedId(null);
       setConfirmFinalizeAll(false);
-      setToast({ message: result.message || "Affectations finalisees", type: "success" });
+      setToast({ message: result.message || "Affectations finalisées", type: "success" });
     } catch (err) {
       setToast({ message: err.message, type: "error" });
     } finally {
@@ -209,28 +207,22 @@ export default function AffectationPage() {
   }, [finalizeSessionAssignments, sessionId]);
 
   const handleWeightChange = useCallback((key, value) => {
-    const n = parseInt(value, 10);
+    const n   = parseInt(value, 10);
     const cfg = PONDERATIONS_DEFAUT[key];
     if (isNaN(n) || n < cfg.min || n > cfg.max) return;
     setLocalWeights((prev) => ({ ...prev, [key]: { ...prev[key], weight: n } }));
   }, []);
 
-  const handleToggleExpand = useCallback((id) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }, []);
-  
-  const handleResetFilters = useCallback(() => {
-    setSearch("");
-    setFilterStatut("");
-  }, []);
+  const handleToggleExpand  = useCallback((id) => setExpandedId((prev) => (prev === id ? null : id)), []);
+  const handleResetFilters  = useCallback(() => { setSearch(""); setFilterStatut(""); setPage(1); }, []);
 
-  // ── Rendu ────────────────────────────────────────────────────────────────
+  // ── Rendu ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <AffectationHeader
         sessionId={sessionId}
         programId={programId}
-        onSessionChange={setSessionId}
+        onSessionChange={(v) => { setSessionId(v); setPage(1); }}
         onProgramChange={setProgramId}
         onRun={handleRun}
         loading={loading}
@@ -241,6 +233,10 @@ export default function AffectationPage() {
         onToggleWeights={() => setShowWeights((v) => !v)}
         sessions={sessions}
         programmes={programmes}
+        topN={topN}
+        onTopNChange={setTopN}
+        minScore={minScore}
+        onMinScoreChange={setMinScore}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
@@ -251,9 +247,9 @@ export default function AffectationPage() {
         {proposalsForSession.length > 0 && (
           <AffectationToolbar
             search={search}
-            onSearchChange={setSearch}
+            onSearchChange={(v) => { setSearch(v); setPage(1); }}
             filterStatut={filterStatut}
-            onFilterChange={setFilterStatut}
+            onFilterChange={(v) => { setFilterStatut(v); setPage(1); }}
             onFinalizeAll={() => setConfirmFinalizeAll(true)}
             canFinalizeAll={finalizeInfo.canFinalize && !actionLoading}
             finalizeDisabledReason={finalizeInfo.reason}
@@ -262,7 +258,8 @@ export default function AffectationPage() {
 
         <ProposalTable
           proposals={proposalsForSession}
-          filtered={filtered}
+          filtered={paginatedFiltered}
+          totalFiltered={filtered.length}
           loading={loading}
           error={error}
           onRetry={handleRun}
@@ -271,6 +268,9 @@ export default function AffectationPage() {
           onAction={handleAction}
           onResetFilters={handleResetFilters}
           weights={localWeights}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setPage}
         />
       </main>
 
@@ -286,7 +286,7 @@ export default function AffectationPage() {
       <ConfirmModal
         isOpen={!!pendingAdjustment}
         title="Confirmer l'ajustement"
-        message="Cette action changera le cours de l'affectation et passera son statut a AJUSTEE. L'action sera inscrite au journal d'audit."
+        message="Cette action changera le cours de l'affectation et passera son statut à AJUSTEE. L'action sera inscrite au journal d'audit."
         onConfirm={handleConfirmAdjustment}
         onCancel={() => setPendingAdjustment(null)}
         isLoading={actionLoading}
@@ -295,19 +295,13 @@ export default function AffectationPage() {
       <ConfirmModal
         isOpen={confirmFinalizeAll}
         title="Finaliser toutes les affectations"
-        message={`Cette action finalisera ${finalizeInfo.adjusted} affectation(s) ajustee(s) pour la session selectionnee. Les affectations finalisees ne pourront plus etre ajustees.`}
+        message={`Cette action finalisera ${finalizeInfo.adjusted} affectation(s) ajustée(s) pour la session sélectionnée. Les affectations finalisées ne pourront plus être ajustées.`}
         onConfirm={handleFinalizeAll}
         onCancel={() => setConfirmFinalizeAll(false)}
         isLoading={actionLoading}
       />
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }

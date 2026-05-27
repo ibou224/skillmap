@@ -62,7 +62,7 @@ export async function POST(request, { params }) {
             competences: professor.skills.map((s) => ({ nom: s.skill.nom, niveau: s.niveau })),
             experiences: professor.experiences.map((e) => ({
               poste:       e.poste,
-              entreprise:  e.Entreprise,
+              entreprise:  e.entreprise,
               debut:       e.dateDebut ? new Date(e.dateDebut).toISOString().slice(0, 7) : "",
               fin:         e.dateFin   ? new Date(e.dateFin).toISOString().slice(0, 7)   : "",
               description: e.description ?? "",
@@ -96,7 +96,7 @@ export async function POST(request, { params }) {
             professorId: professor.id,
             poste:       e.poste,
             domaine:     "",
-            Entreprise:  e.entreprise,
+            entreprise:  e.entreprise,
             dateDebut:   new Date(e.debut + "-01"),
             dateFin:     e.fin ? new Date(e.fin + "-01") : null,
             description: e.description ?? "",

@@ -49,8 +49,10 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      LLM_API_URL: ${LLM_API_URL}
+      LLM_BASE_URL: ${LLM_BASE_URL}
       LLM_API_KEY: ${LLM_API_KEY}
+      LLM_COOKIE: ${LLM_COOKIE}
+      LLM_MODEL: ${LLM_MODEL:-gpt-oss-ctx24k:120b}
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
     volumes:
       - ./backend:/app

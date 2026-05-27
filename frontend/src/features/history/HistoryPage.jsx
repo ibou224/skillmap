@@ -1,13 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertCircle, RefreshCw, Search } from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight, RefreshCw, Search } from "lucide-react";
 
 import HistoryHeader from "./components/HistoryHeader";
 import HistorySessionFilter from "./components/HistorySessionFilter";
 import HistoryStats from "./components/HistoryStats";
 import HistoryToolbar from "./components/HistoryToolbar";
 import HistorySessionCard from "./components/HistorySessionCard";
+
+const PAGE_SIZE = 10;
 
 function groupBySession(assignments) {
   const groups = assignments.reduce((acc, assignment) => {
@@ -25,7 +27,9 @@ function groupBySession(assignments) {
 function matchesSearch(assignment, query) {
   if (!query) return true;
   const q = query.toLowerCase();
-  const programs = assignment.course.programs?.map((program) => `${program.code} ${program.nom}`).join(" ") ?? "";
+  const programs = assignment.course.programs
+    ?.map((p) => `${p.code} ${p.nom}`)
+    .join(" ") ?? "";
 
   return [
     assignment.course.code,
@@ -38,19 +42,19 @@ function matchesSearch(assignment, query) {
 }
 
 export default function HistoryPage() {
-  const [assignments, setAssignments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [assignments, setAssignments]     = useState([]);
+  const [loading, setLoading]             = useState(true);
+  const [error, setError]                 = useState(null);
   const [selectedSession, setSelectedSession] = useState("");
-  const [search, setSearch] = useState("");
-  const [statut, setStatut] = useState("");
+  const [search, setSearch]               = useState("");
   const [expandedSession, setExpandedSession] = useState(null);
+  const [page, setPage]                   = useState(1);
 
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/history");
+      const res  = await fetch("/api/history");
       const json = await res.json();
       if (!res.ok || !json.success) {
         throw new Error(json.message || "Erreur lors du chargement de l'historique.");
@@ -68,27 +72,26 @@ export default function HistoryPage() {
 
   const sessions = useMemo(() => {
     const map = new Map();
-    assignments.forEach((assignment) => {
-      if (!map.has(assignment.session.id)) map.set(assignment.session.id, assignment.session);
+    assignments.forEach((a) => {
+      if (!map.has(a.session.id)) map.set(a.session.id, a.session);
     });
     return [...map.values()];
   }, [assignments]);
 
-  const filtered = useMemo(() => {
-    return assignments.filter((assignment) => {
-      if (selectedSession && assignment.session.id !== selectedSession) return false;
-      if (statut && assignment.statut !== statut) return false;
-      return matchesSearch(assignment, search);
-    });
-  }, [assignments, search, selectedSession, statut]);
+  const filtered = useMemo(() =>
+    assignments.filter((a) => {
+      if (selectedSession && a.session.id !== selectedSession) return false;
+      return matchesSearch(a, search);
+    }),
+    [assignments, search, selectedSession],
+  );
 
   const groups = useMemo(() => groupBySession(filtered), [filtered]);
-  const openedSession = expandedSession ?? groups[0]?.session.id ?? null;
 
-  const resetFilters = () => {
-    setSearch("");
-    setStatut("");
-  };
+  const totalPages      = Math.max(1, Math.ceil(groups.length / PAGE_SIZE));
+  const currentPage     = Math.min(page, totalPages);
+  const paginatedGroups = groups.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const openedSession   = expandedSession ?? paginatedGroups[0]?.session.id ?? null;
 
   return (
     <div className="space-y-6">
@@ -97,10 +100,7 @@ export default function HistoryPage() {
       <HistorySessionFilter
         sessions={sessions}
         selectedSession={selectedSession}
-        onChange={(value) => {
-          setSelectedSession(value);
-          setExpandedSession(null);
-        }}
+        onChange={(value) => { setSelectedSession(value); setExpandedSession(null); setPage(1); }}
       />
 
       {!loading && !error && (
@@ -109,16 +109,14 @@ export default function HistoryPage() {
 
       <HistoryToolbar
         search={search}
-        onSearchChange={setSearch}
-        statut={statut}
-        onStatutChange={setStatut}
-        onReset={resetFilters}
+        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onReset={() => { setSearch(""); setPage(1); }}
       />
 
       {loading && (
         <div className="flex flex-col items-center justify-center py-20 gap-3 bg-white rounded-2xl border border-slate-100">
           <RefreshCw className="w-6 h-6 text-emerald-500 animate-spin" />
-          <p className="text-sm text-slate-500">Chargement de l&apos;historique...</p>
+          <p className="text-sm text-slate-500">Chargement de l&apos;historique…</p>
         </div>
       )}
 
@@ -138,23 +136,76 @@ export default function HistoryPage() {
 
       {!loading && !error && (
         groups.length > 0 ? (
-          <div className="space-y-3">
-            {groups.map((group) => (
-              <HistorySessionCard
-                key={group.session.id}
-                group={group}
-                isOpen={openedSession === group.session.id}
-                onToggle={() => setExpandedSession((prev) => (
-                  (prev ?? openedSession) === group.session.id ? "" : group.session.id
-                ))}
-              />
-            ))}
-          </div>
+          <>
+            <div className="space-y-3">
+              {paginatedGroups.map((group) => (
+                <HistorySessionCard
+                  key={group.session.id}
+                  group={group}
+                  isOpen={openedSession === group.session.id}
+                  onToggle={() => setExpandedSession((prev) =>
+                    (prev ?? openedSession) === group.session.id ? "" : group.session.id
+                  )}
+                />
+              ))}
+            </div>
+
+            {/* Pagination des sessions */}
+            <div className="flex items-center justify-between px-1">
+              <p className="text-xs text-slate-400">
+                {groups.length} session{groups.length > 1 ? "s" : ""} — page {currentPage} / {totalPages}
+              </p>
+              {totalPages > 1 && (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage <= 1}
+                    className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-slate-500" />
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                    .reduce((acc, p, i, arr) => {
+                      if (i > 0 && p - arr[i - 1] > 1) acc.push("…");
+                      acc.push(p);
+                      return acc;
+                    }, [])
+                    .map((p, i) =>
+                      p === "…" ? (
+                        <span key={`e-${i}`} className="px-1 text-slate-400 text-xs">…</span>
+                      ) : (
+                        <button
+                          key={p}
+                          onClick={() => setPage(p)}
+                          className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
+                            p === currentPage
+                              ? "bg-[hsl(134,35%,45%)] text-white"
+                              : "hover:bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      )
+                    )}
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
+                  >
+                    <ChevronRight className="w-4 h-4 text-slate-500" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
         ) : (
           <div className="text-center py-16 bg-white rounded-2xl border border-slate-100">
             <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
             <p className="text-sm text-slate-500">
-              Aucune affectation ne correspond aux filtres.
+              {search || selectedSession
+                ? "Aucune affectation finalisée ne correspond aux filtres."
+                : "Aucune affectation finalisée pour le moment."}
             </p>
           </div>
         )

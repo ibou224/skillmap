@@ -76,6 +76,18 @@ const {
   signOut,
 } = NextAuth({
   ...authConfig,
+
+  cookies: {
+    sessionToken: {
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
+
   providers: [
     Credentials({
       credentials: {

@@ -5,7 +5,7 @@
 
 from typing import List, Dict
 
-#  Niveaux de compétence (correspondance numérique) 
+#  Niveaux de compétence (correspondance numérique)
 
 NIVEAU_SCORE = {
     "DEBUTANT": 1,
@@ -13,7 +13,7 @@ NIVEAU_SCORE = {
     "AVANCE": 3
 }
 
-#  Niveaux de diplôme (bonus formation) 
+#  Niveaux de diplôme (bonus formation)
 
 DIPLOME_SCORE = {
     "DOCTORATE": 1.0,
@@ -23,7 +23,7 @@ DIPLOME_SCORE = {
     "OTHER": 0.2
 }
 
-#  Fonction principale 
+#  Fonction principale
 
 async def run_matching(
     session_id: str,
@@ -85,7 +85,7 @@ async def run_matching(
 
     return proposals
 
-#  Score compétences 
+#  Score compétences
 
 def _score_competences(
     professor_skills: List[dict],
@@ -98,11 +98,11 @@ def _score_competences(
     Pondéré par poidsCritique de chaque compétence.
     """
     if not course_skills:
-        return 0.0
+        return 1.0  # Pas d'exigences → tout le monde est qualifié → score neutre
 
     total_weight = sum(s.get("poidsCritique", 1) for s in course_skills)
     if total_weight == 0:
-        return 0.0
+        return 1.0  # Poids tous à 0 → aucune exigence effective → score neutre
 
     score = 0.0
     prof_skill_map = {s["skillId"]: s for s in professor_skills}
@@ -124,7 +124,7 @@ def _score_competences(
 
     return round(score / total_weight, 4)
 
-#  Score expérience 
+#  Score expérience
 
 def _score_experience(annees_experience: float) -> float:
     """
@@ -133,7 +133,7 @@ def _score_experience(annees_experience: float) -> float:
     """
     return round(min(annees_experience / 10, 1.0), 4)
 
-#  Score formation 
+#  Score formation
 
 def _score_education(education: List[dict]) -> float:
     """
@@ -148,7 +148,7 @@ def _score_education(education: List[dict]) -> float:
     ]
     return max(scores)
 
-#  Score historique 
+#  Score historique
 
 def _score_history(history: List[str], course_id: str) -> float:
     """

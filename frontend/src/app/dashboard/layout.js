@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }) {
   if (!session?.user) redirect('/login');
 
   return (
-    <DashboardShell user={session.user}>
+    <DashboardShell user={session.user} sessionError={session?.error}>
       {children}
     </DashboardShell>
   );

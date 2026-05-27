@@ -1,13 +1,17 @@
-import { BookOpen, Filter, RefreshCw, AlertCircle } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Filter, RefreshCw, AlertCircle } from "lucide-react";
 import ProposalRow from "./ProposalRow";
 
 /**
  * Tableau des propositions d'affectation.
- * Gère les états : chargement, erreur, vide, résultats filtrés.
+ * Gère les états : chargement, erreur, vide, résultats filtrés + pagination.
+ *
+ * `filtered`      — tranche paginée à afficher (slice de la page courante)
+ * `totalFiltered` — nombre total de résultats avant pagination (pour l'état vide et le footer)
  */
 export default function ProposalTable({
   proposals,
   filtered,
+  totalFiltered,
   loading,
   error,
   onRetry,
@@ -16,6 +20,9 @@ export default function ProposalTable({
   onAction,
   onResetFilters,
   weights,
+  currentPage,
+  totalPages,
+  onPageChange,
 }) {
   // ── États alternatifs ──────────────────────────────────────────────────────
 
@@ -97,7 +104,7 @@ export default function ProposalTable({
           </thead>
 
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {filtered.length === 0 ? (
+            {totalFiltered === 0 ? (
               <tr>
                 <td colSpan={5} className="py-12 text-center">
                   <Filter className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
@@ -126,12 +133,59 @@ export default function ProposalTable({
         </table>
       </div>
 
-      {/* Footer */}
-      {filtered.length > 0 && (
-        <div className="px-5 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/20 text-xs text-slate-500">
-          {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
-          {proposals.length !== filtered.length && ` sur ${proposals.length}`}
-          {" "}· Cliquez sur une ligne pour voir le détail du score
+      {/* Footer — compteur + pagination */}
+      {totalFiltered > 0 && (
+        <div className="px-5 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/20 flex items-center justify-between gap-4">
+          <p className="text-xs text-slate-500">
+            {totalFiltered} résultat{totalFiltered > 1 ? "s" : ""}
+            {proposals.length !== totalFiltered && ` sur ${proposals.length}`}
+            {" "}· page {currentPage} / {totalPages}
+          </p>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage <= 1}
+                className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 transition"
+              >
+                <ChevronLeft className="w-4 h-4 text-slate-500" />
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                .reduce((acc, p, i, arr) => {
+                  if (i > 0 && p - arr[i - 1] > 1) acc.push("…");
+                  acc.push(p);
+                  return acc;
+                }, [])
+                .map((p, i) =>
+                  p === "…" ? (
+                    <span key={`e-${i}`} className="px-1 text-slate-400 text-xs">…</span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => onPageChange(p)}
+                      className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
+                        p === currentPage
+                          ? "bg-[hsl(134,35%,45%)] text-white"
+                          : "hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+
+              <button
+                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage >= totalPages}
+                className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 transition"
+              >
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

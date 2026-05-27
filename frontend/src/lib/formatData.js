@@ -228,7 +228,7 @@ export const normalizeInfosProfessor = (infos) => {
     langues: langues ?? [],
     experiences: experiences.map((e) => ({
       poste: e.poste,
-      entreprise: e.Entreprise,
+      entreprise: e.entreprise,
       debut: e.dateDebut ? new Date(e.dateDebut).toISOString().slice(0, 7) : "",
       fin: e.dateFin ? new Date(e.dateFin).toISOString().slice(0, 7) : "",
       description: e.description ?? "",

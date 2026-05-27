@@ -93,7 +93,11 @@ export async function PATCH(request, { params }) {
 
     const updated = await prisma.assignment.update({
       where: { id },
-      data:  { courseId: coursId, statut: "AJUSTEE" },
+      data:  {
+        courseId: coursId,
+        statut:   "AJUSTEE",
+        notes:    notes?.trim() || null,
+      },
     });
 
     await prisma.auditLog.create({

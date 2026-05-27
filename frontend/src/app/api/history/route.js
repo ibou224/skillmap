@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";
 
-const STATUTS = ["PROPOSEE", "AJUSTEE", "FINALISEE"];
-
 export async function GET(request) {
   const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;
@@ -12,14 +10,8 @@ export async function GET(request) {
   const sessionId = searchParams.get("sessionId");
   const professorId = searchParams.get("professorId");
   const courseId = searchParams.get("courseId");
-  const statut = searchParams.get("statut");
-
-  if (statut && !STATUTS.includes(statut)) {
-    return NextResponse.json(
-      { success: false, message: "Statut invalide." },
-      { status: 400 }
-    );
-  }
+  // L'historique n'affiche que les affectations finalisées
+  // Les PROPOSEE / AJUSTEE sont visibles dans la page Affectations
 
   try {
     let resolvedProfessorId = professorId;
@@ -42,10 +34,10 @@ export async function GET(request) {
 
     const assignments = await prisma.assignment.findMany({
       where: {
-        ...(sessionId ? { sessionId } : {}),
+        statut: "FINALISEE",
+        ...(sessionId          ? { sessionId }                       : {}),
         ...(resolvedProfessorId ? { professorId: resolvedProfessorId } : {}),
-        ...(courseId ? { courseId } : {}),
-        ...(statut ? { statut } : {}),
+        ...(courseId           ? { courseId }                        : {}),
       },
       orderBy: [
         { session: { dateDebut: "desc" } },

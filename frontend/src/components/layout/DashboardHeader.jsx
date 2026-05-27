@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Bell, LogOut, ChevronDown, Settings, CalendarDays } from "lucide-react";
+import { Bell, LogOut, ChevronDown, Settings, CalendarDays, Menu } from "lucide-react";
 import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
 import { ROLE_COLORS, ROLE_LABELS, SETTINGS_HREF, getInitials, formatToday } from "@/constants/header.js";
 
@@ -22,6 +22,7 @@ export default function DashboardHeader({
   isCollapsed,
   user,
   onLogout,
+  onMobileMenuToggle,
   notificationCount = 0,
 }) {
   const [showMenu, setShowMenu]               = useState(false);
@@ -49,11 +50,20 @@ export default function DashboardHeader({
     <>
       <header
         className={`fixed top-0 right-0 h-20 z-40 transition-[left] duration-300 ${
-          isCollapsed ? "left-20" : "left-64"
+          isCollapsed ? "left-0 md:left-20" : "left-0 md:left-64"
         }`}
       >
         <div className="absolute inset-x-4 top-0 overflow-visible border border-white/80 bg-white/80 backdrop-blur-xl h-full rounded-b-2xl">
           <div className="relative flex h-full items-center justify-between gap-4 px-4 sm:px-5">
+
+            {/* ── Hamburger mobile ── */}
+            <button
+              onClick={onMobileMenuToggle}
+              aria-label="Menu"
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200/70 bg-white/70 text-gray-500 hover:bg-gray-100 transition-all shrink-0"
+            >
+              <Menu className="h-4.5 w-4.5" />
+            </button>
 
             {/* ── Branding ── */}
             <div className="min-w-0 flex items-center gap-3">

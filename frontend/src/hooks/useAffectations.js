@@ -2,8 +2,8 @@ import { useState, useCallback } from "react";
 
 export const useAffectations = () => {
   const [proposals, setProposals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
 
   const fetchAffectations = useCallback(async () => {
     setLoading(true);
@@ -11,37 +11,25 @@ export const useAffectations = () => {
     try {
       const res = await fetch("/api/affectations");
       const { success, data, message } = await res.json();
-      if (!success) {
-        throw new Error(
-          message || "Erreur lors de la récupération des affectations.",
-        );
-      }
+      if (!success) throw new Error(message || "Erreur lors de la récupération des affectations.");
       setProposals(data);
-      setLoading(false);
     } catch (err) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   }, []);
 
-  const analyseAffectations = useCallback(async (sessionId, programId) => {
+  const analyseAffectations = useCallback(async (sessionId, programId, topN = 5, minScore = 25) => {
     setLoading(true);
     setError(null);
-    if (!sessionId) {
-      setError("Veuillez sélectionner une session.");
-      setLoading(false);
-      return;
-    }
-    if (!programId) {
-      setError("Veuillez sélectionner un programme.");
-      setLoading(false);
-      return;
-    }
+    if (!sessionId) { setError("Veuillez sélectionner une session.");  setLoading(false); return; }
+    if (!programId) { setError("Veuillez sélectionner un programme."); setLoading(false); return; }
     try {
       const res = await fetch("/api/affectations/analyze", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, programId: programId }),
+        body:    JSON.stringify({ sessionId, programId, topN, minScore }),
       });
       const { success, data, message } = await res.json();
       if (!success) throw new Error(message);
@@ -58,59 +46,42 @@ export const useAffectations = () => {
 
   const updateAssignmentStatus = useCallback(async (id, statut) => {
     const res = await fetch(`/api/affectations/${id}`, {
-      method: "PATCH",
+      method:  "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ statut }),
+      body:    JSON.stringify({ statut }),
     });
     const result = await res.json().catch(() => ({}));
-    if (!res.ok || !result.success) {
-      throw new Error(result.message || "Echec mise a jour");
-    }
-    setProposals((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, statut } : p)),
-    );
+    if (!res.ok || !result.success) throw new Error(result.message || "Echec mise a jour");
+    setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, statut } : p)));
   }, []);
 
   const saveAdjustment = useCallback(async (id, updates) => {
     const res = await fetch(`/api/affectations/${id}/adjust`, {
-      method: "PATCH",
+      method:  "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ coursId: updates.cours.id, notes: updates.notes }),
+      body:    JSON.stringify({ coursId: updates.cours.id, notes: updates.notes }),
     });
     const result = await res.json().catch(() => ({}));
-    if (!res.ok || !result.success) {
-      throw new Error(result.message || "Echec sauvegarde ajustement");
-    }
+    if (!res.ok || !result.success) throw new Error(result.message || "Echec sauvegarde ajustement");
     setProposals((prev) =>
       prev.map((p) =>
-        p.id === id
-          ? {
-              ...p,
-              cours: updates.cours,
-              statut: "AJUSTEE",
-              notes: updates.notes,
-            }
-          : p,
-      ),
+        p.id === id ? { ...p, cours: updates.cours, statut: "AJUSTEE", notes: updates.notes ?? null } : p
+      )
     );
   }, []);
 
   const finalizeSessionAssignments = useCallback(async (sessionId) => {
     const res = await fetch("/api/affectations/finalize", {
-      method: "PATCH",
+      method:  "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId }),
+      body:    JSON.stringify({ sessionId }),
     });
     const result = await res.json().catch(() => ({}));
-    if (!res.ok || !result.success) {
-      throw new Error(result.message || "Echec finalisation des affectations");
-    }
+    if (!res.ok || !result.success) throw new Error(result.message || "Echec finalisation des affectations");
     setProposals((prev) =>
       prev.map((p) =>
-        p.sessionId === sessionId && p.statut === "AJUSTEE"
-          ? { ...p, statut: "FINALISEE" }
-          : p,
-      ),
+        p.sessionId === sessionId && p.statut === "AJUSTEE" ? { ...p, statut: "FINALISEE" } : p
+      )
     );
     return result;
   }, []);

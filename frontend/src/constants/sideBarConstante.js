@@ -31,6 +31,7 @@ export const NAV_ITEMS = [
   { icon: History,       label: "Historique",    href: "/dashboard/admin/history",           roles: ["ADMIN"],          group: "admin"   },
   { icon: Weight,        label: "Pondérations",  href: "/dashboard/admin/weights",           roles: ["ADMIN"],          group: "gestion" },
   { icon: ScrollText,    label: "Logs",          href: "/dashboard/admin/logs",              roles: ["ADMIN"],          group: "admin"   },
+  {icon: Users2,        label: "Programmes",    href: "/dashboard/admin/programs",          roles: ["ADMIN"],          group: "admin"   },
 ];
 
 export const HOME_ROUTES = ["/dashboard/admin", "/dashboard/rh", "/dashboard/professeur"];

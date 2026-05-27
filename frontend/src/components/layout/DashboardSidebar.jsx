@@ -10,9 +10,9 @@ import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
 import { NAV_ITEMS, GROUP_LABELS, GROUP_ORDER, HOME_ROUTES } from "@/constants/sideBarConstante.js";
 
 
-export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onLogout }) {
+export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onLogout, isMobileOpen = false, onMobileClose }) {
   const pathname = usePathname();
-    const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const filtered = NAV_ITEMS.filter((item) => role && item.roles.includes(role));
 
@@ -32,7 +32,9 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
         <aside className={`fixed top-0 left-0 h-screen z-50 flex flex-col
       bg-[linear-gradient(180deg,#4b9a5e_0%,#135d55,#1f6a5b_100%)]
       border-r border-white/10 shadow-[6px_0_20px_rgba(0,0,0,0.08)]
-      transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}
+      transition-all duration-300
+      ${isCollapsed ? "w-20" : "w-64"}
+      ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
     >
       <div className="absolute top-0 right-0 -translate-y-8 translate-x-12 w-64 h-64 border-30 border-white/5 rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-24 translate-y-1/2 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none" />
@@ -69,6 +71,7 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
                     key={item.href}
                     href={item.href}
                     title={isCollapsed ? item.label : undefined}
+                    onClick={onMobileClose}
                     className={`relative group flex items-center gap-3 rounded-xl transition-all duration-200
                       ${isCollapsed ? "justify-center px-2 py-2" : "px-3 py-2"}
                       ${active ? "bg-white/10 text-white" : "text-white/75 hover:text-white hover:bg-white/5"}`}

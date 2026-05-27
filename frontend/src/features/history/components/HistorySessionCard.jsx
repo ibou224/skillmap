@@ -1,19 +1,20 @@
 "use client";
 
-import { BookOpen, ChevronDown, ChevronUp, Mail, User } from "lucide-react";
+import { useState } from "react";
+import { BookOpen, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Mail, User } from "lucide-react";
+
+const ASSIGNMENTS_PER_PAGE = 50;
 
 const STATUT_STYLE = {
-  PROPOSEE: "bg-blue-50 text-blue-700 border-blue-200",
-  AJUSTEE: "bg-amber-50 text-amber-700 border-amber-200",
+  PROPOSEE:  "bg-blue-50 text-blue-700 border-blue-200",
+  AJUSTEE:   "bg-amber-50 text-amber-700 border-amber-200",
   FINALISEE: "bg-emerald-50 text-emerald-700 border-emerald-200",
 };
 
 function formatDate(value) {
   if (!value) return "-";
   return new Date(value).toLocaleDateString("fr-CA", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    year: "numeric", month: "short", day: "numeric",
   });
 }
 
@@ -23,12 +24,28 @@ function formatScore(score) {
 }
 
 export default function HistorySessionCard({ group, isOpen, onToggle }) {
-  const finalized = group.assignments.filter((item) => item.statut === "FINALISEE").length;
+  const [page, setPage] = useState(1);
+
+  const finalized    = group.assignments.filter((a) => a.statut === "FINALISEE").length;
+  const total        = group.assignments.length;
+  const totalPages   = Math.max(1, Math.ceil(total / ASSIGNMENTS_PER_PAGE));
+  const currentPage  = Math.min(page, totalPages);
+  const paginated    = group.assignments.slice(
+    (currentPage - 1) * ASSIGNMENTS_PER_PAGE,
+    currentPage * ASSIGNMENTS_PER_PAGE,
+  );
+
+  const handleToggle = () => {
+    // Revenir à la page 1 à chaque réouverture
+    if (!isOpen) setPage(1);
+    onToggle();
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      {/* En-tête accordion */}
       <button
-        onClick={onToggle}
+        onClick={handleToggle}
         className="w-full px-5 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition text-left"
       >
         <div>
@@ -45,13 +62,14 @@ export default function HistorySessionCard({ group, isOpen, onToggle }) {
 
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-3 text-xs text-slate-500">
-            <span>{group.assignments.length} affectation(s)</span>
-            <span>{finalized} finalisee(s)</span>
+            <span>{total} affectation{total > 1 ? "s" : ""}</span>
+            <span>{finalized} finalisée{finalized > 1 ? "s" : ""}</span>
           </div>
           {isOpen ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
         </div>
       </button>
 
+      {/* Corps — tableau paginé */}
       {isOpen && (
         <div className="border-t border-slate-100">
           <div className="overflow-x-auto">
@@ -67,7 +85,7 @@ export default function HistorySessionCard({ group, isOpen, onToggle }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {group.assignments.map((assignment) => (
+                {paginated.map((assignment) => (
                   <tr key={assignment.id} className="hover:bg-slate-50/70 transition">
                     <td className="px-5 py-4">
                       <div className="flex items-start gap-3">
@@ -124,6 +142,55 @@ export default function HistorySessionCard({ group, isOpen, onToggle }) {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pied de tableau — pagination */}
+          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/50">
+            <p className="text-xs text-slate-400">
+              {total} affectation{total > 1 ? "s" : ""} — page {currentPage} / {totalPages}
+            </p>
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage <= 1}
+                  className="p-1.5 rounded-lg hover:bg-slate-200 disabled:opacity-40 transition"
+                >
+                  <ChevronLeft className="w-4 h-4 text-slate-500" />
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                  .reduce((acc, p, i, arr) => {
+                    if (i > 0 && p - arr[i - 1] > 1) acc.push("…");
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((p, i) =>
+                    p === "…" ? (
+                      <span key={`e-${i}`} className="px-1 text-slate-400 text-xs">…</span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
+                          p === currentPage
+                            ? "bg-[hsl(134,35%,45%)] text-white"
+                            : "hover:bg-slate-200 text-slate-500"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage >= totalPages}
+                  className="p-1.5 rounded-lg hover:bg-slate-200 disabled:opacity-40 transition"
+                >
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

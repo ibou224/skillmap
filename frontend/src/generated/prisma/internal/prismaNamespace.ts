@@ -1726,7 +1726,7 @@ export const ExperienceScalarFieldEnum = {
   domaine: 'domaine',
   dateDebut: 'dateDebut',
   dateFin: 'dateFin',
-  Entreprise: 'Entreprise',
+  entreprise: 'entreprise',
   description: 'description',
   createdAt: 'createdAt'
 } as const
@@ -1852,6 +1852,7 @@ export const AssignmentScalarFieldEnum = {
   score: 'score',
   scoreDetail: 'scoreDetail',
   statut: 'statut',
+  notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

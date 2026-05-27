@@ -88,7 +88,7 @@ model Experience {
   domaine     String
   dateDebut   DateTime
   dateFin     DateTime?
-  Entreprise  String
+  entreprise  String   @map("Entreprise")
   description String?
   createdAt   DateTime  @default(now())
   professor   Professor @relation(fields: [professorId], references: [id])
@@ -205,6 +205,7 @@ model Assignment {
   score       Float
   scoreDetail Json
   statut      AssignmentStatut @default(PROPOSEE)
+  notes       String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   course      Course           @relation(fields: [courseId], references: [id])

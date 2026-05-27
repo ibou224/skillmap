@@ -162,13 +162,14 @@ async function getRHAffectations(professeurId, sessionId) {
 
 function flattenAssignments(assignments) {
   return assignments.map((a) => ({
-    id:           a.id,
-    sessionId:    a.sessionId,
-    sessionNom:   a.session?.nom    ?? null,
+    id:            a.id,
+    sessionId:     a.sessionId,
+    sessionNom:    a.session?.nom    ?? null,
     sessionStatut: a.session?.statut ?? null,
-    statut:       a.statut,
-    score:        a.score,
-    scoreDetail:  a.scoreDetail,
+    statut:        a.statut,
+    score:         a.score,
+    scoreDetail:   a.scoreDetail,
+    notes:         a.notes ?? null,
     cours: {
       id:         a.course.id,
       code:       a.course.code,

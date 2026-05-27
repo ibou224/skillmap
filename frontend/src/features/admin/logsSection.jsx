@@ -22,15 +22,15 @@ function formatDate(iso) {
 }
 
 const ACTION_STYLE = {
-  CREATE:       { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-400", label: "Création"     },
-  UPDATE:       { bg: "bg-blue-50",    text: "text-blue-700",    dot: "bg-blue-400",    label: "Modification"  },
-  DELETE:       { bg: "bg-red-50",     text: "text-red-700",     dot: "bg-red-400",     label: "Suppression"   },
-  LOGIN:        { bg: "bg-violet-50",  text: "text-violet-700",  dot: "bg-violet-400",  label: "Connexion"     },
-  LOGOUT:       { bg: "bg-slate-50",   text: "text-slate-600",   dot: "bg-slate-400",   label: "Déconnexion"   },
-  LOGIN_ATTEMPT:{ bg: "bg-orange-50",  text: "text-orange-700",  dot: "bg-orange-400",  label: "Tentative"     },
-  RESTORE:      { bg: "bg-amber-50",   text: "text-amber-700",   dot: "bg-amber-400",   label: "Restauration"  },
-  VALIDATE:     { bg: "bg-teal-50",    text: "text-teal-700",    dot: "bg-teal-400",    label: "Validation"    },
-  ANALYZE:      { bg: "bg-indigo-50",  text: "text-indigo-700",  dot: "bg-indigo-400",  label: "Analyse IA"    },
+  CREATE:        { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-400", label: "Création"     },
+  UPDATE:        { bg: "bg-blue-50",    text: "text-blue-700",    dot: "bg-blue-400",    label: "Modification"  },
+  DELETE:        { bg: "bg-red-50",     text: "text-red-700",     dot: "bg-red-400",     label: "Suppression"   },
+  LOGIN:         { bg: "bg-violet-50",  text: "text-violet-700",  dot: "bg-violet-400",  label: "Connexion"     },
+  LOGOUT:        { bg: "bg-slate-50",   text: "text-slate-600",   dot: "bg-slate-400",   label: "Déconnexion"   },
+  LOGIN_ATTEMPT: { bg: "bg-orange-50",  text: "text-orange-700",  dot: "bg-orange-400",  label: "Tentative"     },
+  RESTORE:       { bg: "bg-amber-50",   text: "text-amber-700",   dot: "bg-amber-400",   label: "Restauration"  },
+  VALIDATE:      { bg: "bg-teal-50",    text: "text-teal-700",    dot: "bg-teal-400",    label: "Validation"    },
+  ANALYZE:       { bg: "bg-indigo-50",  text: "text-indigo-700",  dot: "bg-indigo-400",  label: "Analyse IA"    },
 };
 
 function actionStyle(action) {
@@ -40,7 +40,6 @@ function actionStyle(action) {
     }
   );
 }
-
 
 function priorityStyle(action) {
   return ACTION_PRIORITY[action?.toUpperCase()] ?? { label: "Normale", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-400" };
@@ -100,8 +99,7 @@ function LogRow({ log }) {
   );
 }
 
-
-const ACTIONS      = Object.keys(ACTION_STYLE);
+const ACTIONS = Object.keys(ACTION_STYLE);
 
 export default function LogsSection() {
   const [logs, setLogs]         = useState([]);
@@ -139,15 +137,15 @@ export default function LogsSection() {
   // Filtrage client-side
   const q = search.toLowerCase();
   const filtered = logs.filter((log) => {
-    if (filterAction && log.action !== filterAction) return false;
+    if (filterAction     && log.action     !== filterAction)     return false;
     if (filterEntityType && log.entityType !== filterEntityType) return false;
     if (q) {
       return (
-        log.action?.toLowerCase().includes(q) ||
-        log.entityType?.toLowerCase().includes(q) ||
-        log.user?.email?.toLowerCase().includes(q) ||
-        log.user?.nom?.toLowerCase().includes(q) ||
-        log.user?.prenom?.toLowerCase().includes(q) ||
+        log.action?.toLowerCase().includes(q)            ||
+        log.entityType?.toLowerCase().includes(q)        ||
+        log.user?.email?.toLowerCase().includes(q)       ||
+        log.user?.nom?.toLowerCase().includes(q)         ||
+        log.user?.prenom?.toLowerCase().includes(q)      ||
         log.metadata?.message?.toLowerCase().includes(q)
       );
     }
@@ -160,18 +158,14 @@ export default function LogsSection() {
   const hasFilters  = search || filterAction || filterEntityType;
 
   const handleFilterChange = (setter) => (e) => { setter(e.target.value); setPage(1); };
-
   const resetFilters = () => {
-    setSearch("");
-    setFilterAction("");
-    setFilterEntityType("");
-    setPage(1);
+    setSearch(""); setFilterAction(""); setFilterEntityType(""); setPage(1);
   };
 
   return (
     <div className="space-y-6">
       {/* Bannière */}
-      <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-gradient-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
+      <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
