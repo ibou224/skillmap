@@ -1,41 +1,19 @@
-/**
- * @module api/admin/users/create
- * @description Route API de creation d'un utilisateur par un administrateur.
- */
-
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import bcrypt from "bcryptjs";
-import { isValidEmail, isValidPassword, isValidString,isValidRole } from "@/lib/validation.js";
-import { requireRole } from "@/lib/permission.js";
+import { isValidEmail, isValidPassword, isValidString, isValidRole } from "@/lib/validation.js";
+import { requireRole, getIp } from "@/lib/permission.js";
 
 /**
  * Crée un nouvel utilisateur dans le système.
  *
- * Réservé aux administrateurs. Si le rôle est PROFESSEUR, un profil
- * professeur est automatiquement créé en même temps.
- *
  * @route POST /api/admin/users/create
- *
- * @param {Request} request - La requête HTTP avec le corps JSON.
- *
- * @body {string}  email    - Adresse email de l'utilisateur (doit être unique).
- * @body {string}  password - Mot de passe (doit respecter les règles de sécurité).
- * @body {string}  nom      - Nom de famille (sans caractères spéciaux).
- * @body {string}  prenom   - Prénom (sans caractères spéciaux).
- * @body {string}  role     - Rôle attribué : `ADMIN`, `RH` ou `PROFESSEUR`.
- * @body {boolean} isActive - `true` pour activer le compte immédiatement.
- *
- * @returns {201} L'utilisateur créé (sans le mot de passe).
- * @returns {400} Champ manquant, nom/prénom/email/rôle/mot de passe invalide, ou référence introuvable (P2003).
- * @returns {401|403} Non connecté ou non administrateur.
- * @returns {409} Un compte existe déjà avec cet email (P2002).
- * @returns {500} Erreur interne du serveur.
+ * @access ADMIN
  */
 export async function POST(request) {
-    const {error} = await requireRole("ADMIN")
-    if(error) return error;
-  
+  const { session, error } = await requireRole("ADMIN");
+  if (error) return error;
+
   try {
     const { email, password, nom, prenom, role, isActive } = await request.json();
 
@@ -88,10 +66,7 @@ export async function POST(request) {
     const normalizedEmail = email.toLowerCase().trim();
     const normalizedRole = role.toUpperCase().trim();
 
-    const userUnique = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-    });
-
+    const userUnique = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (userUnique) {
       return NextResponse.json(
         { success: false, message: "Un utilisateur avec cette adresse email existe deja." },
@@ -112,23 +87,32 @@ export async function POST(request) {
         loginAttempts: 0,
       },
     });
-    
-    if(normalizedRole === "PROFESSEUR"){
-      await prisma.professor.create({
-        data:{
-          userId: newUser.id,
-        }
-      })
+
+    if (normalizedRole === "PROFESSEUR") {
+      await prisma.professor.create({ data: { userId: newUser.id } });
     }
 
     const { passwordHash: _, ...userWithoutPassword } = newUser;
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Utilisateur cree avec succes.",
-        user: userWithoutPassword,
+    await prisma.auditLog.create({
+      data: {
+        action: "CREATE",
+        entityType: "USER",
+        entityId: newUser.id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Nouvel utilisateur créé",
+          cible: normalizedEmail,
+          roleAssigne: normalizedRole,
+        },
+        ipAddress: getIp(request),
       },
+    });
+
+    return NextResponse.json(
+      { success: true, message: "Utilisateur cree avec succes.", user: userWithoutPassword },
       { status: 201 }
     );
   } catch (error) {

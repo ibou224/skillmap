@@ -5,8 +5,8 @@ import {
   BookOpen, User, ChevronDown, ChevronUp, Edit3,
   Target, Briefcase, GraduationCap, Clock,
 } from "lucide-react";
-import { cn, scoreBarColor, scoreTextColor } from "@/lib/utils_Affectation";
-import { STATUT } from "@/lib/constants-Affectation";
+import { cn, scoreBarColor, scoreTextColor } from "@/lib/utils";
+import { STATUT } from "@/constants/constantes";
 
 // ── Atome : badge de statut ───────────────────────────────────────────────────
 function StatusBadge({ statut }) {

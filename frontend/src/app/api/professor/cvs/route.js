@@ -1,3 +1,4 @@
+
 /**
  * @module api/professor/cvs
  * @description Route de mise à jour du profil CV d'un professeur authentifié.
@@ -15,9 +16,8 @@
 
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
-import { requireRole } from "@/lib/permission.js";
+import { requireRole, getIp } from "@/lib/permission.js";
 import { normalizeInfosProfessor } from "@/lib/formatData";
-
 
 /**
  * Met à jour le profil CV du professeur connecté.
@@ -74,10 +74,10 @@ export async function POST(request) {
     const professor = await prisma.professor.findUnique({
       where: { userId: session.user.id },
       include: {
-        skills:      { include: { skill: true } },
+        skills: { include: { skill: true } },
         experiences: true,
-        formations:  true,
-        user:        { select: { nom: true, prenom: true, email: true } },
+        formations: true,
+        user: { select: { nom: true, prenom: true, email: true } },
       },
     });
 
@@ -89,35 +89,42 @@ export async function POST(request) {
     }
 
     const result = await prisma.$transaction(async (tx) => {
-      // ── Snapshot de l'état actuel avant modification ──────────────────────
       const lastSnapshot = await tx.cvSnapshot.findFirst({
-        where:   { professorId: professor.id },
+        where: { professorId: professor.id },
         orderBy: { version: "desc" },
-        select:  { version: true },
+        select: { version: true },
       });
       await tx.cvSnapshot.create({
         data: {
           professorId: professor.id,
-          version:     (lastSnapshot?.version ?? 0) + 1,
-          label:       snapshotLabel ?? "Modification manuelle",
+          version: (lastSnapshot?.version ?? 0) + 1,
+          label: snapshotLabel ?? "Modification manuelle",
           data: {
-            telephone:   professor.telephone,
-            ville:       professor.ville,
-            siteWeb:     professor.siteWeb,
-            linkedin:    professor.linkedIn,
-            resume:      professor.resume,
-            langues:     professor.langues,
-            competences: professor.skills.map((s) => ({ nom: s.skill.nom, niveau: s.niveau })),
+            telephone: professor.telephone,
+            ville: professor.ville,
+            siteWeb: professor.siteWeb,
+            linkedin: professor.linkedIn,
+            resume: professor.resume,
+            langues: professor.langues,
+            competences: professor.skills.map((s) => ({
+              nom: s.skill.nom,
+              niveau: s.niveau,
+            })),
             experiences: professor.experiences.map((e) => ({
-              poste:       e.poste,
-              entreprise:  e.Entreprise,
-              debut:       e.dateDebut ? new Date(e.dateDebut).toISOString().slice(0, 7) : "",
-              fin:         e.dateFin   ? new Date(e.dateFin).toISOString().slice(0, 7)   : "",
+              poste: e.poste,
+              entreprise: e.Entreprise,
+              debut: e.dateDebut
+                ? new Date(e.dateDebut).toISOString().slice(0, 7)
+                : "",
+              fin: e.dateFin
+                ? new Date(e.dateFin).toISOString().slice(0, 7)
+                : "",
               description: e.description ?? "",
             })),
             formations: professor.formations.map((f) => ({
-              diplome:        f.diplome,
-              etablissement:  f.etablissement,
+              diplome: f.diplome,
+              niveauDiplome: f.niveauDiplome,
+              etablissement: f.etablissement,
               anneeObtention: String(f.anneeObtention),
             })),
           },
@@ -209,6 +216,11 @@ export async function POST(request) {
         }
       }
 
+      const { count: validatedCount } = await tx.cvExtraction.updateMany({
+        where: { professorId: professor.id, status: "EXTRACTED" },
+        data:  { status: "VALIDATED", validatedAt: new Date() },
+      });
+
       const updatedProfessor = await tx.professor.findUnique({
         where: { id: professor.id },
         include: {
@@ -237,6 +249,38 @@ export async function POST(request) {
           },
         },
       });
+      await tx.auditLog.create({
+        data: {
+          action: lastSnapshot ? "UPDATE" : "CREATE",
+          entityType: "CV",
+          entityId: professor.id,
+          metadata: {
+            email: session.user.email,
+            role: session.user.role,
+            message: lastSnapshot ? "nouveau CV soumis" : "Premier CV soumis",
+          },
+          ipAddress: getIp(request),
+          userId: session.user.id,
+        },
+      });
+
+      if (validatedCount > 0) {
+        await tx.auditLog.create({
+          data: {
+            action: "VALIDATE",
+            entityType: "CV",
+            entityId: professor.id,
+            metadata: {
+              email: session.user.email,
+              role: session.user.role,
+              message: "Mise a jour du CV après validation",
+            },
+            ipAddress: getIp(request),
+            userId: session.user.id,
+          },
+        });
+      }
+
       return updatedProfessor;
     });
 

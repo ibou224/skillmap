@@ -5,7 +5,7 @@ import {
   Home, LogOut, ChevronLeft, ChevronRight,
   BookOpen, ClipboardList, FileText,
   BarChart3, Lightbulb, Users, CalendarRange, Weight,
-  Users2, History,
+  Users2, History, ScrollText,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,8 +36,10 @@ const NAV_ITEMS = [
   { icon: Home,          label: "Accueil",       href: "/dashboard/admin",                   roles: ["ADMIN"],          group: "main"    },
   { icon: Users,         label: "Utilisateurs",  href: "/dashboard/admin/users",             roles: ["ADMIN"],          group: "admin"   },
   { icon: BookOpen,      label: "Cours",         href: "/dashboard/admin/courses",           roles: ["ADMIN"],          group: "admin"   },
+  { icon: Lightbulb,    label: "Compétences",   href: "/dashboard/admin/skills",            roles: ["ADMIN"],          group: "admin"   },
   { icon: ClipboardList, label: "Affectations",  href: "/dashboard/admin/affectations",      roles: ["ADMIN"],          group: "admin"   },
-    { icon: Weight,        label: "Pondérations",  href: "/dashboard/admin/weights",         roles:["ADMIN"],    group: "gestion" },
+  { icon: Weight,        label: "Pondérations",  href: "/dashboard/admin/weights",           roles: ["ADMIN"],          group: "gestion" },
+  { icon: ScrollText,    label: "Logs",          href: "/dashboard/admin/logs",              roles: ["ADMIN"],          group: "admin"   },
 ];
 
 const HOME_ROUTES = ["/dashboard/admin", "/dashboard/rh", "/dashboard/professeur"];
@@ -116,7 +118,7 @@ export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onL
                       </span>
                     )}
                     {active && (
-                      <span className={`w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)] shrink-0
+                      <span className={`w-2 h-2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)] shrink-0
                         ${isCollapsed ? "absolute top-1.5 right-1.5" : "ml-auto"}`} />
                     )}
                   </Link>

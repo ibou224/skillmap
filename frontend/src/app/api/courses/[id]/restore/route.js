@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
+import { requireRole, getIp } from '@/lib/permission.js';
 
 /**
  * Restaure un cours précédemment archivé.
@@ -16,7 +17,10 @@ import prisma from '@/lib/prisma.js';
  * @returns {404} Cours introuvable.
  * @returns {500} Erreur interne du serveur.
  */
-export async function POST(_, { params }) {
+export async function POST(request, { params }) {
+  const { session, error } = await requireRole("ADMIN", "RH");
+  if (error) return error;
+  
   const { id } = await params;
   try {
     const existing = await prisma.course.findUnique({ where: { id } });
@@ -28,6 +32,22 @@ export async function POST(_, { params }) {
       where:   { id },
       data:    { isArchived: false },
       include: { programs: { select: { id: true, nom: true } } },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        action: "UPDATE",
+        entityType: "COURS",
+        entityId: id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Cours restauré (désarchivé)",
+          nom: existing.nom,
+        },
+        ipAddress: getIp(request),
+      },
     });
 
     return NextResponse.json({ success: true, data: restored });

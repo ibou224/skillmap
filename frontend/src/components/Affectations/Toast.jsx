@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils_Affectation";
+import { cn } from "@/lib/utils";
 
 const STYLES = {
   success: "bg-emerald-50 border-emerald-200 text-emerald-800",

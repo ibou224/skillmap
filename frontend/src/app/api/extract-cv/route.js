@@ -14,6 +14,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getIp } from "@/lib/permission";
 
 const FASTAPI_URL =
   process.env.FASTAPI_INTERNAL_URL ||
@@ -89,6 +90,12 @@ export async function POST(request) {
       { status: 401 },
     );
   }
+  if (session.user.role !== "PROFESSEUR") {
+    return NextResponse.json(
+      { success: false, message: "Accès refusé." },
+      { status: 403 },
+    );
+  }
 
   const professor = await prisma.professor.findUnique({
     where: { userId: session.user.id },
@@ -132,6 +139,21 @@ export async function POST(request) {
       );
     }
     const result = await fastapiResponse.json().catch(() => ({}));
+
+    await prisma.auditLog.create({
+      data: {
+        action: "ANALYZE",
+        entityType: "CV",
+        entityId: professor.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Nouveau CV televerser",
+        },
+        ipAddress: getIp(request),
+        userId: session.user.id,
+      },
+    });
 
     return NextResponse.json({
       success: true,

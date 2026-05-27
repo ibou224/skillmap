@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireRole } from "@/lib/permission";
+import { requireRole, getIp } from "@/lib/permission";
 
 /**
  * Met à jour le statut d'une affectation.
@@ -21,8 +21,14 @@ import { requireRole } from "@/lib/permission";
  * @returns {404} Affectation introuvable.
  * @returns {500} Erreur interne du serveur.
  */
+const TRANSITIONS_VALIDES = {
+  PROPOSEE:  ["AJUSTEE", "FINALISEE"],
+  AJUSTEE:   ["FINALISEE"],
+  FINALISEE: [],
+};
+
 export async function PATCH(request, { params }) {
-  const { error } = await requireRole("RH", "ADMIN");
+  const { session, error } = await requireRole("RH", "ADMIN");
   if (error) return error;
 
   const { id } = params;
@@ -53,20 +59,40 @@ export async function PATCH(request, { params }) {
       );
     }
 
-    // 4. Mise à jour
+    if (!TRANSITIONS_VALIDES[existing.statut]?.includes(statut)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Transition invalide : ${existing.statut} → ${statut}.`,
+        },
+        { status: 400 }
+      );
+    }
+
     const updated = await prisma.assignment.update({
       where: { id },
-      data: { statut },
+      data:  { statut },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        action:     "UPDATE",
+        entityType: "AFFECTATION",
+        entityId:   id,
+        userId:     session.user.id,
+        metadata: {
+          email:    session.user.email,
+          role:     session.user.role,
+          message:  `Affectation passée de ${existing.statut} à ${statut}`,
+          ancienStatut:   existing.statut,
+          nouveauStatut:  statut,
+        },
+        ipAddress: getIp(request),
+      },
     });
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err) {
-    if (err.code === "P2025") {
-      return NextResponse.json(
-        { success: false, message: "Affectation introuvable." },
-        { status: 404 }
-      );
-    }
     console.error("Erreur mise à jour affectation :", err);
     return NextResponse.json(
       { success: false, message: err.message || "Erreur lors de la mise à jour." },

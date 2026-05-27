@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { X, Check } from "lucide-react";
-import { cn } from "@/lib/utils_Affectation";
-import { MOCK_COURSES } from "@/lib/constants-Affectation";
-import { scoreBarColor, scoreTextColor } from "@/lib/utils_Affectation";
+import { cn, scoreBarColor, scoreTextColor } from "@/lib/utils";
 import { useCourses } from "@/hooks/useCourses";
 
 // ── Mini barre de score (réutilisée dans le modal) ────────────────────────────

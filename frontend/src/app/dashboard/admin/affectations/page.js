@@ -1,4 +1,4 @@
-import AffectationPage from "../../Affectations/AffectationsPage";
+import AffectationPage from "@/features/affectations/AffectationsPage";
 export default function AffectationsAdminPage() {
   return <AffectationPage />;
 }

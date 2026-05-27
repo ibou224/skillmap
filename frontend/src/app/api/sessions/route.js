@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
+import { requireRole, getIp } from "@/lib/permission";
 
 /**
  * @module api/sessions
@@ -35,6 +36,9 @@ import prisma from "@/lib/prisma.js";
  * const { data: sessions } = await res.json();
  */
 export async function GET(request) {
+  const { error } = await requireRole("ADMIN", "RH");
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
@@ -113,10 +117,12 @@ export async function GET(request) {
  * @returns {NextResponse} 500 - Erreur interne du serveur.
  */
 export async function POST(request) {
+  const { session: authSession, error } = await requireRole("ADMIN", "RH");
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { nom, dateDebut, dateFin, saison, annee } = body;
-    console.log("Données reçues pour création de session:", body);
 
     // Validation : nom obligatoire
     if (!nom || typeof nom !== "string" || nom.trim() === "") {
@@ -193,6 +199,22 @@ export async function POST(request) {
         experiencePct: 25,
         formationPct: 20,
         historiquePct: 15,
+      },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        action: "CREATE",
+        entityType: "SESSION",
+        entityId: session.id,
+        userId: authSession.user.id,
+        metadata: {
+          email: authSession.user.email,
+          role: authSession.user.role,
+          message: "Session créée",
+          nom: session.nom,
+        },
+        ipAddress: getIp(request),
       },
     });
 

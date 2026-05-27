@@ -37,7 +37,7 @@
     "**/*.mts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/dashboard/admin/sections/usersSection.jsx", "src/components/Banner.jsx", "src/app/dashboard/admin/users/page.jsx"  ],
+, "src/app/dashboard/admin/sections/usersSection.jsx", "src/components/Banner.jsx", "src/app/dashboard/admin/users/page.js"  ],
 
   "exclude": [
     "node_modules"

@@ -1,4 +1,4 @@
-import LoginForm from '@/components/homePage/LoginForm.jsx';
+import LoginForm from '@/components/auth/LoginForm.jsx';
 import Image from 'next/image';
 import FooterLog from '@/components/layout/Footer.jsx';
 import { FileCheck2, Layers3, ShieldCheck, Globe } from 'lucide-react';

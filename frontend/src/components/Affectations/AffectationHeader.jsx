@@ -1,8 +1,8 @@
 "use client";
 
 import { Layers, Settings, Play, RefreshCw } from "lucide-react";
-import { cn } from "@/lib/utils_Affectation";
-import { PONDERATIONS_DEFAUT } from "@/lib/constants-Affectation";
+import { cn } from "@/lib/utils";
+import { PONDERATIONS_DEFAUT } from "@/constants/affectations";
 
 import { useEffect } from "react";
 
@@ -25,22 +25,22 @@ export default function AffectationHeader({
   const weightsValid = totalWeight === 100;
   
   return (
-    <header className="relative overflow-hidden bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-8 sm:px-8">
+    <header className="relative overflow-hidden bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55] px-6 py-8 sm:px-8">
       {/* Décor lumineux */}
-      <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-linear-to-br from-emerald-500/20 to-blue-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
 
       <div className="relative flex flex-col lg:flex-row lg:items-start justify-between gap-6">
         {/* Titre */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Layers className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
-              Responsable RH
+            <Layers className="w-4 h-4 text-white/70" />
+            <span className="text-xs font-bold uppercase tracking-widest text-white/70">
+              Gestion académique
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">Affectations Intelligentes</h1>
-          <p className="text-sm text-slate-400 mt-2 font-light max-w-xl">
-            Générez des propositions d'affectation optimisées grâce à l'algorithme de pondération configurable.
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Affectations des enseignants</h1>
+          <p className="text-sm text-white/70 mt-2 font-light max-w-xl">
+            Générez et pilotez les propositions d&apos;affectation des enseignants aux cours selon les critères de pondération configurés.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export default function AffectationHeader({
           <select
             value={sessionId}
             onChange={(e) => onSessionChange(e.target.value)}
-            className="px-3 py-2.5 text-sm bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/40 backdrop-blur-sm"
+            className="px-3 py-2.5 text-sm bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-white/40 backdrop-blur-sm"
             aria-label="Session"
           >
             <option value="" className="text-slate-800 bg-white">Choisissez une session .... </option>
@@ -63,7 +63,7 @@ export default function AffectationHeader({
           <select
             value={programId}
             onChange={(e) => onProgramChange(e.target.value)}
-            className="px-3 py-2.5 text-sm max-w-xs bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/40 backdrop-blur-sm"
+            className="px-3 py-2.5 text-sm max-w-xs bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-white/40 backdrop-blur-sm"
             aria-label="Programme"
           >
             <option value="" className="text-slate-800 bg-white">Choisissez un programme</option>
@@ -80,7 +80,7 @@ export default function AffectationHeader({
             className={cn(
               "p-2.5 border rounded-xl transition",
               showWeights
-                ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-400"
+                ? "bg-white/20 border-white/40 text-white"
                 : "bg-white/10 border-white/20 text-white/70 hover:text-white hover:bg-white/20"
             )}
             title="Configurer les pondérations"
@@ -94,7 +94,7 @@ export default function AffectationHeader({
           <button
             onClick={onRun}
             disabled={!sessionId || !programId || loading}
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-white transition shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl bg-white text-[hsl(134,35%,45%)] hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
             aria-busy={loading}
           >
             {loading
@@ -111,13 +111,13 @@ export default function AffectationHeader({
       {showWeights && (
         <div className="relative mt-5 p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
           <div className="flex items-center gap-2 mb-3">
-            <Settings className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm font-medium text-white">Pondérations de l'algorithme</span>
+            <Settings className="w-4 h-4 text-white/70" />
+            <span className="text-sm font-medium text-white">Pondérations de l&apos;algorithme</span>
             <span
               className={cn(
                 "text-xs px-2 py-0.5 rounded-full",
                 weightsValid
-                  ? "bg-emerald-500/20 text-emerald-300"
+                  ? "bg-white/20 text-white/90"
                   : "bg-amber-500/20 text-amber-300"
               )}
             >
@@ -132,7 +132,7 @@ export default function AffectationHeader({
                 <div key={key}>
                   <label
                     htmlFor={`w-${key}`}
-                    className="flex items-center gap-1.5 text-xs text-slate-300 mb-1.5"
+                    className="flex items-center gap-1.5 text-xs text-white/70 mb-1.5"
                   >
                     <Icon className="w-3 h-3" />
                     {cfg.label}
@@ -145,9 +145,9 @@ export default function AffectationHeader({
                       max={PONDERATIONS_DEFAUT[key].max}
                       value={cfg.weight}
                       onChange={(e) => onWeightChange(key, e.target.value)}
-                      className="w-16 px-2 py-1.5 text-xs bg-white/10 border border-white/20 text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                      className="w-16 px-2 py-1.5 text-xs bg-white/10 border border-white/20 text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-white/50"
                     />
-                    <span className="text-[11px] text-slate-500">
+                    <span className="text-[11px] text-white/50">
                       {PONDERATIONS_DEFAUT[key].min}–{PONDERATIONS_DEFAUT[key].max}%
                     </span>
                   </div>

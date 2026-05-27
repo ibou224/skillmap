@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireRole } from "@/lib/permission";
+import { requireRole, getIp } from "@/lib/permission";
 
 /**
  * Restaure une version précédente du CV.
- * Sauvegarde l'état actuel avant restauration, puis réapplique les données
- * du snapshot choisi.
+ * Sauvegarde l'état actuel avant restauration, puis réapplique les données du snapshot choisi.
  *
  * @route POST /api/professor/snapshots/[id]/restore
  * @access PROFESSEUR
  */
-export async function POST(_request, { params }) {
+export async function POST(request, { params }) {
   const { session, error } = await requireRole("PROFESSEUR");
   if (error) return error;
 
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const professor = await prisma.professor.findUnique({
@@ -43,7 +42,6 @@ export async function POST(_request, { params }) {
     const cv = snapshot.data;
 
     await prisma.$transaction(async (tx) => {
-      // Sauvegarder l'état actuel avant restauration
       const last = await tx.cvSnapshot.findFirst({
         where:   { professorId: professor.id },
         orderBy: { version: "desc" },
@@ -71,6 +69,7 @@ export async function POST(_request, { params }) {
             })),
             formations: professor.formations.map((f) => ({
               diplome:        f.diplome,
+              niveauDiplome:  f.niveauDiplome,
               etablissement:  f.etablissement,
               anneeObtention: String(f.anneeObtention),
             })),
@@ -78,7 +77,6 @@ export async function POST(_request, { params }) {
         },
       });
 
-      // Restaurer le profil de base
       await tx.professor.update({
         where: { id: professor.id },
         data: {
@@ -91,7 +89,6 @@ export async function POST(_request, { params }) {
         },
       });
 
-      // Restaurer expériences
       await tx.experience.deleteMany({ where: { professorId: professor.id } });
       if (cv.experiences?.length > 0) {
         await tx.experience.createMany({
@@ -107,21 +104,19 @@ export async function POST(_request, { params }) {
         });
       }
 
-      // Restaurer formations
       await tx.formation.deleteMany({ where: { professorId: professor.id } });
       if (cv.formations?.length > 0) {
         await tx.formation.createMany({
           data: cv.formations.map((f) => ({
             professorId:    professor.id,
             diplome:        f.diplome,
-            niveauDiplome:  "OTHER",
+            niveauDiplome:  f.niveauDiplome ?? "OTHER",
             etablissement:  f.etablissement,
             anneeObtention: parseInt(f.anneeObtention) || new Date().getFullYear(),
           })),
         });
       }
 
-      // Restaurer compétences
       await tx.professorSkill.deleteMany({ where: { professorId: professor.id } });
       for (const comp of (cv.competences ?? [])) {
         let skill = await tx.skill.findUnique({ where: { nom: comp.nom } });
@@ -140,6 +135,21 @@ export async function POST(_request, { params }) {
           },
         });
       }
+
+      await tx.auditLog.create({
+        data: {
+          action: "UPDATE",
+          entityType: "CV",
+          entityId: professor.id,
+          userId: session.user.id,
+          metadata: {
+            email: session.user.email,
+            role: session.user.role,
+            message: `CV restauré à la version ${snapshot.version} — "${snapshot.label}"`,
+          },
+          ipAddress: getIp(request),
+        },
+      });
     });
 
     return NextResponse.json({

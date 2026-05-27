@@ -1,6 +1,6 @@
 import { Layers, AlertCircle, Edit3, Check, Award } from "lucide-react";
-import { cn } from "@/lib/utils_Affectation";
-import { STATUT } from "@/lib/constants-Affectation";
+import { cn } from "@/lib/utils";
+import { STATUT } from "@/constants/constantes";
 
 /**
  * Bande de 5 cartes : Total, Proposées, Ajustées, Finalisées, Score moyen.

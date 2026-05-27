@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { isValidString } from "@/lib/validation.js";
-import { requireRole } from "@/lib/permission.js";
+import { requireRole, getIp } from "@/lib/permission.js";
 
 /**
  * Modifie un cours existant.
@@ -26,7 +26,7 @@ import { requireRole } from "@/lib/permission.js";
  * @returns {500} Erreur interne du serveur.
  */
 export async function PUT(request, { params }) {
-  const { error } = await requireRole("ADMIN");
+  const { session, error } = await requireRole("ADMIN");
   if (error) return error;
 
   try {
@@ -41,7 +41,7 @@ export async function PUT(request, { params }) {
     const body = await request.json();
     const { nom, code, programIds, etape } = body;
 
-    if (nom !== undefined && !isValidString(nom)) {
+    if (nom !== undefined && !isValidString(nom).valid) {
       return NextResponse.json(
         { success: false, message: "Nom invalide (caractères spéciaux interdits)." },
         { status: 400 }
@@ -82,6 +82,23 @@ export async function PUT(request, { params }) {
       },
     });
 
+    await prisma.auditLog.create({
+      data: {
+        action: "UPDATE",
+        entityType: "COURS",
+        entityId: id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Cours mis à jour",
+          nom: updatedCourse.nom,
+          isArchived: updatedCourse.isArchived,
+        },
+        ipAddress: getIp(request),
+      },
+    });
+
     return NextResponse.json({
       success: true,
       message: "Cours mis à jour avec succès.",
@@ -114,7 +131,7 @@ export async function PUT(request, { params }) {
  * @returns {500} Erreur interne du serveur.
  */
 export async function DELETE(request, { params }) {
-  const { error } = await requireRole("ADMIN");
+  const { session, error } = await requireRole("ADMIN");
   if (error) return error;
 
   try {
@@ -137,6 +154,22 @@ export async function DELETE(request, { params }) {
     await prisma.course.update({
       where: { id },
       data: { isArchived: true },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        action: "DELETE",
+        entityType: "COURS",
+        entityId: id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Cours archivé",
+          nom: course.nom,
+        },
+        ipAddress: getIp(request),
+      },
     });
 
     return NextResponse.json({

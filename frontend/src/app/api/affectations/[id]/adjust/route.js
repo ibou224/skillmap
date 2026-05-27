@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireRole } from "@/lib/permission";
+import { requireRole, getIp } from "@/lib/permission";
 
 /**
  * Ajuste le cours associé à une affectation existante.
@@ -22,7 +22,7 @@ import { requireRole } from "@/lib/permission";
  * @returns {500} Erreur interne du serveur.
  */
 export async function PATCH(request, { params }) {
-  const { error } = await requireRole("RH", "ADMIN");
+  const { session, error } = await requireRole("RH", "ADMIN");
   if (error) return error;
 
   const { id } = params;
@@ -45,7 +45,6 @@ export async function PATCH(request, { params }) {
   }
 
   try {
-
     const existingAssignment = await prisma.assignment.findUnique({ where: { id } });
     if (!existingAssignment) {
       return NextResponse.json(
@@ -54,7 +53,13 @@ export async function PATCH(request, { params }) {
       );
     }
 
-    // Vérifier que le cours existe
+    if (existingAssignment.statut === "FINALISEE") {
+      return NextResponse.json(
+        { success: false, message: "Une affectation finalisée ne peut pas être ajustée." },
+        { status: 400 }
+      );
+    }
+
     const course = await prisma.course.findUnique({ where: { id: coursId } });
     if (!course) {
       return NextResponse.json(
@@ -63,11 +68,50 @@ export async function PATCH(request, { params }) {
       );
     }
 
+    if (course.isArchived) {
+      return NextResponse.json(
+        { success: false, message: "Impossible d'affecter un cours archivé." },
+        { status: 400 }
+      );
+    }
+
+    const conflict = await prisma.assignment.findUnique({
+      where: {
+        sessionId_professorId_courseId: {
+          sessionId:   existingAssignment.sessionId,
+          professorId: existingAssignment.professorId,
+          courseId:    coursId,
+        },
+      },
+    });
+    if (conflict && conflict.id !== id) {
+      return NextResponse.json(
+        { success: false, message: "Ce professeur est déjà affecté à ce cours pour cette session." },
+        { status: 409 }
+      );
+    }
+
     const updated = await prisma.assignment.update({
       where: { id },
+      data:  { courseId: coursId, statut: "AJUSTEE" },
+    });
+
+    await prisma.auditLog.create({
       data: {
-        courseId: coursId,
-        statut: "AJUSTEE",
+        action:     "UPDATE",
+        entityType: "AFFECTATION",
+        entityId:   id,
+        userId:     session.user.id,
+        metadata: {
+          email:         session.user.email,
+          role:          session.user.role,
+          message:       "Affectation ajustée manuellement",
+          ancienCoursId: existingAssignment.courseId,
+          nouveauCoursId: coursId,
+          ancienStatut:  existingAssignment.statut,
+          nouveauStatut: "AJUSTEE",
+        },
+        ipAddress: getIp(request),
       },
     });
 

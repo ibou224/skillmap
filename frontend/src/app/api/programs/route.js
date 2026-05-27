@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma.js';
+import prisma from '@/lib/prisma.js';
 
 /**
  * Route GET /api/programmes
@@ -25,7 +25,7 @@ import { prisma } from '@/lib/prisma.js';
  */
 export async function GET() {
   try {
-    const programmes = await prisma.Program.findMany({
+    const programmes = await prisma.program.findMany({
       include: {
         departement: {
           select: {
