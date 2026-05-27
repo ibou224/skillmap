@@ -1,8 +1,8 @@
 "use client";
 
-import { Users, RefreshCw } from "lucide-react";
+import { Users, RefreshCw, Play } from "lucide-react";
 
-export default function AffHeader({ sessionActive, onRefresh, loading }) {
+export default function AffHeader({ sessionActive, onRefresh, onLancer, loading, launching }) {
   return (
     <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
       <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/10 pointer-events-none" />
@@ -21,6 +21,14 @@ export default function AffHeader({ sessionActive, onRefresh, loading }) {
               {sessionActive.nom} — Active
             </span>
           )}
+          <button
+            onClick={onLancer}
+            disabled={launching || !sessionActive}
+            className="px-4 py-2 bg-white text-[hsl(134,35%,45%)] hover:bg-white/90 rounded-xl text-sm font-bold flex items-center gap-2 transition disabled:opacity-50"
+          >
+            <Play size={14} className={launching ? "animate-spin" : ""} />
+            {launching ? "Calcul en cours..." : "Lancer l'affectation"}
+          </button>
           <button
             onClick={onRefresh}
             disabled={loading}

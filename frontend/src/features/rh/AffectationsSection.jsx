@@ -15,9 +15,32 @@ export default function AffectationsSection() {
   const { sessions, fetchSessions } = useSessions();
 
   const [selectedSession, setSelectedSession] = useState(null);
-  const [search, setSearch]                   = useState("");
-  const [filterStatut, setFilterStatut]       = useState("");
-  const [expanded, setExpanded]               = useState(null);
+  const [search, setSearch] = useState("");
+  const [filterStatut, setFilterStatut] = useState("");
+  const [expanded, setExpanded] = useState(null);
+  const [launching, setLaunching] = useState(false);
+
+  const handleLancer = async () => {
+    if (!selectedSession) return;
+    setLaunching(true);
+    try {
+      const res = await fetch("/api/affectations/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: selectedSession }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchAffectations();
+      } else {
+        console.error("Erreur lancement affectation :", data.message);
+      }
+    } catch (err) {
+      console.error("Erreur :", err);
+    } finally {
+      setLaunching(false);
+    }
+  };
 
   useEffect(() => {
     fetchAffectations();
@@ -70,7 +93,13 @@ export default function AffectationsSection() {
 
   return (
     <div className="space-y-6">
-      <AffHeader sessionActive={sessionActive} onRefresh={handleRefresh} loading={loading} />
+      <AffHeader
+        sessionActive={sessionActive}
+        onRefresh={handleRefresh}
+        onLancer={handleLancer}
+        loading={loading}
+        launching={launching}
+      />
 
       {sessions.length > 0 && (
         <SessionTabs sessions={sessions} selected={selectedSession} onChange={handleSessionChange} />

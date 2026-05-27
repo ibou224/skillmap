@@ -158,7 +158,7 @@ export async function POST(request) {
     const timeoutId  = setTimeout(() => controller.abort(), 60_000);
     let backendRes;
     try {
-      backendRes = await fetch(`${BACKEND_URL}/calculate-assignments/run`, {
+      backendRes = await fetch(`${BACKEND_URL}/calculate-assignments/`, {
         method:  "POST",
         headers: {
           "Content-Type":       "application/json",
