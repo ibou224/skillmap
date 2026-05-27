@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { CheckCheck, Search } from "lucide-react";
 import { STATUT } from "@/constants/constantes";
 
 export default function AffectationToolbar({
@@ -8,6 +8,9 @@ export default function AffectationToolbar({
   onSearchChange,
   filterStatut,
   onFilterChange,
+  onFinalizeAll,
+  canFinalizeAll = false,
+  finalizeDisabledReason = "",
 }) {
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
@@ -36,6 +39,17 @@ export default function AffectationToolbar({
               <option key={k} value={k}>{s.label}</option>
             ))}
           </select>
+
+          <button
+            type="button"
+            onClick={onFinalizeAll}
+            disabled={!canFinalizeAll}
+            title={!canFinalizeAll ? finalizeDisabledReason : "Finaliser toutes les affectations ajustees"}
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            <CheckCheck className="w-4 h-4" />
+            Finaliser toutes
+          </button>
 
         </div>
       </div>

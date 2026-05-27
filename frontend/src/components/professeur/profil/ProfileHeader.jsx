@@ -1,36 +1,38 @@
-// components/ProfileHeader.jsx
-import { RefreshCw, Edit3 } from "lucide-react";
+import { RefreshCw, Edit3, Briefcase, Lightbulb, GraduationCap, Languages } from "lucide-react";
 import Link from "next/link";
 
-export default function ProfileHeader({
-  prenom,
-  nom,
-  titre = "Professeure en informatique",
-  totalExp,
-  competencesCount,
-  formationsCount,
-  languesCount,
-  onRefresh,
-  editLink = "/dashboard/professeur/cv",
-}) {
+const STATS = [
+  { icon: Briefcase,     key: "experiences",  label: "Expériences" },
+  { icon: Lightbulb,     key: "competences",  label: "Compétences" },
+  { icon: GraduationCap, key: "formations",   label: "Formations"  },
+  { icon: Languages,     key: "langues",      label: "Langues"     },
+];
+
+export default function ProfileHeader({ user, onRefresh, editLink = "/dashboard/professeur/cv" }) {
+  const initials = `${user.prenom?.[0] ?? ""}${user.nom?.[0] ?? ""}`.toUpperCase();
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55] p-8 md:p-10 shadow-lg">
-      {/* Cercles décoratifs */}
+    <div className="relative overflow-hidden rounded-3xl p-8 md:p-10 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
       <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full border border-white/5" />
       <div className="pointer-events-none absolute -bottom-32 -left-16 w-64 h-64 rounded-full border border-white/5" />
 
-      <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/50 mb-3">
-            Mon profil
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-            {prenom} {nom}
-          </h1>
-          <p className="text-sm text-white/50 mt-2 font-light">{titre}</p>
+      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        {/* Avatar + identité */}
+        <div className="flex items-center gap-5">
+          <div className="w-20 h-20 rounded-2xl bg-white/15 border border-white/20 text-white text-3xl font-black flex items-center justify-center select-none shrink-0">
+            {initials}
+          </div>
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/50 mb-1.5">Mon profil</p>
+            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-none">
+              {user.prenom} {user.nom}
+            </h1>
+            <p className="text-sm text-white/50 mt-1.5 font-light">Professeur · Informatique</p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 self-start lg:self-end">
+        {/* Actions */}
+        <div className="flex items-center gap-3 sm:self-start">
           {onRefresh && (
             <button
               onClick={onRefresh}
@@ -51,16 +53,18 @@ export default function ProfileHeader({
       </div>
 
       {/* Stats */}
-      <div className="relative mt-10 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { value: `${totalExp * 4} ans`, label: "Expérience" },
-          { value: competencesCount, label: "Compétences" },
-          { value: formationsCount, label: "Formations" },
-          { value: languesCount, label: "Langues" },
-        ].map(({ value, label }) => (
-          <div key={label} className="text-center sm:text-left">
-            <p className="text-xl font-bold text-white">{value}</p>
-            <p className="text-xs text-white/50 mt-1">{label}</p>
+      <div className="relative mt-8 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {STATS.map(({ icon: Icon, key, label }) => (
+          <div key={key} className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+              <Icon className="w-4 h-4 text-white/70" />
+            </div>
+            <div>
+              <p className="text-2xl font-black text-white leading-none">
+                {user[key]?.length ?? 0}
+              </p>
+              <p className="text-[11px] text-white/50 mt-0.5">{label}</p>
+            </div>
           </div>
         ))}
       </div>

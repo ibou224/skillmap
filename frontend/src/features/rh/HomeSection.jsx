@@ -33,6 +33,7 @@ export default function RhHomeSection() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchProfessors(); }, [fetchProfessors]);
 
   const total      = professors.length;

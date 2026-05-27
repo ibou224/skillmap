@@ -275,7 +275,7 @@ export default function CourseForm({
           {selectedSkillsCount === 0 ? (
             <div className="border border-dashed border-gray-300 rounded-xl p-6 text-center bg-gray-50/30">
               <p className="text-gray-500 text-sm">Aucune compétence requise définie.</p>
-              <p className="text-gray-400 text-xs mt-1">Cliquez sur "Ajouter une compétence" pour en spécifier.</p>
+              <p className="text-gray-400 text-xs mt-1">Cliquez sur &quot;Ajouter une compétence&quot; pour en spécifier.</p>
             </div>
           ) : (
             <div className="space-y-2">

@@ -51,9 +51,8 @@ export default function useSkills() {
     return data;
   }, []);
 
-  useEffect(() => {
-    fetchSkills();
-  }, [fetchSkills]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { fetchSkills(); }, [fetchSkills]);
 
   return { skills, error, isLoading, fetchSkills, createSkill, updateSkill, deleteSkill };
 }

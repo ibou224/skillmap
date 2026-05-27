@@ -8,7 +8,7 @@
 import React from "react";
 import { Button } from "../ui/Button";
 import { SAISONS } from "@/constants/constantes";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   X,
   Save,
@@ -37,7 +37,11 @@ export default function AddSessionForm({
     return Array.from({ length: 6 }, (_, i) => currentYear + i);
   }, []);
 
-  const [localError, setLocalError] = useState("");
+  const dateError =
+    formData.dateDebut && formData.dateFin &&
+    new Date(formData.dateFin) < new Date(formData.dateDebut)
+      ? "La date de fin doit être supérieure à la date de début"
+      : "";
 
   // --- STYLES RÉUTILISABLES ---
   const inputBaseClasses =
@@ -67,19 +71,6 @@ export default function AddSessionForm({
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     return `${weeks} semaines (${days} jours)`;
   };
-
-  useEffect(() => {
-    if (formData.dateDebut && formData.dateFin) {
-      const end = new Date(formData.dateFin);
-      const start = new Date(formData.dateDebut);
-      const diff = end - start;
-      if (diff < 0) {
-        setLocalError("La date de fin doit être supérieure à la date de début");
-      } else {
-        setLocalError("");
-      }
-    }
-  }, [formData.dateDebut, formData.dateFin]);
 
   if (!open) return null;
   return (
@@ -115,14 +106,11 @@ export default function AddSessionForm({
         </div>
 
                   {/* Alerte d'erreur */}
-          {(localError || error) && (
+          {(dateError || error) && (
             <div className="absolute top-50 left-1/2 -translate-x-1/2 animate-in fade-in slide-in-from-top-2">
               <ErrorAlert
-                message={localError || error}
-                onClose={() => {
-                  setLocalError("");
-                  onErrorClose();
-                }}
+                message={dateError || error}
+                onClose={onErrorClose}
               />
             </div>
           )}

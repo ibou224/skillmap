@@ -8,15 +8,16 @@ import AffectationToolbar from "@/components/affectations/AffectationToolbar";
 import ProposalTable from "@/components/affectations/ProposalTable";
 import AjustementModal from "@/components/affectations/AjustementModal";
 import Toast from "@/components/affectations/Toast";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import { PONDERATIONS_DEFAUT } from "@/constants/affectations";
 import { useSessions } from "@/hooks/useSessions";
 import { useWeights } from "@/hooks/useWeights";
 import { useAffectations } from "@/hooks/useAffectations";
-import {useCourses} from "@/hooks/useCourses";
+import { useCourses } from "@/hooks/useCourses";
 
 export default function AffectationPage() {
   const { sessions, fetchSessions } = useSessions();
-  const { programmes, fetchProgrammes,courses } = useCourses();
+  const { programmes, fetchProgrammes, courses, fetchCourses } = useCourses();
   const {
     analyseAffectations,
     fetchAffectations,
@@ -25,6 +26,7 @@ export default function AffectationPage() {
     error,
     updateAssignmentStatus,
     saveAdjustment,
+    finalizeSessionAssignments,
   } = useAffectations();
   const { updateWeight, fetchWeights } = useWeights();
 
@@ -36,6 +38,9 @@ export default function AffectationPage() {
   const [filterStatut, setFilterStatut] = useState("");
   const [expandedId, setExpandedId] = useState(null);
   const [editProposal, setEditProposal] = useState(null);
+  const [pendingAdjustment, setPendingAdjustment] = useState(null);
+  const [confirmFinalizeAll, setConfirmFinalizeAll] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [showWeights, setShowWeights] = useState(false);
 
@@ -46,7 +51,8 @@ export default function AffectationPage() {
     fetchSessions();
     fetchAffectations();
     fetchProgrammes();
-  }, [fetchAffectations,fetchSessions,fetchProgrammes]);
+    fetchCourses();
+  }, [fetchAffectations, fetchSessions, fetchProgrammes, fetchCourses]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -89,6 +95,24 @@ export default function AffectationPage() {
       return matchSearch && (!filterStatut || p.statut === filterStatut);
     });
   }, [proposalsForSession, search, filterStatut]);
+
+  const finalizeInfo = useMemo(() => {
+    const proposed = proposalsForSession.filter((p) => p.statut === "PROPOSEE").length;
+    const adjusted = proposalsForSession.filter((p) => p.statut === "AJUSTEE").length;
+    const finalized = proposalsForSession.filter((p) => p.statut === "FINALISEE").length;
+
+    if (!sessionId) {
+      return { canFinalize: false, reason: "Sélectionnez une session.", proposed, adjusted, finalized };
+    }
+    if (proposalsForSession.length === 0) {
+      return { canFinalize: false, reason: "Aucune affectation à finaliser.", proposed, adjusted, finalized };
+    }
+    if (adjusted === 0) {
+      return { canFinalize: false, reason: "Aucune affectation ajustée à finaliser.", proposed, adjusted, finalized };
+    }
+
+    return { canFinalize: true, reason: "", proposed, adjusted, finalized };
+  }, [proposalsForSession, sessionId]);
 
   const handleRun = useCallback(async () => {
     if (!sessionId || !programId) {
@@ -148,17 +172,41 @@ export default function AffectationPage() {
   );
 
   const handleSaveAdjustment = useCallback(
-    async (id, updates) => {
-      try {
-        await saveAdjustment(id, updates);
-        setToast({ message: "Ajustement enregistré", type: "success" });
-        setEditProposal(null);
-      } catch (err) {
-        setToast({ message: err.message, type: "error" });
-      }
+    (id, updates) => {
+      setPendingAdjustment({ id, updates });
     },
-    [saveAdjustment]
+    []
   );
+
+  const handleConfirmAdjustment = useCallback(async () => {
+    if (!pendingAdjustment) return;
+    setActionLoading(true);
+    try {
+      await saveAdjustment(pendingAdjustment.id, pendingAdjustment.updates);
+      setToast({ message: "Ajustement enregistre", type: "success" });
+      setEditProposal(null);
+      setPendingAdjustment(null);
+    } catch (err) {
+      setToast({ message: err.message, type: "error" });
+    } finally {
+      setActionLoading(false);
+    }
+  }, [pendingAdjustment, saveAdjustment]);
+
+  const handleFinalizeAll = useCallback(async () => {
+    if (!sessionId) return;
+    setActionLoading(true);
+    try {
+      const result = await finalizeSessionAssignments(sessionId);
+      setExpandedId(null);
+      setConfirmFinalizeAll(false);
+      setToast({ message: result.message || "Affectations finalisees", type: "success" });
+    } catch (err) {
+      setToast({ message: err.message, type: "error" });
+    } finally {
+      setActionLoading(false);
+    }
+  }, [finalizeSessionAssignments, sessionId]);
 
   const handleWeightChange = useCallback((key, value) => {
     const n = parseInt(value, 10);
@@ -206,6 +254,9 @@ export default function AffectationPage() {
             onSearchChange={setSearch}
             filterStatut={filterStatut}
             onFilterChange={setFilterStatut}
+            onFinalizeAll={() => setConfirmFinalizeAll(true)}
+            canFinalizeAll={finalizeInfo.canFinalize && !actionLoading}
+            finalizeDisabledReason={finalizeInfo.reason}
           />
         )}
 
@@ -224,11 +275,30 @@ export default function AffectationPage() {
       </main>
 
       <AjustementModal
+        key={editProposal?.id ?? "closed-adjustment"}
         isOpen={!!editProposal}
         proposal={editProposal}
         onClose={() => setEditProposal(null)}
         onSave={handleSaveAdjustment}
         courses={courses}
+      />
+
+      <ConfirmModal
+        isOpen={!!pendingAdjustment}
+        title="Confirmer l'ajustement"
+        message="Cette action changera le cours de l'affectation et passera son statut a AJUSTEE. L'action sera inscrite au journal d'audit."
+        onConfirm={handleConfirmAdjustment}
+        onCancel={() => setPendingAdjustment(null)}
+        isLoading={actionLoading}
+      />
+
+      <ConfirmModal
+        isOpen={confirmFinalizeAll}
+        title="Finaliser toutes les affectations"
+        message={`Cette action finalisera ${finalizeInfo.adjusted} affectation(s) ajustee(s) pour la session selectionnee. Les affectations finalisees ne pourront plus etre ajustees.`}
+        onConfirm={handleFinalizeAll}
+        onCancel={() => setConfirmFinalizeAll(false)}
+        isLoading={actionLoading}
       />
 
       {toast && (

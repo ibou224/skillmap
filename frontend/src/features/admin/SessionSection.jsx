@@ -74,9 +74,6 @@ export default function SessionSection() {
   }, [showForm]);
 
 
-  // ═══════════════════════════════════════
-  //  VALEURS DÉRIVÉES & HANDLERS
-  // ═══════════════════════════════════════
 useEffect(() => {
   const timer = setTimeout(() => {
     setCurrentPage(1);
@@ -89,10 +86,6 @@ useEffect(() => {
     setCurrentPage(newPage);
     fetchSessions({ ...filters, page: newPage, limit: itemsPerPage });
   };
-
-  // ═══════════════════════════════════════
-  //  HANDLERS
-  // ═══════════════════════════════════════
 
   const openCreate = () => {
     setEditingSession(null);
@@ -316,7 +309,6 @@ useEffect(() => {
         )}
       </div>
 
-      {/* ── MODALE FORMULAIRE ── */}
       <AddSessionForm
         open={showForm}
         onClose={() => setShowForm(false)}
@@ -329,11 +321,10 @@ useEffect(() => {
         onErrorClose={() => setLocalError("")}
       />
 
-      {/* ── MODALE CONFIRMATION SUPPRESSION ── */}
       <ConfirmModal
         isOpen={sessionToDelete !== null}
         title="Supprimer la session"
-        message={`Êtes-vous sûr de vouloir supprimer la session "${sessionToDelete?.nom}" ? Les groupes associés seront également supprimés.`}
+        message={`Êtes-vous sûr de vouloir supprimer la session "${sessionToDelete?.nom}" ?.`}
         onConfirm={handleDelete}
         onCancel={() => setSessionToDelete(null)}
         isLoading={isDeleting}

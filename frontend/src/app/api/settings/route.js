@@ -4,15 +4,12 @@ import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma.js";
 import { auth } from "@/lib/auth.js";
 import { getIp } from "@/lib/permission.js";
+import { requireRole } from "@/lib/permission.js";
 
 export async function PATCH(request) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json(
-      { success: false, message: "Non authentifié." },
-      { status: 401 },
-    );
-  }
+  const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
+  if (error) return error;
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -81,13 +78,9 @@ export async function PATCH(request) {
 }
 
 export async function PUT(request) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json(
-      { success: false, message: "Non authentifié." },
-      { status: 401 },
-    );
-  }
+  const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
+  if (error) return error;
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },

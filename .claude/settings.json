@@ -36,7 +36,9 @@
       "Bash(sed -i 's|@/features/professeur/components/|@/components/professeur/|g' c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/features/professeur/AffectationSection.jsx c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/features/professeur/CompetencesSection.jsx c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/features/professeur/cvStatutSection.jsx c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/features/professeur/HomeSection.jsx c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/features/professeur/ProfilSection.jsx)",
       "Bash(BASE=\"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur\" *)",
       "Bash(mv \"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur/Affectation/\"*.jsx \"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur/affectation/\" && rm -rf \"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur/Affectation\")",
-      "Bash(xargs grep -l \"dashboard/rh\\\\|features/rh\")"
+      "Bash(xargs grep -l \"dashboard/rh\\\\|features/rh\")",
+      "Bash(git mv *)",
+      "Bash(npx eslint *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\tiamk\\Desktop\\Gestion_Cv\\skillmap\\frontend\\src\\app\\dashboard\\admin\\sections",

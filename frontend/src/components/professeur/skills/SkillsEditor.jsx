@@ -3,70 +3,75 @@
 import { Plus, Trash2 } from "lucide-react";
 
 const NIVEAUX = [
-  { value: "DEBUTANT",      label: "Débutant" },
-  { value: "INTERMEDIAIRE", label: "Intermédiaire" },
-  { value: "AVANCE",        label: "Avancé" },
+  { value: "DEBUTANT",      short: "Débutant",      active: "bg-slate-600 text-white",    idle: "text-slate-400" },
+  { value: "INTERMEDIAIRE", short: "Intermédiaire",  active: "bg-blue-600 text-white",     idle: "text-slate-400" },
+  { value: "AVANCE",        short: "Avancé",         active: "bg-emerald-600 text-white",  idle: "text-slate-400" },
 ];
 
-/**
- * Éditeur de compétences avec niveau de maîtrise.
- *
- * Chaque compétence est un objet `{ nom: string, niveau: string }`.
- * Le niveau est sélectionnable parmi DEBUTANT, INTERMEDIAIRE, AVANCE.
- *
- * @param {Array<{ nom: string, niveau: string }>} items
- * @param {Function} onChange - Appelé avec le nouveau tableau à chaque modification.
- */
 export function SkillsEditor({ items = [], onChange }) {
-  const update = (index, field, value) => {
-    const updated = items.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item
-    );
-    onChange(updated);
-  };
-
-  const add = () => {
-    onChange([...items, { nom: "", niveau: "DEBUTANT" }]);
-  };
-
-  const remove = (index) => {
-    onChange(items.filter((_, i) => i !== index));
-  };
+  const update = (index, field, value) =>
+    onChange(items.map((item, i) => (i === index ? { ...item, [field]: value } : item)));
+  const add    = () => onChange([...items, { nom: "", niveau: "DEBUTANT" }]);
+  const remove = (index) => onChange(items.filter((_, i) => i !== index));
 
   return (
-    <div className="space-y-2">
-      {items.map((item, idx) => (
-        <div key={idx} className="flex gap-2 items-center">
-          <input
-            value={item.nom}
-            onChange={(e) => update(idx, "nom", e.target.value)}
-            placeholder="Ex : React, Python…"
-            className="flex-1 px-2 py-1 text-sm border border-slate-200 rounded-lg"
-          />
-          <select
-            value={item.niveau}
-            onChange={(e) => update(idx, "niveau", e.target.value)}
-            className="px-2 py-1 text-sm border border-slate-200 rounded-lg bg-white text-slate-600"
+    <div className="space-y-3">
+      {items.length === 0 && (
+        <p className="text-center text-sm text-slate-300 py-6">
+          Aucune compétence. Cliquez sur le bouton ci-dessous pour commencer.
+        </p>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            className="group relative bg-slate-50 border border-slate-200 rounded-2xl p-4 hover:border-slate-300 transition"
           >
-            {NIVEAUX.map((n) => (
-              <option key={n.value} value={n.value}>
-                {n.label}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={() => remove(idx)}
-            className="text-red-400 hover:text-red-600"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      ))}
+            {/* Supprimer */}
+            <button
+              onClick={() => remove(idx)}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition"
+            >
+              <Trash2 size={13} />
+            </button>
+
+            {/* Nom */}
+            <input
+              value={item.nom}
+              onChange={(e) => update(idx, "nom", e.target.value)}
+              placeholder="Nom de la compétence…"
+              className="w-full pr-8 text-sm font-semibold text-slate-700 bg-transparent border-0 outline-none placeholder:font-normal placeholder:text-slate-300"
+            />
+
+            {/* Niveau — pills segmentées */}
+            <div className="flex gap-1.5 mt-3">
+              {NIVEAUX.map((n) => (
+                <button
+                  key={n.value}
+                  type="button"
+                  onClick={() => update(idx, "niveau", n.value)}
+                  className={`px-2.5 py-1 text-[10px] font-bold rounded-full transition ${
+                    item.niveau === n.value
+                      ? n.active
+                      : "bg-white border border-slate-200 text-slate-400 hover:border-slate-300"
+                  }`}
+                >
+                  {n.short}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bouton ajout */}
       <button
         onClick={add}
-        className="flex items-center text-sm font-semibold text-[hsl(134,35%,45%)]"
+        className="flex items-center gap-2 px-4 py-3 w-full justify-center border-2 border-dashed border-slate-200 rounded-2xl text-sm text-slate-400 hover:border-[hsl(134,35%,45%)] hover:text-[hsl(134,35%,45%)] transition"
       >
-        <Plus size={16} className="mr-1" /> Ajouter
+        <Plus size={16} />
+        Ajouter une compétence
       </button>
     </div>
   );

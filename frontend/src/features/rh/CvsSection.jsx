@@ -34,6 +34,7 @@ export default function CvsSection() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchProfessors(); }, [fetchProfessors]);
 
   const filtered = professors.filter((p) => {

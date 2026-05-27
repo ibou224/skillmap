@@ -4,6 +4,8 @@ import { isValidString } from "@/lib/validation.js";
 import { requireRole, getIp } from "@/lib/permission.js";
 
 export async function GET() {
+  const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
+  if (error) return error;
   try {
     const skills = await prisma.skill.findMany({
       orderBy: { nom: "asc" },
@@ -17,7 +19,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { session, error } = await requireRole("ADMIN");
+  const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;
 
   try {

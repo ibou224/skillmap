@@ -1,30 +1,15 @@
-/**
- * @module components/sessions/SessionTable
- * @description Tableau d'affichage des sessions académiques.
- */
-
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Pencil, Trash2, CalendarX, Zap } from "lucide-react";
-import { useCallback } from "react";
 import { Button } from "../ui/Button";
 
 const STATUT_STYLE = {
-  ACTIVE:    { bg: "bg-emerald-50", text: "text-emerald-700", label: "Active" },
-  PLANIFIEE: { bg: "bg-amber-50",   text: "text-amber-700",   label: "Planifiée" },
-  ARCHIVEE:  { bg: "bg-slate-100",  text: "text-slate-500",   label: "Archivée" },
+  ACTIVE:    { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500", label: "Active" },
+  PLANIFIEE: { bg: "bg-amber-50",   text: "text-amber-700",   dot: "bg-amber-400",   label: "Planifiée" },
+  ARCHIVEE:  { bg: "bg-slate-100",  text: "text-slate-500",   dot: "bg-slate-400",   label: "Archivée" },
 };
 
-/**
- * Affiche les sessions dans un tableau avec leurs compteurs.
- *
- * @param {Object} props - Propriétés du composant.
- * @param {Array<Object>} [props.sessions=[]] - Liste des sessions.
- * @param {Function} props.onEdit - Ouvre l'édition d'une session.
- * @param {Function} props.onDelete - Supprime une session.
- * @returns {JSX.Element} Tableau des sessions.
- */
 export default function SessionTable({ sessions = [], onEdit, onDelete, onActivate }) {
   const formatDate = useCallback((dateStr) => {
     if (!dateStr) return "—";
@@ -46,13 +31,13 @@ export default function SessionTable({ sessions = [], onEdit, onDelete, onActiva
                 Nom
               </th>
               <th className="text-left px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Statut
+              </th>
+              <th className="text-left px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Date début
               </th>
               <th className="text-left px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Date fin
-              </th>
-              <th className="text-center px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Groupes
               </th>
               <th className="text-center px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Affectations
@@ -65,53 +50,60 @@ export default function SessionTable({ sessions = [], onEdit, onDelete, onActiva
           <tbody className="divide-y divide-slate-50">
             {sessions.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-5 py-10 text-center text-slate-400">
+                <td colSpan={6} className="px-5 py-10 text-center">
                   <div className="flex flex-col items-center gap-3 text-slate-400">
-                    <CalendarX className="mx-auto mb-2 w-8 h-8" />
+                    <CalendarX className="w-8 h-8" />
                     <p className="text-sm">Aucune session disponible</p>
                   </div>
                 </td>
               </tr>
             )}
             {sessions.map((session) => {
-              const groupeCount =
-                session._count?.groupes ?? session.groupes?.length ?? 0;
               const affectationCount =
-                session._count?.affectations ??
-                session.affectations?.length ??
-                0;
+                session._count?.affectations ?? session.affectations?.length ?? 0;
+              const style = STATUT_STYLE[session.statut] ?? STATUT_STYLE.ARCHIVEE;
+              const canActivate = session.statut !== "ACTIVE" && session.statut !== "ARCHIVEE";
 
               return (
-                <tr
-                  key={session.id}
-                  className="hover:bg-slate-50/50 transition-colors"
-                >
+                <tr key={session.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-5 py-3.5">
-                    <span className="font-semibold text-slate-800">
-                      {session.nom}
+                    <span className="font-semibold text-slate-800">{session.nom}</span>
+                  </td>
+
+                  {/* Statut */}
+                  <td className="px-5 py-3.5">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                      {style.label}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-slate-600">
-                    {formatDate(session.dateDebut)}
-                  </td>
-                  <td className="px-5 py-3.5 text-slate-600">
-                    {formatDate(session.dateFin)}
-                  </td>
-                  <td className="px-5 py-3.5 text-center">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                      {groupeCount}
-                    </span>
-                  </td>
+
+                  <td className="px-5 py-3.5 text-slate-600">{formatDate(session.dateDebut)}</td>
+                  <td className="px-5 py-3.5 text-slate-600">{formatDate(session.dateFin)}</td>
+
                   <td className="px-5 py-3.5 text-center">
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
                       {affectationCount}
                     </span>
                   </td>
+
                   <td className="px-5 py-3.5">
                     <div className="inline-flex gap-1.5 justify-end">
+                      {canActivate && (
+                        <Button
+                          onClick={() => onActivate(session)}
+                          variant="citeGreenLight"
+                          size="iconSm"
+                          title="Activer cette session"
+                        >
+                          <Zap className="w-3.5 h-3.5" />
+                        </Button>
+                      )}
                       <Button
                         onClick={() => onEdit(session)}
-                        variant="citeGreenLight"
+                        variant="ghost"
                         size="iconSm"
                         title="Modifier"
                       >

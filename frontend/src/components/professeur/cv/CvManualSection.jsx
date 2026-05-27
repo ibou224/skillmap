@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
-import PersonalInfos from "./PersonalInfos";
-import { ExperiencesEditor } from "./ExperiencesEditor";
-import { FormationsEditor } from "./FormationsEditor";
-import { StringArrayEditor } from "./StringArrayEditor";
-import { SkillsEditor } from "./SkillsEditor";
+import PersonalInfos from "../profil/PersonalInfos";
+import { ExperiencesEditor } from "../experiences/ExperiencesEditor";
+import { FormationsEditor } from "../formations/FormationsEditor";
+import { StringArrayEditor } from "../skills/StringArrayEditor";
+import { SkillsEditor } from "../skills/SkillsEditor";
 
 export default function CvManualSection({ onSave, initialData = null }) {
   const [manualForm, setManualForm] = useState({
@@ -35,10 +35,11 @@ export default function CvManualSection({ onSave, initialData = null }) {
   );
 
   const [saved, setSaved] = useState(false);
+  const [prevInitialData, setPrevInitialData] = useState(null);
 
-  // Synchronise les champs si initialData arrive après le premier rendu (chargement async)
-  useEffect(() => {
-    if (!initialData) return;
+  // Synchronise les champs quand initialData change (chargement async)
+  if (initialData !== prevInitialData && initialData) {
+    setPrevInitialData(initialData);
     setManualForm({
       prenom:      initialData.prenom     ?? "",
       nom:         initialData.nom        ?? "",
@@ -61,10 +62,9 @@ export default function CvManualSection({ onSave, initialData = null }) {
         ? initialData.formations.map((f, i) => ({ id: i + 1, ...f }))
         : [{ id: 1, diplome: "", etablissement: "", anneeObtention: "" }]
     );
-  }, [initialData]);
+  }
 
   const handleSubmit = () => {
-    // Combine les données en un seul objet structuré, comme pour le téléversement
     const cvData = {
       ...manualForm,
       experiences,

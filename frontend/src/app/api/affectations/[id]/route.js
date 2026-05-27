@@ -22,7 +22,7 @@ import { requireRole, getIp } from "@/lib/permission";
  * @returns {500} Erreur interne du serveur.
  */
 const TRANSITIONS_VALIDES = {
-  PROPOSEE:  ["AJUSTEE", "FINALISEE"],
+  PROPOSEE:  ["AJUSTEE"],
   AJUSTEE:   ["FINALISEE"],
   FINALISEE: [],
 };
@@ -31,7 +31,7 @@ export async function PATCH(request, { params }) {
   const { session, error } = await requireRole("RH", "ADMIN");
   if (error) return error;
 
-  const { id } = params;
+  const { id } = await params;
   let body;
   try {
     body = await request.json();

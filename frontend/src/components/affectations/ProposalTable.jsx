@@ -33,7 +33,7 @@ export default function ProposalTable({
             Analyse des profils en cours…
           </p>
           <p className="text-xs text-slate-400 mt-1">
-            L'algorithme calcule les scores de compatibilité
+            L&apos;algorithme calcule les scores de compatibilité
           </p>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function ProposalTable({
           Aucune proposition générée
         </h3>
         <p className="text-xs text-slate-400 mt-2 max-w-sm mx-auto">
-          Sélectionnez une session et un programme, puis cliquez sur "Lancer l'algorithme".
+          Sélectionnez une session et un programme, puis cliquez sur &quot;Lancer l&apos;algorithme&quot;.
         </p>
       </div>
     );

@@ -18,21 +18,6 @@ import { requireRole } from "@/lib/permission.js";
  * @returns {404} Profil professeur introuvable (pour le rôle PROFESSEUR).
  * @returns {500} Erreur interne du serveur.
  */
-const SESSION_SELECT = { id: true, nom: true, statut: true };
-
-const COURSE_SELECT = {
-  id: true,
-  code: true,
-  nom: true,
-  etape: true,
-  programs: { select: { id: true, code: true, nom: true } },
-};
-
-const PROFESSOR_SELECT = {
-  id: true,
-  user: { select: { nom: true, prenom: true, email: true } },
-  skills: { select: { skill: { select: { nom: true } } } },
-};
 
 export async function GET(request) {
   const { session, error } = await requireRole("PROFESSEUR", "RH","ADMIN");
@@ -73,7 +58,45 @@ async function getProfesseurAffectations(session) {
 
   const affectations = await prisma.assignment.findMany({
     where: { professorId: professor.id },
-    include: { course: { select: COURSE_SELECT }, professor: { select: PROFESSOR_SELECT }, session: { select: SESSION_SELECT } },
+    include: { 
+      course: { 
+        select: { 
+          id: true, 
+          code: true, 
+          nom: true, 
+          etape: true, 
+          programs: { 
+            select: { 
+              id: true, 
+              code: true, 
+              nom: true 
+            } 
+          } 
+        } 
+      }, 
+      professor: { 
+          select: { 
+            id: true, 
+            user: { 
+              select: { 
+                nom: true, 
+                prenom: true, 
+                email: true 
+              } 
+            },
+            skills: { 
+              select: { 
+                skill: { 
+                  select: { 
+                    nom: true 
+                  }
+                } 
+              } 
+            },
+          } 
+      }, 
+      session: { 
+        select: { id: true, nom: true, statut: true  } } },
     orderBy: [{ course: { code: 'asc' } }],
   });
 
@@ -84,14 +107,50 @@ async function getProfesseurAffectations(session) {
 }
 
 async function getRHAffectations(professeurId, sessionId) {
-  const where = {
-    ...(professeurId && { professorId: professeurId }),
-    ...(sessionId    && { sessionId }),
-  };
-
   const affectations = await prisma.assignment.findMany({
-    where,
-    include: { course: { select: COURSE_SELECT }, professor: { select: PROFESSOR_SELECT }, session: { select: SESSION_SELECT } },
+    where: {
+      ...(professeurId ? { professorId: professeurId } : {}),
+      ...(sessionId    ? { sessionId }                 : {}),
+    },
+    include: { 
+      course: { 
+        select: { 
+          id: true, 
+          code: true, 
+          nom: true, 
+          etape: true, 
+          programs: { 
+            select: { 
+              id: true, 
+              code: true, 
+              nom: true 
+            } 
+          } 
+        } 
+      }, 
+      professor: { 
+          select: { 
+            id: true, 
+            user: { 
+              select: { 
+                nom: true, 
+                prenom: true, 
+                email: true 
+              } 
+            },
+            skills: { 
+              select: { 
+                skill: { 
+                  select: { 
+                    nom: true 
+                  }
+                } 
+              } 
+            },
+          } 
+      }, 
+      session: { 
+        select: { id: true, nom: true, statut: true  } } },
     orderBy: [{ course: { code: 'asc' } }],
   });
 
@@ -103,12 +162,13 @@ async function getRHAffectations(professeurId, sessionId) {
 
 function flattenAssignments(assignments) {
   return assignments.map((a) => ({
-    id:        a.id,
-    sessionId:  a.sessionId,
-    sessionNom: a.session?.nom ?? null,
-    statut:    a.statut,
-    score:     a.score,
-    scoreDetail: a.scoreDetail,
+    id:           a.id,
+    sessionId:    a.sessionId,
+    sessionNom:   a.session?.nom    ?? null,
+    sessionStatut: a.session?.statut ?? null,
+    statut:       a.statut,
+    score:        a.score,
+    scoreDetail:  a.scoreDetail,
     cours: {
       id:         a.course.id,
       code:       a.course.code,

@@ -25,7 +25,7 @@ export async function PATCH(request, { params }) {
   const { session, error } = await requireRole("RH", "ADMIN");
   if (error) return error;
 
-  const { id } = params;
+  const { id } = await params;
   let body;
   try {
     body = await request.json();
@@ -36,7 +36,7 @@ export async function PATCH(request, { params }) {
     );
   }
 
-  const { coursId } = body;
+  const { coursId, notes } = body;
   if (!coursId) {
     return NextResponse.json(
       { success: false, message: "Le champ 'coursId' est requis." },
@@ -110,6 +110,7 @@ export async function PATCH(request, { params }) {
           nouveauCoursId: coursId,
           ancienStatut:  existingAssignment.statut,
           nouveauStatut: "AJUSTEE",
+          notes: notes?.trim() || null,
         },
         ipAddress: getIp(request),
       },

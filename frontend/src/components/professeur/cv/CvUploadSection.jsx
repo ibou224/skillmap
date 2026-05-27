@@ -6,11 +6,11 @@ import { useCvs } from "@/hooks/useProfessor";
 import { isValidFile } from "@/lib/validation";
 import { normalizeField, buildStructuredData } from "@/lib/formatData";
 import { initialCvData } from "@/constants/constantes";
-import { ExperiencesEditor } from "./ExperiencesEditor";
-import { FormationsEditor } from "./FormationsEditor";
-import { StringArrayEditor } from "./StringArrayEditor";
-import PersonalInfos from "./PersonalInfos";
-import { SkillsEditor } from "./SkillsEditor";
+import PersonalInfos from "../profil/PersonalInfos";
+import { ExperiencesEditor } from "../experiences/ExperiencesEditor";
+import { FormationsEditor } from "../formations/FormationsEditor";
+import { StringArrayEditor } from "../skills/StringArrayEditor";
+import { SkillsEditor } from "../skills/SkillsEditor";
 
 export default function CvUploadSection({ onValidated }) {
   const [uploadState, setUploadState] = useState("idle");

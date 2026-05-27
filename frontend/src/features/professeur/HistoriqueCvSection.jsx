@@ -165,6 +165,7 @@ export default function HistoriqueCvSection() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchSnapshots(); }, [fetchSnapshots]);
 
   const handleRestore = async (snapshot) => {

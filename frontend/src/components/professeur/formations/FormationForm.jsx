@@ -17,7 +17,7 @@ export default function FormationForm({ formation, index, onUpdate, onRemove, ca
           <input placeholder="Maîtrise en informatique" value={formation.diplome} onChange={(e) => onUpdate("diplome", e.target.value)} className={inputCls} />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Année d'obtention</label>
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Année d&apos;obtention</label>
           <input type="number" placeholder="2020" min={1950} max={2099} value={formation.anneeObtention} onChange={(e) => onUpdate("anneeObtention", e.target.value)} className={inputCls} />
         </div>
         <div className="space-y-1 sm:col-span-3">

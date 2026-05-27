@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { X, Check } from "lucide-react";
 import { cn, scoreBarColor, scoreTextColor } from "@/lib/utils";
-import { useCourses } from "@/hooks/useCourses";
 
 // ── Mini barre de score (réutilisée dans le modal) ────────────────────────────
 function ScoreBar({ score }) {
@@ -40,18 +39,9 @@ function ScoreBar({ score }) {
  * }} props
  */
 export default function AjustementModal({ isOpen, proposal, onClose, onSave,courses }) {
-  const [selectedCoursId, setSelectedCoursId] = useState("");
+  const [selectedCoursId, setSelectedCoursId] = useState(proposal?.cours.id ?? "");
   const [notes,           setNotes]           = useState("");
 
-  // Réinitialisation à chaque ouverture
-  useEffect(() => {
-    if (proposal) {
-      setSelectedCoursId(proposal.cours.id);
-      setNotes("");
-    }
-  }, [proposal]);
-
-  // Fermeture via Escape
   useEffect(() => {
     const handler = (e) => { if (e.key === "Escape") onClose(); };
     if (isOpen) window.addEventListener("keydown", handler);
@@ -64,9 +54,7 @@ export default function AjustementModal({ isOpen, proposal, onClose, onSave,cour
     e.preventDefault();
     const cours = courses.find((c) => c.id === selectedCoursId);
     if (!cours) return;
-    // TODO: PATCH /api/assignments/:id { coursId: cours.id, notes }
     onSave(proposal.id, { cours, notes: notes.trim() || undefined });
-    onClose();
   };
 
   const inputCls =
@@ -92,10 +80,10 @@ export default function AjustementModal({ isOpen, proposal, onClose, onSave,cour
         <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
           <div>
             <h2 id="modal-title" className="text-base font-semibold text-slate-800 dark:text-slate-200">
-              Ajuster l'affectation
+              Ajuster l&apos;affectation
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              L'ajustement est tracé dans le journal d'audit
+              L&apos;ajustement est tracé dans le journal d&apos;audit
             </p>
           </div>
           <button
@@ -167,7 +155,7 @@ export default function AjustementModal({ isOpen, proposal, onClose, onSave,cour
               id="modal-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Raison de l'ajustement…"
+              placeholder="Raison de l'ajustement..."
               maxLength={200}
               className={cn(inputCls, "min-h-18 resize-none")}
             />
