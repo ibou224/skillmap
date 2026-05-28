@@ -80,7 +80,7 @@ function LogRow({ log }) {
       <td className="px-4 py-3">
         <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full ${style.bg} ${style.text}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-          {log.action ?? <span className="text-slate-300">—</span>}
+          {style.label ?? log.action ?? "—"}
         </span>
       </td>
       <td className="px-4 py-3">

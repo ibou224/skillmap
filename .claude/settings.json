@@ -38,7 +38,8 @@
       "Bash(mv \"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur/Affectation/\"*.jsx \"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur/affectation/\" && rm -rf \"c:/Users/tiamk/Desktop/Gestion_Cv/skillmap/frontend/src/components/professeur/Affectation\")",
       "Bash(xargs grep -l \"dashboard/rh\\\\|features/rh\")",
       "Bash(git mv *)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(grep -E \"\\\\.\\(json|ts|js|yml|yaml|prisma|md\\)$\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\tiamk\\Desktop\\Gestion_Cv\\skillmap\\frontend\\src\\app\\dashboard\\admin\\sections",

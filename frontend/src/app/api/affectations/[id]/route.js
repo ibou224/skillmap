@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";
+import { sendFinalizationEmail } from "@/lib/email";
 
 /**
  * Met à jour le statut d'une affectation.
@@ -90,6 +91,30 @@ export async function PATCH(request, { params }) {
         ipAddress: getIp(request),
       },
     });
+
+    // ── Email de notification (finalisation individuelle) ────────────────────
+    if (statut === "FINALISEE") {
+      const full = await prisma.assignment.findUnique({
+        where: { id },
+        include: {
+          course:    { select: { nom: true, code: true, etape: true } },
+          professor: { include: { user: { select: { prenom: true, nom: true, email: true } } } },
+          session:   { select: { nom: true } },
+        },
+      });
+      if (full) {
+        // Fire-and-forget : ne bloque pas la réponse
+        void sendFinalizationEmail({
+          professorEmail:  full.professor.user.email,
+          professorPrenom: full.professor.user.prenom,
+          professorNom:    full.professor.user.nom,
+          coursNom:        full.course.nom,
+          coursCode:       full.course.code,
+          coursEtape:      full.course.etape,
+          sessionNom:      full.session?.nom ?? "",
+        }).catch((err) => console.error("[email] Échec envoi finalisation :", err.message));
+      }
+    }
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err) {

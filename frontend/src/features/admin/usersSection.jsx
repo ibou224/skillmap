@@ -13,7 +13,7 @@ import SuccessAlert from "@/components/ui/SuccessAlert";
 const PAGE_SIZE = 10;
 
 export default function UsersSection() {
-  const { users, getUsers, updateUser, deleteUser } = useManagementUser();
+  const { users, getUsers, updateUser, deleteUser, unlockUser } = useManagementUser();
 
   useEffect(() => {
     getUsers();
@@ -59,6 +59,15 @@ export default function UsersSection() {
     await getUsers();
   };
 
+  const handleUnlock = async (id) => {
+    const u = users.find((u) => u.id === id);
+    const result = await unlockUser(id);
+    if (result) {
+      await getUsers();
+      if (u) setSuccessMessage(`Compte de ${u.prenom} ${u.nom} déverrouillé avec succès.`);
+    }
+  };
+
   const handleDelete = (id) => {
     setPendingDeleteId(id);
   };
@@ -100,6 +109,7 @@ export default function UsersSection() {
         onToggleStatus={toggleStatus}
         onEdit={openEdit}
         onDelete={handleDelete}
+        onUnlock={handleUnlock}
       />
 
       {totalPages > 1 && (

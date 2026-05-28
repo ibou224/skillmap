@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
+import { RefreshCw, BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 
 import AffectationHeader from "@/components/affectations/AffectationHeader";
 import AffectationStats from "@/components/affectations/AffectationStats";
 import AffectationToolbar from "@/components/affectations/AffectationToolbar";
-import ProposalTable from "@/components/affectations/ProposalTable";
+import CourseGroup from "@/components/affectations/CourseGroup";
 import AjustementModal from "@/components/affectations/AjustementModal";
 import Toast from "@/components/affectations/Toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -15,14 +16,14 @@ import { useWeights } from "@/hooks/useWeights";
 import { useAffectations } from "@/hooks/useAffectations";
 import { useCourses } from "@/hooks/useCourses";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 15;
 
 export default function AffectationPage() {
   const { sessions, fetchSessions }                              = useSessions();
   const { programmes, fetchProgrammes, courses, fetchCourses }   = useCourses();
   const {
     analyseAffectations, fetchAffectations,
-    proposals, loading, error,
+    proposals, loading, error, jobProgress,
     updateAssignmentStatus, saveAdjustment,
     finalizeSessionAssignments,
   } = useAffectations();
@@ -78,30 +79,57 @@ export default function AffectationPage() {
     loadWeights();
   }, [sessionId, fetchWeights]);
 
-  // ── Données dérivées ───────────────────────────────────────────────────────
-
   const proposalsForSession = useMemo(() => {
     if (!sessionId) return [];
     return proposals.filter((p) => p.sessionId === sessionId);
   }, [proposals, sessionId]);
 
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return proposalsForSession.filter((p) => {
+  // Nb de cours proposés/validés/finalisés par professeur dans la session
+  // → affiché comme badge de charge dans CourseGroup (#20)
+  const profCourseCount = useMemo(() => {
+    const map = new Map();
+    proposalsForSession.forEach((p) => {
+      map.set(p.professeur.id, (map.get(p.professeur.id) ?? 0) + 1);
+    });
+    return map;
+  }, [proposalsForSession]);
+
+const filteredGroups = useMemo(() => {
+    const q = search?.toLowerCase() || "";
+
+    const filteredProposals = proposalsForSession.filter((p) => {
+      const matchProgram = !programId || p.cours.programmes?.some((pr) => pr.id === programId);
+
       const matchSearch =
         !q ||
-        p.cours.nom.toLowerCase().includes(q) ||
-        p.cours.code.toLowerCase().includes(q) ||
-        p.professeur.prenom.toLowerCase().includes(q) ||
-        p.professeur.nom.toLowerCase().includes(q) ||
-        p.professeur.competences.some((c) => c.toLowerCase().includes(q));
-      return matchSearch && (!filterStatut || p.statut === filterStatut);
-    });
-  }, [proposalsForSession, search, filterStatut]);
+        p.cours.nom?.toLowerCase().includes(q) ||
+        p.cours.code?.toLowerCase().includes(q) ||
+        p.professeur.prenom?.toLowerCase().includes(q) ||
+        p.professeur.nom?.toLowerCase().includes(q) ||
+        p.professeur.competences?.some((c) => c?.toLowerCase().includes(q));
 
-  const totalPages        = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const currentPage       = Math.min(page, totalPages);
-  const paginatedFiltered = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+      const matchStatut = !filterStatut || p.statut === filterStatut;
+
+      // On combine toutes les conditions
+      return matchProgram && matchSearch && matchStatut;
+    });
+
+    // Grouper par cours
+    const map = new Map();
+    filteredProposals.forEach((p) => {
+      const cid = p.cours.id;
+      if (!map.has(cid)) map.set(cid, { cours: p.cours, proposals: [] });
+      map.get(cid).proposals.push(p);
+    });
+
+    const groups = Array.from(map.values());
+    groups.forEach((g) => g.proposals.sort((a, b) => b.score - a.score));
+    return groups;
+  }, [proposalsForSession, search, filterStatut, programId]);
+
+  const totalPages      = Math.max(1, Math.ceil(filteredGroups.length / PAGE_SIZE));
+  const currentPage     = Math.min(page, totalPages);
+  const paginatedGroups = filteredGroups.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const finalizeInfo = useMemo(() => {
     const proposed  = proposalsForSession.filter((p) => p.statut === "PROPOSEE").length;
@@ -114,8 +142,6 @@ export default function AffectationPage() {
 
     return { canFinalize: true, reason: "", proposed, adjusted, finalized };
   }, [proposalsForSession, sessionId]);
-
-  // ── Handlers ───────────────────────────────────────────────────────────────
 
   const handleRun = useCallback(async () => {
     if (!sessionId || !programId) {
@@ -216,7 +242,6 @@ export default function AffectationPage() {
   const handleToggleExpand  = useCallback((id) => setExpandedId((prev) => (prev === id ? null : id)), []);
   const handleResetFilters  = useCallback(() => { setSearch(""); setFilterStatut(""); setPage(1); }, []);
 
-  // ── Rendu ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <AffectationHeader
@@ -256,22 +281,130 @@ export default function AffectationPage() {
           />
         )}
 
-        <ProposalTable
-          proposals={proposalsForSession}
-          filtered={paginatedFiltered}
-          totalFiltered={filtered.length}
-          loading={loading}
-          error={error}
-          onRetry={handleRun}
-          expandedId={expandedId}
-          onToggleExpand={handleToggleExpand}
-          onAction={handleAction}
-          onResetFilters={handleResetFilters}
-          weights={localWeights}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+        {/* ── États loading / erreur / vide ── */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+            {/* Spinner animé */}
+            <div className="relative w-16 h-16 shrink-0">
+              <div className="absolute inset-0 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <RefreshCw className="w-7 h-7 text-emerald-500 animate-spin" />
+              </div>
+              <div className="absolute inset-0 rounded-full border-4 border-emerald-200 dark:border-emerald-800 border-t-emerald-500 animate-spin" />
+            </div>
+
+            {jobProgress ? (
+              /* Progression par étapes (pendant l'analyse asynchrone) */
+              <div className="w-full max-w-xs space-y-3 px-2">
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 text-center">
+                  {jobProgress.step}
+                </p>
+                <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${Math.round(((jobProgress.stepIndex + 1) / jobProgress.stepTotal) * 100)}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400 text-center tabular-nums">
+                  Étape {jobProgress.stepIndex + 1} / {jobProgress.stepTotal}
+                </p>
+              </div>
+            ) : (
+              /* Chargement simple (fetchAffectations, etc.) */
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Chargement…
+              </p>
+            )}
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6">
+            <p className="text-sm font-medium text-red-700 dark:text-red-400">{error}</p>
+          </div>
+        ) : proposalsForSession.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-14 text-center">
+            <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="w-7 h-7 text-slate-400" />
+            </div>
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Aucune proposition générée</h3>
+            <p className="text-xs text-slate-400 mt-2 max-w-sm mx-auto">
+              Sélectionnez une session et un programme, puis cliquez sur &quot;Lancer l&apos;algorithme&quot;.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* ── Groupes par cours ── */}
+            {filteredGroups.length === 0 ? (
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-12 text-center">
+                <p className="text-sm text-slate-500">Aucune proposition ne correspond aux filtres</p>
+                <button onClick={handleResetFilters} className="mt-3 text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                  Réinitialiser les filtres
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {paginatedGroups.map(({ cours, proposals }) => (
+                  <CourseGroup
+                    key={cours.id}
+                    cours={cours}
+                    proposals={proposals}
+                    onAction={handleAction}
+                    weights={localWeights}
+                    expandedProposalId={expandedId}
+                    onToggleProposal={handleToggleExpand}
+                    profCourseCount={profCourseCount}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* ── Pagination + compteur ── */}
+            {filteredGroups.length > 0 && (
+              <div className="flex items-center justify-between px-1 pt-1">
+                <p className="text-xs text-slate-400">
+                  {filteredGroups.length} cours · {proposalsForSession.length} proposition{proposalsForSession.length > 1 ? "s" : ""}
+                  {" "}· page {currentPage} / {totalPages}
+                </p>
+                {totalPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage <= 1}
+                      className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 transition"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-slate-500" />
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                      .reduce((acc, p, i, arr) => { if (i > 0 && p - arr[i - 1] > 1) acc.push("…"); acc.push(p); return acc; }, [])
+                      .map((p, i) =>
+                        p === "…" ? (
+                          <span key={`e-${i}`} className="px-1 text-slate-400 text-xs">…</span>
+                        ) : (
+                          <button
+                            key={p}
+                            onClick={() => setPage(p)}
+                            className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
+                              p === currentPage
+                                ? "bg-[hsl(134,35%,45%)] text-white"
+                                : "hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500"
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        )
+                      )}
+                    <button
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage >= totalPages}
+                      className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 transition"
+                    >
+                      <ChevronRight className="w-4 h-4 text-slate-500" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </main>
 
       <AjustementModal

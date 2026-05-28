@@ -1,22 +1,26 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma.js";
-import { requireRole, getIp } from "@/lib/permission.js";
+import { NextResponse }        from "next/server";
+import { randomUUID }          from "crypto";
+import prisma                  from "@/lib/prisma.js";
+import { requireRole, getIp }  from "@/lib/permission.js";
+import { createJob, updateJob } from "@/lib/jobStore.js";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit.js";
 
-const BACKEND_URL      = process.env.BACKEND_URL      ?? "http://localhost:8000";
+// FASTAPI_INTERNAL_URL est injecté par Docker Compose (nom du service).
+// BACKEND_URL est utilisé en développement local.
+const BACKEND_URL      = process.env.FASTAPI_INTERNAL_URL ?? process.env.BACKEND_URL ?? "http://localhost:8000";
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY ?? "";
 
 /**
- * Lance l'analyse automatique des affectations via le backend FastAPI.
+ * Lance l'analyse asynchrone des affectations.
  *
- * 1. Récupère les pondérations configurées pour la session.
- * 2. Charge les professeurs actifs et les cours non archivés.
- * 3. Envoie les données au backend FastAPI qui calcule les scores.
- * 4. Filtre les résultats côté Next.js : score >= minScore, top topN par cours.
- * 5. Remplace les affectations PROPOSEE existantes en base.
- * 6. Retourne les propositions enrichies.
+ * Le traitement lourd (chargement des données, appel FastAPI, persistance)
+ * s'exécute en arrière-plan. La réponse est immédiate avec un jobId.
+ * Le client poll GET /api/affectations/analyze/status?jobId=xxx pour suivre
+ * la progression.
  *
  * @route POST /api/affectations/analyze
  * @body  { sessionId, programId?, topN?, minScore? }
+ * @returns { success: true, jobId: string }
  */
 export async function POST(request) {
   const { session, error } = await requireRole("RH", "ADMIN");
@@ -33,13 +37,44 @@ export async function POST(request) {
     return NextResponse.json({ success: false, message: "sessionId est requis." }, { status: 400 });
   }
 
+  // Rate limiting : max 3 analyses par minute par session
+  const rl = checkRateLimit(`${sessionId}:analyze`, 3, 60_000);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
+
+  // Vérification rapide de la session avant de créer le job
   const existingSession = await prisma.session.findUnique({ where: { id: sessionId } });
   if (!existingSession) {
     return NextResponse.json({ success: false, message: "Session non trouvée." }, { status: 404 });
   }
 
+  // Créer le job et lancer le traitement en arrière-plan
+  const jobId  = randomUUID();
+  const ipAddr = getIp(request);
+  createJob(jobId);
+
+  void runAnalysisBackground(jobId, {
+    sessionId,
+    programId,
+    topN,
+    minScore,
+    userId:    session.user.id,
+    userEmail: session.user.email,
+    userRole:  session.user.role,
+    ipAddress: ipAddr,
+  });
+
+  return NextResponse.json({ success: true, jobId });
+}
+
+/**
+ * Exécute toutes les étapes de l'analyse et met à jour le job à chaque étape.
+ */
+async function runAnalysisBackground(jobId, { sessionId, programId, topN, minScore, userId, userEmail, userRole, ipAddress }) {
+  const step = (index, label) =>
+    updateJob(jobId, { status: "RUNNING", step: label, stepIndex: index });
+
   try {
-    // 1. Pondérations
+    step(0, "Chargement des pondérations...");
     const weightsConfig = await prisma.weightsConfig.findUnique({ where: { sessionId } });
     const comp  = weightsConfig?.competencesPct ?? 40;
     const exp   = weightsConfig?.experiencePct  ?? 25;
@@ -53,7 +88,7 @@ export async function POST(request) {
       history_weight:    hist / total,
     };
 
-    // 2. Professeurs actifs
+    step(1, "Chargement des professeurs...");
     const professors = await prisma.professor.findMany({
       where: { user: { isActive: true } },
       include: {
@@ -69,10 +104,11 @@ export async function POST(request) {
     });
 
     if (professors.length === 0) {
-      return NextResponse.json({ success: false, message: "Aucun professeur actif trouvé." }, { status: 404 });
+      updateJob(jobId, { status: "ERROR", error: "Aucun professeur actif trouvé.", completedAt: Date.now() });
+      return;
     }
 
-    // 3. Cours actifs
+    step(2, "Chargement des cours...");
     const courses = await prisma.course.findMany({
       where: {
         isArchived: false,
@@ -85,13 +121,16 @@ export async function POST(request) {
     });
 
     if (courses.length === 0) {
-      return NextResponse.json({
-        success: false,
-        message: programId ? "Aucun cours actif trouvé pour ce programme." : "Aucun cours actif trouvé.",
-      }, { status: 404 });
+      updateJob(jobId, {
+        status: "ERROR",
+        error:  programId ? "Aucun cours actif pour ce programme." : "Aucun cours actif trouvé.",
+        completedAt: Date.now(),
+      });
+      return;
     }
 
-    // 4. Payload FastAPI
+    step(3, "Calcul des scores par l'IA...");
+
     const professorPayload = professors.map((prof) => ({
       id:              prof.id,
       firstName:       prof.user.prenom,
@@ -112,9 +151,8 @@ export async function POST(request) {
       })),
     }));
 
-    // 5. Appel FastAPI
     const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), 60_000);
+    const timeoutId  = setTimeout(() => controller.abort(), 90_000); // 90s pour le background
     let backendRes;
     try {
       backendRes = await fetch(`${BACKEND_URL}/calculate-assignments/`, {
@@ -124,37 +162,68 @@ export async function POST(request) {
         signal:  controller.signal,
       });
     } catch (fetchErr) {
-      if (fetchErr.name === "AbortError") {
-        return NextResponse.json({ success: false, message: "Le service d'analyse n'a pas répondu à temps." }, { status: 504 });
-      }
-      throw fetchErr;
+      const msg = fetchErr.name === "AbortError"
+        ? "Le service d'analyse n'a pas répondu à temps (90s)."
+        : fetchErr.code === "ECONNREFUSED"
+          ? "Le service d'analyse est indisponible. Vérifiez que le backend est démarré."
+          : fetchErr.message;
+      updateJob(jobId, { status: "ERROR", error: msg, completedAt: Date.now() });
+      return;
     } finally {
       clearTimeout(timeoutId);
     }
 
     if (!backendRes.ok) {
       const err = await backendRes.json().catch(() => ({}));
-      throw new Error(err.detail ?? `Erreur backend : ${backendRes.status}`);
+      updateJob(jobId, {
+        status: "ERROR",
+        error:  err.detail ?? `Erreur backend : ${backendRes.status}`,
+        completedAt: Date.now(),
+      });
+      return;
     }
 
     const { assignments: rawAssignments = [] } = await backendRes.json();
 
-    // 6. Filtrage Next.js : score minimum + top N par cours
-    //    Le Python retourne toutes les combinaisons triées par score desc —
-    //    on filtre ici sans toucher à l'algorithme.
-    const byCoursMap = new Map();
-    for (const a of rawAssignments) {
-      if (a.score < minScore) continue;
-      if (!byCoursMap.has(a.course_id)) byCoursMap.set(a.course_id, []);
-      byCoursMap.get(a.course_id).push(a);
-    }
+    step(4, "Filtrage des propositions...");
+
+    // ── Sélection greedy avec double contrainte ──────────────────────────────
+    // Règles :
+    //   • max topN  professeurs  par cours  (meilleurs scores en tête)
+    //   • max topN  cours        par prof   (un prof éligible à topN cours max)
+    //
+    // Algorithme : tri global score desc → parcours unique → compteurs duaux.
+    // Le greedy favorise toujours la paire (prof, cours) la plus pertinente.
+    // ─────────────────────────────────────────────────────────────────────────
+    const sorted = rawAssignments
+      .filter((a) => a.score >= minScore)
+      .sort((a, b) => b.score - a.score);
+
+    const courseCount = new Map(); // courseId   → nb profs sélectionnés
+    const profCount   = new Map(); // professorId → nb cours sélectionnés
+
     const assignments = [];
-    for (const [, list] of byCoursMap) {
-      assignments.push(...list.slice(0, topN));
+    for (const a of sorted) {
+      const nbForCourse = courseCount.get(a.course_id)    ?? 0;
+      const nbForProf   = profCount.get(a.professor_id)   ?? 0;
+
+      if (nbForCourse >= topN) continue; // cours complet
+      if (nbForProf   >= topN) continue; // prof a atteint sa limite
+
+      assignments.push(a);
+      courseCount.set(a.course_id,   nbForCourse + 1);
+      profCount.set(a.professor_id,  nbForProf   + 1);
     }
 
-    // 7. Persister en BD (remplace les PROPOSEE existantes)
+    step(5, "Sauvegarde en base de données...");
     await prisma.$transaction(async (tx) => {
+      // Verrou pessimiste sur la ligne Session.
+      // Si un autre job tourne en parallèle sur la même session, il attend ici
+      // jusqu'à la fin de cette transaction — garantit un seul delete+insert à la fois.
+      await tx.$executeRaw`
+        SELECT id FROM "Session" WHERE id = ${sessionId} FOR UPDATE
+      `;
+
       await tx.assignment.deleteMany({ where: { sessionId, statut: "PROPOSEE" } });
       if (assignments.length > 0) {
         await tx.assignment.createMany({
@@ -169,9 +238,12 @@ export async function POST(request) {
           skipDuplicates: true,
         });
       }
+    }, {
+      // Si le verrou n'est pas obtenu dans les 30s → erreur plutôt que blocage infini.
+      timeout: 30_000,
     });
 
-    // 8. Récupérer les IDs réels depuis la BD
+    step(6, "Finalisation des propositions...");
     const savedAssignments = await prisma.assignment.findMany({
       where:  { sessionId },
       select: { id: true, courseId: true, professorId: true },
@@ -180,7 +252,6 @@ export async function POST(request) {
       savedAssignments.map((a) => [`${a.courseId}-${a.professorId}`, a.id])
     );
 
-    // 9. Enrichissement pour le frontend
     const profMap   = Object.fromEntries(professors.map((p) => [p.id, p]));
     const courseMap = Object.fromEntries(courses.map((c) => [c.id, c]));
 
@@ -219,10 +290,10 @@ export async function POST(request) {
         action:     "ANALYZE",
         entityType: "AFFECTATION",
         entityId:   sessionId,
-        userId:     session.user.id,
+        userId,
         metadata: {
-          email:           session.user.email,
-          role:            session.user.role,
+          email:           userEmail,
+          role:            userRole,
           message:         "Analyse automatique des affectations lancée",
           sessionId,
           programId:       programId ?? null,
@@ -231,23 +302,27 @@ export async function POST(request) {
           topN,
           minScore,
         },
-        ipAddress: getIp(request),
+        ipAddress,
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: `${proposals.length} proposition(s) générée(s).`,
-      data: proposals,
+    updateJob(jobId, {
+      status:      "DONE",
+      step:        `${proposals.length} proposition(s) générée(s).`,
+      stepIndex:   7,
+      data:        proposals,
+      completedAt: Date.now(),
     });
 
   } catch (err) {
-    console.error("Erreur analyse affectations :", err);
-    return NextResponse.json({ success: false, message: err.message || "Erreur interne." }, { status: 500 });
+    console.error(`[analyze] Job ${jobId} échoué :`, err);
+    updateJob(jobId, {
+      status:      "ERROR",
+      error:       err.message || "Erreur interne.",
+      completedAt: Date.now(),
+    });
   }
 }
-
-// ── Utilitaires ───────────────────────────────────────────────────────────────
 
 function calcYearsExperience(experiences) {
   const now = Date.now();

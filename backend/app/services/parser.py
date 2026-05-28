@@ -6,9 +6,37 @@ import pdfplumber
 import docx
 import io
 
-#  Fonction principale 
+# ── Signatures magic bytes ────────────────────────────────────────────────────
+# Le content_type vient du client et peut être falsifié.
+# On vérifie les premiers octets du fichier (magic bytes) pour s'assurer
+# que le contenu correspond réellement au format déclaré.
+
+_PDF_MAGIC  = b"%PDF"       # Tout PDF commence par %PDF
+_DOCX_MAGIC = b"PK\x03\x04" # DOCX = archive ZIP → commence par PK♥♦
+
+def _validate_magic_bytes(content: bytes, content_type: str) -> None:
+    """
+    Lève ValueError si la signature du fichier ne correspond pas au content_type.
+    """
+    if content_type == "application/pdf":
+        if not content.startswith(_PDF_MAGIC):
+            raise ValueError(
+                "Le fichier n'est pas un PDF valide. "
+                "Vérifiez que le fichier n'a pas été renommé."
+            )
+    elif "wordprocessingml" in content_type:
+        if not content.startswith(_DOCX_MAGIC):
+            raise ValueError(
+                "Le fichier n'est pas un document Word (.docx) valide. "
+                "Vérifiez que le fichier n'a pas été renommé."
+            )
+
+# ── Fonction principale ───────────────────────────────────────────────────────
 
 def extract_text(content: bytes, content_type: str) -> str:
+    # Valide la signature avant toute extraction
+    _validate_magic_bytes(content, content_type)
+
     # Détecte le format du fichier et appelle la bonne méthode d'extraction
     try:
         if content_type == "application/pdf":

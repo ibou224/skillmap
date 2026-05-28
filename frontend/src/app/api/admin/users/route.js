@@ -29,7 +29,10 @@ export async function GET(request) {
     if(error) return error;
 
   try {
-    const userSelect = { id: true, email: true, nom: true, prenom: true, role: true, isActive: true };
+    const userSelect = {
+      id: true, email: true, nom: true, prenom: true, role: true,
+      isActive: true, loginAttempts: true, lockedUntil: true,
+    };
 
     const users = await prisma.user.findMany({
       select:  userSelect,

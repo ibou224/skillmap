@@ -47,11 +47,13 @@ export default function AffectationsSection() {
     fetchSessions();
   }, [fetchAffectations, fetchSessions]);
 
-  if (!selectedSession && sessions.length > 0) {
-    const active = sessions.find((s) => s.statut === "ACTIVE") ?? sessions[0];
-    setSelectedSession(active.id);
-    setExpanded(null);
-  }
+  useEffect(() => {
+    if (!selectedSession && sessions.length > 0) {
+      const active = sessions.find((s) => s.statut === "ACTIVE") ?? sessions[0];
+      setSelectedSession(active.id);
+      setExpanded(null);
+    }
+  }, [selectedSession, sessions]);
 
   const sessionActive = sessions.find((s) => s.statut === "ACTIVE") ?? null;
 

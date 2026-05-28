@@ -129,7 +129,27 @@ def save_assignments(session_id: str, assignments: list) -> int:
     finally:
         conn.close()
 
-#  Récupérer professeur par userId 
+#  Vérifier appartenance professeur → utilisateur
+
+def professor_belongs_to_user(professor_id: str, user_id: str) -> bool:
+    """
+    Retourne True si le profil Professor identifié par professor_id
+    est bien lié au compte utilisateur user_id.
+    Utilisé pour empêcher qu'un utilisateur analyse le CV d'un autre.
+    """
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT 1 FROM "Professor"
+                WHERE id = %s AND "userId" = %s
+                LIMIT 1
+            """, (professor_id, user_id))
+            return cur.fetchone() is not None
+    finally:
+        conn.close()
+
+#  Récupérer professeur par userId
 
 def get_professor_by_user_id(user_id: str) -> dict:
     """

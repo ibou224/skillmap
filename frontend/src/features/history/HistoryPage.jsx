@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, ChevronLeft, ChevronRight, RefreshCw, Search } from "lucide-react";
 
 import HistoryHeader from "./components/HistoryHeader";
@@ -8,21 +8,10 @@ import HistorySessionFilter from "./components/HistorySessionFilter";
 import HistoryStats from "./components/HistoryStats";
 import HistoryToolbar from "./components/HistoryToolbar";
 import HistorySessionCard from "./components/HistorySessionCard";
+import GroupBySession from "./components/GroupBySession";
+import useHistory from "@/hooks/useHistory";
 
 const PAGE_SIZE = 10;
-
-function groupBySession(assignments) {
-  const groups = assignments.reduce((acc, assignment) => {
-    const id = assignment.session.id;
-    if (!acc[id]) {
-      acc[id] = { session: assignment.session, assignments: [] };
-    }
-    acc[id].assignments.push(assignment);
-    return acc;
-  }, {});
-
-  return Object.values(groups);
-}
 
 function matchesSearch(assignment, query) {
   if (!query) return true;
@@ -42,30 +31,12 @@ function matchesSearch(assignment, query) {
 }
 
 export default function HistoryPage() {
-  const [assignments, setAssignments]     = useState([]);
-  const [loading, setLoading]             = useState(true);
-  const [error, setError]                 = useState(null);
+  const { assignments, loading, error, fetchHistory } = useHistory();
   const [selectedSession, setSelectedSession] = useState("");
   const [search, setSearch]               = useState("");
   const [expandedSession, setExpandedSession] = useState(null);
   const [page, setPage]                   = useState(1);
-
-  const fetchHistory = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res  = await fetch("/api/history");
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Erreur lors du chargement de l'historique.");
-      }
-      setAssignments(json.data ?? []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchHistory(); }, [fetchHistory]);
@@ -86,7 +57,7 @@ export default function HistoryPage() {
     [assignments, search, selectedSession],
   );
 
-  const groups = useMemo(() => groupBySession(filtered), [filtered]);
+  const groups = useMemo(() => GroupBySession(filtered), [filtered]);
 
   const totalPages      = Math.max(1, Math.ceil(groups.length / PAGE_SIZE));
   const currentPage     = Math.min(page, totalPages);
@@ -158,7 +129,7 @@ export default function HistoryPage() {
               {totalPages > 1 && (
                 <div className="flex items-center gap-1">
                   <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    onClick={() => { setPage((p) => Math.max(1, p - 1)); setExpandedSession(null); }}
                     disabled={currentPage <= 1}
                     className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
                   >
@@ -177,7 +148,7 @@ export default function HistoryPage() {
                       ) : (
                         <button
                           key={p}
-                          onClick={() => setPage(p)}
+                          onClick={() => { setPage(p); setExpandedSession(null); }}
                           className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
                             p === currentPage
                               ? "bg-[hsl(134,35%,45%)] text-white"
@@ -189,7 +160,7 @@ export default function HistoryPage() {
                       )
                     )}
                   <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); setExpandedSession(null); }}
                     disabled={currentPage >= totalPages}
                     className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
                   >

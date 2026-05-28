@@ -41,6 +41,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      fastapi:
+        condition: service_healthy
 
   # ── FastAPI (Extraction + Algorithme) ───────────────
   fastapi:
@@ -57,8 +59,16 @@ services:
     volumes:
       - ./backend:/app
       - cv_uploads:/app/uploads
-    ports:
-      - "8000:8000"
+    # Accès interne uniquement — Next.js appelle FastAPI via le réseau Docker.
+    # Ne pas exposer 0.0.0.0:8000 pour éviter l'accès direct depuis internet.
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     depends_on:
       db:
         condition: service_healthy

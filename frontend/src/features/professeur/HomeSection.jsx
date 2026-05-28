@@ -15,9 +15,9 @@ import Link from "next/link";
 import { useCvs } from "@/hooks/useProfessor";
 
 const STATUT_STYLE = {
-  FINALISEE: { bg: "bg-emerald-50", text: "text-emerald-600", label: "Finalisée" },
-  AJUSTEE:   { bg: "bg-blue-50",    text: "text-blue-600",    label: "Ajustée"   },
-  PROPOSEE:  { bg: "bg-amber-50",   text: "text-amber-600",   label: "Proposée"  },
+  FINALISEE: { bg: "bg-emerald-50", text: "text-emerald-600", label: "Confirmée"     },
+  AJUSTEE:   { bg: "bg-blue-50",    text: "text-blue-600",    label: "En traitement" },
+  PROPOSEE:  { bg: "bg-amber-50",   text: "text-amber-600",   label: "En traitement" },
 };
 
 export default function HomeSection() {
@@ -37,10 +37,12 @@ export default function HomeSection() {
 
   // Affectations de la session active uniquement
   const affectationsActives = (affectations ?? []).filter(
-    (a) => a.session?.statut === "ACTIVE"
+    (a) => a.sessionStatut === "ACTIVE"
   );
 
-  const sessionActive = affectationsActives[0]?.session ?? null;
+  const sessionActive = affectationsActives[0]
+    ? { id: affectationsActives[0].sessionId, nom: affectationsActives[0].sessionNom }
+    : null;
 
   const nom = infos ? `${infos.prenom ?? ""} ${infos.nom ?? ""}`.trim() : "…";
 
@@ -140,9 +142,6 @@ export default function HomeSection() {
                   <div className="flex items-center gap-3">
                     <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full ${s.bg} ${s.text}`}>
                       {s.label}
-                    </span>
-                    <span className="text-sm font-black text-emerald-600">
-                      {Math.round((aff.score ?? 0) * 100)}%
                     </span>
                   </div>
                 </div>

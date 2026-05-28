@@ -6,7 +6,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Header
 from app.services.parser import extract_text
 from app.services.llm import extract_cv_data
-from app.services.database import save_cv_extraction, save_professor_skills
+from app.services.database import save_cv_extraction, save_professor_skills, professor_belongs_to_user
 from app.core.config import settings
 
 router = APIRouter()
@@ -17,7 +17,7 @@ ALLOWED_TYPES = [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 ]
 
-#  Endpoint principal 
+#  Endpoint principal
 
 @router.post("/")
 async def analyze_cv(
@@ -30,11 +30,21 @@ async def analyze_cv(
     Reçoit un CV (PDF ou Word), extrait le texte, appelle le LLM,
     sauvegarde les données en base et retourne les données structurées.
     """
-    # Vérification de la clé API interne
+    # ── Vérification de la clé API interne ───────────────────────────────────
     if x_internal_api_key != settings.internal_api_key:
         raise HTTPException(status_code=401, detail="Clé API invalide")
 
-    # Vérification du format du fichier
+    # ── Vérification que professor_id appartient à user_id ───────────────────
+    # Défense en profondeur : Next.js valide déjà cette relation, mais on
+    # re-vérifie ici pour éviter toute manipulation de header en interne.
+    if professor_id and user_id:
+        if not professor_belongs_to_user(professor_id, user_id):
+            raise HTTPException(
+                status_code=403,
+                detail="Accès refusé : ce profil professeur ne vous appartient pas."
+            )
+
+    # ── Vérification du format du fichier ────────────────────────────────────
     if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=400,

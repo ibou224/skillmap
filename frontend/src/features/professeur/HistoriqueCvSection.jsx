@@ -7,9 +7,16 @@ import {
 } from "lucide-react";
 
 const SOURCE_STYLE = {
-  "Extraction IA":       { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400"   },
+  "Extraction IA":         { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400"   },
+  "Analyse du document":   { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400"   },
   "Modification manuelle": { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-400" },
 };
+
+/** Traduit les labels internes en labels neutres pour le professeur */
+function labelForProf(label) {
+  if (label === "Extraction IA") return "Analyse du document";
+  return label;
+}
 
 function formatDate(iso) {
   return new Date(iso).toLocaleString("fr-CA", {
@@ -23,7 +30,8 @@ function formatDate(iso) {
 
 function VersionCard({ snapshot, onRestore, isRestoring }) {
   const [expanded, setExpanded] = useState(false);
-  const style = SOURCE_STYLE[snapshot.label] ?? {
+  const displayLabel = labelForProf(snapshot.label);
+  const style = SOURCE_STYLE[displayLabel] ?? SOURCE_STYLE[snapshot.label] ?? {
     bg: "bg-slate-50", text: "text-slate-600", dot: "bg-slate-400",
   };
 
@@ -41,7 +49,7 @@ function VersionCard({ snapshot, onRestore, isRestoring }) {
                 Version {snapshot.version}
               </span>
               <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${style.bg} ${style.text}`}>
-                {snapshot.label}
+                {displayLabel}
               </span>
             </div>
             <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">

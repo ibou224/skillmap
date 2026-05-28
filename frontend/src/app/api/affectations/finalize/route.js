@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";
+import { sendFinalizationEmailBatch } from "@/lib/email";
 
 export async function PATCH(request) {
   const { session, error } = await requireRole("RH", "ADMIN");
@@ -47,19 +48,42 @@ export async function PATCH(request) {
       counts.map((item) => [item.statut, item._count._all])
     );
 
-    const adjustedCount = countByStatus.AJUSTEE ?? 0;
+    const finalizableCount = (countByStatus.AJUSTEE ?? 0) + (countByStatus.PROPOSEE ?? 0);
 
-    if (adjustedCount === 0) {
+    if (finalizableCount === 0) {
       return NextResponse.json(
-        { success: false, message: "Aucune affectation ajustée à finaliser." },
+        { success: false, message: "Aucune affectation à finaliser pour cette session." },
         { status: 409 }
       );
     }
 
+    // Charger les détails AVANT le updateMany (pour les emails)
+    const toFinalize = await prisma.assignment.findMany({
+      where: { sessionId, statut: { in: ["PROPOSEE", "AJUSTEE"] } },
+      include: {
+        course:    { select: { nom: true, code: true, etape: true } },
+        professor: { include: { user: { select: { prenom: true, nom: true, email: true } } } },
+        session:   { select: { nom: true } },
+      },
+    });
+
     const result = await prisma.assignment.updateMany({
-      where: { sessionId, statut: "AJUSTEE" },
+      where: { sessionId, statut: { in: ["PROPOSEE", "AJUSTEE"] } },
       data: { statut: "FINALISEE" },
     });
+
+    // Emails de notification en lot — fire-and-forget
+    void sendFinalizationEmailBatch(
+      toFinalize.map((a) => ({
+        professorEmail:  a.professor.user.email,
+        professorPrenom: a.professor.user.prenom,
+        professorNom:    a.professor.user.nom,
+        coursNom:        a.course.nom,
+        coursCode:       a.course.code,
+        coursEtape:      a.course.etape,
+        sessionNom:      a.session?.nom ?? "",
+      }))
+    );
 
     await prisma.auditLog.create({
       data: {

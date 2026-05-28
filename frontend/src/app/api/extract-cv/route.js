@@ -15,6 +15,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getIp } from "@/lib/permission";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit.js";
 
 const FASTAPI_URL =
   process.env.FASTAPI_INTERNAL_URL ||
@@ -96,6 +97,10 @@ export async function POST(request) {
       { status: 403 },
     );
   }
+
+  // Rate limiting : max 5 extractions par minute par utilisateur
+  const rl = checkRateLimit(`${session.user.id}:extract-cv`, 5, 60_000);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
 
   const professor = await prisma.professor.findUnique({
     where: { userId: session.user.id },

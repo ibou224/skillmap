@@ -16,9 +16,7 @@ if (!globalForPrisma.prisma) {
     adapter,
     // En développement, on affiche toutes les requêtes SQL dans la console
     // En production, on affiche seulement les erreurs
-    log: process.env.NODE_ENV === 'development'
-      ? ['query', 'error', 'warn']
-      : ['error'],
+    log: ['warn','error'],
   })
 }
 

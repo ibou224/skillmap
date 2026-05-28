@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useHome } from "@/hooks/useHome";
+import { BarChart } from "@/components/ui/BarChart";
+import { AFFECTATIONS_CHART, CVS_CHART, relativeTime, logToActivity } from "@/constants/homeAdmin";
 
 const SHORTCUT_ICONS = { Users, BookOpen, Layers, Settings2 };
 
@@ -24,30 +26,11 @@ const STATUT_STYLE = {
   PLANIFIEE:"bg-blue-50 text-blue-700 border-blue-200",
 };
 
-function BarChart({ data, color, ariaLabel }) {
-  return (
-    <div role="img" aria-label={ariaLabel} className="flex items-end gap-2 h-28 mt-4">
-      {data.map((d) => {
-        const pct = Math.round((d.value / d.max) * 100);
-        return (
-          <div key={d.label} className="flex flex-col items-center gap-1 flex-1">
-            <span className="text-[10px] font-bold text-slate-400">{d.value}</span>
-            <div className="w-full bg-slate-100 rounded-lg overflow-hidden flex-1 flex items-end" style={{ minHeight: 60 }}>
-              <div className={`w-full rounded-lg transition-all duration-300 ${color}`} style={{ height: `${pct}%` }} />
-            </div>
-            <span className="text-[9px] text-slate-400 text-center leading-tight">{d.label}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 export default function HomeSection() {
   const {
-    STATS, AFFECTATIONS_CHART, CVS_CHART,
-    RECENT_ACTIVITY, TYPE_COLOR, TYPE_LABEL,
-    sessions, sessionActive, activateSession, fetchSessions,
+    STATS, sessions, sessionActive, activateSession, fetchSessions,
+    recentActivity, TYPE_COLOR, TYPE_LABEL,
   } = useHome();
 
   const [activating, setActivating] = useState(null);
@@ -84,26 +67,6 @@ export default function HomeSection() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Graphiques */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <TrendingUp className="w-4 h-4 text-cite-green" />
-            <h2 className="text-sm font-bold text-gray-700">{AFFECTATIONS_CHART.title}</h2>
-          </div>
-          <p className="text-xs text-slate-400">{AFFECTATIONS_CHART.subtitle}</p>
-          <BarChart data={AFFECTATIONS_CHART.data} color={AFFECTATIONS_CHART.color} ariaLabel={AFFECTATIONS_CHART.title} />
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <FileText className="w-4 h-4 text-amber-500" />
-            <h2 className="text-sm font-bold text-gray-700">{CVS_CHART.title}</h2>
-          </div>
-          <p className="text-xs text-slate-400">{CVS_CHART.subtitle}</p>
-          <BarChart data={CVS_CHART.data} color={CVS_CHART.color} ariaLabel={CVS_CHART.title} />
-        </div>
       </div>
 
       {/* Sessions */}
@@ -175,10 +138,10 @@ export default function HomeSection() {
           <h2 className="text-sm font-bold text-gray-700">Activité récente</h2>
         </div>
         <div className="divide-y divide-slate-50">
-          {RECENT_ACTIVITY.length === 0 && (
+          {recentActivity.length === 0 && (
             <p className="px-5 py-4 text-sm text-slate-400">Aucune activité récente.</p>
           )}
-          {RECENT_ACTIVITY.map((a) => (
+          {recentActivity.map((a) => (
             <div key={a.id} className="flex items-center gap-3 px-5 py-3">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg shrink-0 ${TYPE_COLOR[a.type]}`}>
                 {TYPE_LABEL[a.type]}

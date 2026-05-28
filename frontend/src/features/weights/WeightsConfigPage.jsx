@@ -29,9 +29,11 @@ export default function WeightsConfigPage() {
     fetchSessions();
   }, [fetchWeights, fetchSessions]);
 
-  if (!selectedSession && sessions.length > 0) {
-    setSelectedSession(sessions[0].id);
-  }
+  useEffect(() => {
+    if (!selectedSession && sessions.length > 0) {
+      setSelectedSession(sessions[0].id);
+    }
+  }, [selectedSession, sessions]);
 
   const baseWeights = useMemo(() => {
     const found = allWeights.find(w => w.sessionId === selectedSession);

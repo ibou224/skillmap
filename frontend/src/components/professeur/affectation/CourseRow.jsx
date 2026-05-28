@@ -1,7 +1,7 @@
-import { STATUT } from "@/constants/constantes";
+import { STATUT_PROF } from "@/constants/constantes";
 
 export function CourseRow({ cours }) {
-  const s = STATUT[cours.statut] ?? STATUT.PROPOSEE;
+  const s = STATUT_PROF[cours.statut] ?? STATUT_PROF.PROPOSEE;
   return (
     <div className="flex items-center justify-between px-4 py-3 hover:bg-slate-50/60 transition-colors">
       <div className="flex items-center gap-3 min-w-0">

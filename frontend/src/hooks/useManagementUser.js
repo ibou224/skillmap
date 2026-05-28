@@ -218,5 +218,33 @@ export function useManagementUser() {
         }
     }, []);
 
-    return { createUser, getUsers, error, isLoading,users, updateUser, deleteUser }
+    const unlockUser = useCallback(async (userId) => {
+        setError(null);
+        setIsLoading(true);
+        if (!userId) {
+            setError("ID utilisateur invalide.");
+            setIsLoading(false);
+            return false;
+        }
+        try {
+            const response = await fetch(`/api/admin/users/${userId}/unlock`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                setError(data.message || "Impossible de déverrouiller ce compte.");
+                setIsLoading(false);
+                return false;
+            }
+            setIsLoading(false);
+            return data;
+        } catch (err) {
+            setError(err.message || "Une erreur réseau est survenue.");
+            setIsLoading(false);
+            return false;
+        }
+    }, []);
+
+    return { createUser, getUsers, error, isLoading, users, updateUser, deleteUser, unlockUser }
 }

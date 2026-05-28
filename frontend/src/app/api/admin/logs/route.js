@@ -9,13 +9,18 @@ import { requireRole } from "@/lib/permission.js";
  * @route GET /api/admin/logs
  * @access ADMIN
  */
-export async function GET() {
+export async function GET(request) {
   const { error } = await requireRole("ADMIN");
   if (error) return error;
+
+  const { searchParams } = new URL(request.url);
+  const limitParam = searchParams.get("limit");
+  const take = limitParam ? parseInt(limitParam, 10) : undefined;
 
   try {
     const logs = await prisma.auditLog.findMany({
       orderBy: { createdAt: "desc" },
+      ...(take ? { take } : {}),
       select: {
         id:         true,
         action:     true,

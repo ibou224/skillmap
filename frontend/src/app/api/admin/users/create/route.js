@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma.js";
 import bcrypt from "bcryptjs";
 import { isValidEmail, isValidPassword, isValidString, isValidRole } from "@/lib/validation.js";
 import { requireRole, getIp } from "@/lib/permission.js";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit.js";
 
 /**
  * Crée un nouvel utilisateur dans le système.
@@ -13,6 +14,10 @@ import { requireRole, getIp } from "@/lib/permission.js";
 export async function POST(request) {
   const { session, error } = await requireRole("ADMIN");
   if (error) return error;
+
+  // Rate limiting : max 10 créations par minute par administrateur
+  const rl = checkRateLimit(`${session.user.id}:admin-create`, 10, 60_000);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
 
   try {
     const { email, password, nom, prenom, role, isActive } = await request.json();
