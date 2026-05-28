@@ -5,9 +5,6 @@ const EXTRACT_API_URL =
   process.env.NEXT_PUBLIC_EXTRACT_API_URL || "/api/extract-cv";
 
 export function useCvs() {
-  const [cvs, setCvs] = useState([]);
-  const [isLoadingCvs, setIsLoadingCvs] = useState(false);
-  const [cvsError, setCvsError] = useState(null);
   const [affectations, setAffectations] = useState([]);
   const [isLoadingAffectations, setIsLoadingAffectations] = useState(false);
   const [affectationsError, setAffectationsError] = useState(null);
@@ -21,21 +18,6 @@ export function useCvs() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
-
-  const fetchCvs = useCallback(async () => {
-    setIsLoadingCvs(true);
-    setCvsError(null);
-    try {
-      const response = await fetch("/api/cvs");
-      if (!response.ok) throw new Error(`Erreur ${response.status}`);
-      const data = await response.json();
-      setCvs(data);
-    } catch (err) {
-      setCvsError(err);
-    } finally {
-      setIsLoadingCvs(false);
-    }
-  }, []);
 
   const extractCV = useCallback(async (file) => {
     setIsExtracting(true);
@@ -171,11 +153,7 @@ export function useCvs() {
     }, []);
 
   return {
-    cvs,
-    isLoadingCvs,
     fetchProfessors,
-    cvsError,
-    refetchCvs: fetchCvs,
     affectations,
     isLoadingAffectations,
     affectationsError,

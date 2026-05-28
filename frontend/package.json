@@ -9,6 +9,9 @@
     "lint": "eslint",
     "test": "vitest"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.js"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",

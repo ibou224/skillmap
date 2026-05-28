@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import CvStatusSection from "@/features/professeur/cvStatutSection";
 
 export default function CvPage() {
   return (
-    <div>
+    <Suspense>
       <CvStatusSection />
-    </div>
+    </Suspense>
   );
 }

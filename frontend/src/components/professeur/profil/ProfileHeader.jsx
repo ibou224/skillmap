@@ -8,7 +8,7 @@ const STATS = [
   { icon: Languages,     key: "langues",      label: "Langues"     },
 ];
 
-export default function ProfileHeader({ user, onRefresh, editLink = "/dashboard/professeur/cv" }) {
+export default function ProfileHeader({ user, onRefresh, editLink = "/dashboard/professeur/cv?tab=manual" }) {
   const initials = `${user.prenom?.[0] ?? ""}${user.nom?.[0] ?? ""}`.toUpperCase();
 
   return (

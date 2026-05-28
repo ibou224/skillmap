@@ -35,8 +35,8 @@ function transformLLMResponse(cvData) {
     poste: exp.position ?? "",
     entreprise: exp.organization ?? "",
     domaine: "",
-    debut: "",
-    fin: null,
+    debut: exp.startDate ?? "",
+    fin: exp.endDate ?? null,
     description: exp.description ?? "",
   }));
 
@@ -48,23 +48,31 @@ function transformLLMResponse(cvData) {
     niveauDiplome: edu.niveauDiplome ?? "OTHER",
   }));
 
-  return [
-    { label: "prénom", value: cvData.firstName ?? "" },
-    { label: "nom", value: cvData.lastName ?? "" },
-    { label: "email", value: cvData.email ?? "" },
-    { label: "téléphone", value: cvData.phone ?? "" },
-    {
-      label: "compétences",
-      value: JSON.stringify(
-        (cvData.skills ?? []).map((s) =>
-          typeof s === "string" ? { nom: s, niveau: "DEBUTANT" } : s,
-        ),
-      ),
-    },
+  // Normalise les compétences : conserve nom, niveau, niveauSource, anneesExp
+  const competences = (cvData.skills ?? []).map((s) => {
+    if (typeof s === "string") return { nom: s, niveau: "DEBUTANT", niveauSource: "INFERRED", anneesExp: null };
+    return {
+      nom:          s.nom          ?? "",
+      niveau:       s.niveau       ?? "INTERMEDIAIRE",
+      niveauSource: s.niveauSource ?? "INFERRED",
+      anneesExp:    s.anneesExp    ?? null,
+    };
+  });
 
-    { label: "langues", value: JSON.stringify(cvData.languages ?? []) },
-    { label: "expériences", value: JSON.stringify(experiences) },
-    { label: "formations", value: JSON.stringify(formations) },
+  return [
+    { label: "prénom",          value: cvData.firstName ?? "" },
+    { label: "nom",             value: cvData.lastName  ?? "" },
+    { label: "email",           value: cvData.email     ?? "" },
+    { label: "téléphone",       value: cvData.phone     ?? "" },
+    { label: "ville",           value: cvData.city      ?? "" },
+    { label: "linkedin",        value: cvData.linkedin  ?? "" },
+    { label: "site web",        value: cvData.portfolio ?? "" },
+    { label: "github",          value: cvData.github    ?? "" },
+    { label: "compétences",     value: JSON.stringify(competences) },
+    { label: "langues",         value: JSON.stringify(cvData.languages    ?? []) },
+    { label: "expériences",     value: JSON.stringify(experiences) },
+    { label: "formations",      value: JSON.stringify(formations) },
+    { label: "certifications",  value: JSON.stringify(cvData.certifications ?? []) },
   ];
 }
 

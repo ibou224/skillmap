@@ -19,7 +19,7 @@ export default function ExperienceForm({ exp, index, onUpdate, onRemove, canDele
           </label>
           <input
             placeholder="Développeur fullstack"
-            value={exp.poste}
+            value={exp.poste ?? ""}
             onChange={(e) => onUpdate("poste", e.target.value)}
             className={inputCls}
           />
@@ -28,7 +28,7 @@ export default function ExperienceForm({ exp, index, onUpdate, onRemove, canDele
           <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Entreprise</label>
           <input
             placeholder="Acme Inc."
-            value={exp.entreprise}
+            value={exp.entreprise ?? ""}
             onChange={(e) => onUpdate("entreprise", e.target.value)}
             className={inputCls}
           />
@@ -37,7 +37,7 @@ export default function ExperienceForm({ exp, index, onUpdate, onRemove, canDele
           <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Date de début</label>
           <input
             type="month"
-            value={exp.debut}        
+            value={exp.debut ?? ""}
             onChange={(e) => onUpdate("debut", e.target.value)}
             className={inputCls}
           />
@@ -47,17 +47,17 @@ export default function ExperienceForm({ exp, index, onUpdate, onRemove, canDele
           <input
             type="month"
             placeholder="Laissez vide si en cours"
-            value={exp.fin}            
-            onChange={(e) => onUpdate("fin", e.target.value)}
+            value={exp.fin ?? ""}
+            onChange={(e) => onUpdate("fin", e.target.value || null)}
             className={inputCls}
           />
         </div>
         <div className="space-y-1 sm:col-span-2">
           <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Description des responsabilités</label>
           <textarea
-            rows={2}
+            rows={4}
             placeholder="Décrivez vos missions et réalisations…"
-            value={exp.description}
+            value={exp.description ?? ""}
             onChange={(e) => onUpdate("description", e.target.value)}
             className={inputCls}
           />

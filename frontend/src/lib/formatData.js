@@ -77,17 +77,18 @@ export function buildStructuredData(fieldsArray) {
     siteWeb: "",
     linkedin: "",
     resume: "",
-    competences: [],   
+    competences: [],
     langues: [],
     experiences: [],
-    formations: [], 
+    formations: [],
+    certifications: [],
   };
 
   fieldsArray.forEach((field) => {
     const label = field.label.toLowerCase().trim();
     const key = LABEL_MAPPING[label] || label;
 
-    if (key === "experiences" || key === "formations" || key === "competences" || key === "langues") {
+    if (key === "experiences" || key === "formations" || key === "competences" || key === "langues" || key === "certifications") {
       if (field.type === "array" && Array.isArray(field.parsedValue)) {
         result[key] = field.parsedValue;
       } else {
@@ -233,11 +234,20 @@ export const normalizeInfosProfessor = (infos) => {
       fin: e.dateFin ? new Date(e.dateFin).toISOString().slice(0, 7) : "",
       description: e.description ?? "",
     })),
-    formations: formations.map((f) => ({
-      diplome: f.diplome,
-      etablissement: f.etablissement,
-      anneeObtention: String(f.anneeObtention),
-    })),
+    formations: formations
+      .filter((f) => f.niveauDiplome !== "CERTIFICATION")
+      .map((f) => ({
+        diplome: f.diplome,
+        etablissement: f.etablissement,
+        anneeObtention: String(f.anneeObtention),
+        niveauDiplome: f.niveauDiplome,
+      })),
+    certifications: formations
+      .filter((f) => f.niveauDiplome === "CERTIFICATION")
+      .map((f) => ({
+        title: f.diplome,
+        year: f.anneeObtention ? Number(f.anneeObtention) : null,
+      })),
     cvStatut: cvExtractions?.[0]?.status ?? null,
   };
 }

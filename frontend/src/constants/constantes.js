@@ -74,11 +74,13 @@ export const LABEL_MAPPING = {
   "ville": "ville",
   "site web": "siteWeb",
   "linkedin": "linkedin",
+  "github": "github",
   "résumé": "resume",
   "compétences": "competences",
   "langues": "langues",
   "formations": "formations",
   "expériences": "experiences",
+  "certifications": "certifications",
 };
 
 export const initialCvData = {
@@ -89,11 +91,13 @@ export const initialCvData = {
   ville: "",
   siteWeb: "",
   linkedin: "",
+  github: "",
   resume: "",
   competences: [],
-  langues: "",
+  langues: [],
   experiences: [],
   formations: [],
+  certifications: [],
 };
 
 export const ETAPES = [1,2,3,4,5,6,7,8]
@@ -104,7 +108,7 @@ export const CRITERES = {
     label: "Compétences techniques",
     description: "Correspondance entre les compétences du professeur et celles requises par le cours",
     icon: "🎯",
-    defaut: 60,
+    defaut: 40,
     ...WEIGHT_BOUNDS.competencesPct,
     color: "bg-blue-500",
     lightColor: "bg-blue-50",
@@ -114,7 +118,7 @@ export const CRITERES = {
     label: "Années d'expérience",
     description: "Expérience pratique dans le domaine enseigné",
     icon: "⏳",
-    defaut: 40,
+    defaut: 25,
     ...WEIGHT_BOUNDS.experiencePct,
     color: "bg-emerald-500",
     lightColor: "bg-emerald-50",
@@ -124,7 +128,7 @@ export const CRITERES = {
     label: "Niveau de formation",
     description: "Diplômes et formation académique du professeur",
     icon: "🎓",
-    defaut: 0,
+    defaut: 20,
     ...WEIGHT_BOUNDS.formationPct,
     color: "bg-purple-500",
     lightColor: "bg-purple-50",
@@ -134,19 +138,13 @@ export const CRITERES = {
     label: "Historique d'enseignement",
     description: "Expérience antérieure avec ce cours spécifique",
     icon: "📚",
-    defaut: 0,
+    defaut: 15,
     ...WEIGHT_BOUNDS.historiquePct,
     color: "bg-amber-500",
     lightColor: "bg-amber-50",
     textColor: "text-amber-700",
   },
 };
-
-export const SESSIONS_MOCK = [
-  { id: "1", nom: "A2026", annee: 2026, periode: "AUTOMNE", statut: "ACTIVE" },
-  { id: "2", nom: "H2026", annee: 2026, periode: "HIVER", statut: "PLANIFIEE" },
-  { id: "3", nom: "E2026", annee: 2026, periode: "ETE", statut: "PLANIFIEE" },
-];
 
 export const SAISONS = [
   { value: "Hiver", label: "Hiver" },

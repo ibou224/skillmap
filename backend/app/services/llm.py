@@ -14,14 +14,19 @@ import asyncio
 
 # Demande au LLM de retourner uniquement un JSON structuré, sans texte autour
 CV_EXTRACTION_PROMPT = """
-You are a CV parsing expert. Extract structured information from the following CV text and return ONLY a valid JSON object, no explanation, no markdown.
+You are an expert CV parser for an academic HR system. Extract structured information from the CV text below and return ONLY a valid JSON object — no explanation, no markdown, no extra text.
 
-The JSON must follow this exact schema:
+═══ SCHEMA ═══
 {
   "firstName": "string",
   "lastName": "string",
   "email": "string or null",
   "phone": "string or null",
+  "city": "string or null (city and province/country if mentioned)",
+  "linkedin": "string or null (full LinkedIn URL or username, e.g. linkedin.com/in/alice-tremblay)",
+  "portfolio": "string or null (personal website, GitHub Pages, portfolio URL — NOT LinkedIn)",
+  "github": "string or null (GitHub profile URL or username)",
+
   "education": [
     {
       "diploma": "string",
@@ -30,27 +35,57 @@ The JSON must follow this exact schema:
       "niveauDiplome": "one of: DOCTORATE, MASTERS, BACHELORS, DEC, OTHER"
     }
   ],
+
+  "certifications": [
+    {
+      "title": "string",
+      "year": "number or null"
+    }
+  ],
+
   "experiences": [
     {
       "position": "string",
       "organization": "string",
+      "startDate": "string in YYYY-MM format, use YYYY-01 if only year is known, or null",
+      "endDate": "string in YYYY-MM format or null if still ongoing (Présent / Present / Actuel)",
       "yearsExp": "number or null",
       "description": "string or null"
     }
   ],
+
   "skills": [
     {
-      "nom": "string",
-      "niveau": "one of: DEBUTANT, INTERMEDIAIRE, AVANCE"
+      "nom": "string (canonical technology/framework name, e.g. React not React.js)",
+      "niveau": "one of: DEBUTANT, INTERMEDIAIRE, AVANCE",
+      "niveauSource": "one of: EXPLICIT, INFERRED",
+      "anneesExp": "number or null"
     }
   ],
+
   "languages": ["string"],
   "totalYearsExperience": "number or null"
 }
 
-If a field is not found in the CV, use null or an empty array.
+═══ SKILL EXTRACTION RULES ═══
+1. NIVEAU — use EXPLICIT when the CV states the level directly (e.g. "React (Avancé)", "Advanced Python", "notions de Java"):
+   - Words like Avancé / Advanced / Expert / Senior / Maîtrise → AVANCE
+   - Words like Intermédiaire / Intermediate / Confirmé / Bon niveau → INTERMEDIAIRE
+   - Words like Notions / Débutant / Beginner / Familier / Basic / Découverte → DEBUTANT
+   Use INFERRED when the level is not stated — infer from context (years of use, role seniority, emphasis in CV).
 
-CV TEXT:
+2. SCOPE — only extract genuine technical skills: programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, methodologies (Scrum, Agile).
+   DO NOT include: general office tools (Word, Excel, PowerPoint), soft skills (leadership, communication), or vague concepts (REST API, "Internet").
+
+3. DEDUPLICATION — merge near-duplicates into one canonical name:
+   - React / React.js / ReactJS → "React"
+   - Node / Node.js / NodeJS → "Node.js"
+   - Postgres / PostgreSQL → "PostgreSQL"
+   - JS / JavaScript → "JavaScript"
+
+4. anneesExp — estimate years of experience from dates in the CV if possible, otherwise leave null.
+
+═══ CV TEXT ═══
 {cv_text}
 """
 
@@ -118,7 +153,12 @@ def _fallback_extraction(text: str) -> dict:
         "lastName": None,
         "email": email[0] if email else None,
         "phone": phone[0].strip() if phone else None,
+        "city": None,
+        "linkedin": None,
+        "portfolio": None,
+        "github": None,
         "education": [],
+        "certifications": [],
         "experiences": [],
         "skills": [],
         "languages": [],

@@ -243,6 +243,7 @@ enum NiveauDiplome {
   MASTERS
   BACHELORS
   DEC
+  CERTIFICATION
   OTHER
 }
 

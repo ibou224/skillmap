@@ -37,10 +37,13 @@ def save_cv_extraction(professor_id: str, file_name: str, file_path: str, raw_te
 
 #  Sauvegarde compétences professeur 
 
+VALID_NIVEAUX = {"DEBUTANT", "INTERMEDIAIRE", "AVANCE"}
+
 def save_professor_skills(professor_id: str, skills: list) -> None:
     """
     Insère ou met à jour les compétences d'un professeur.
     Crée la compétence dans le référentiel si elle n'existe pas.
+    Accepte skills comme liste de str OU de dict {"nom": str, "niveau": str}.
     """
     if not skills:
         return
@@ -48,13 +51,29 @@ def save_professor_skills(professor_id: str, skills: list) -> None:
     conn = get_connection()
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            for skill_name in skills:
+            for skill_entry in skills:
+                # Normaliser : dict {"nom", "niveau"} ou simple chaîne
+                if isinstance(skill_entry, dict):
+                    skill_name = (skill_entry.get("nom") or "").strip()
+                    niveau = skill_entry.get("niveau", "INTERMEDIAIRE")
+                    annees_exp = skill_entry.get("anneesExp") or None
+                else:
+                    skill_name = str(skill_entry).strip()
+                    niveau = "INTERMEDIAIRE"
+                    annees_exp = None
+
+                if not skill_name:
+                    continue
+
+                # Valider le niveau (évite une contrainte enum PostgreSQL)
+                if niveau not in VALID_NIVEAUX:
+                    niveau = "INTERMEDIAIRE"
+
                 # Créer la compétence si elle n'existe pas
                 cur.execute("""
                     INSERT INTO "Skill" (id, nom, categorie, "createdAt")
                     VALUES (gen_random_uuid(), %s, 'Non classifiée', NOW())
                     ON CONFLICT (nom) DO NOTHING
-                    RETURNING id
                 """, (skill_name,))
 
                 # Récupérer l'ID de la compétence
@@ -63,12 +82,14 @@ def save_professor_skills(professor_id: str, skills: list) -> None:
                 if not skill:
                     continue
 
-                # Lier la compétence au professeur
+                # Lier la compétence au professeur (niveau + anneesExp depuis le LLM)
                 cur.execute("""
                     INSERT INTO "ProfessorSkill" ("professorId", "skillId", niveau, "anneesExp", source, "createdAt")
-                    VALUES (%s, %s, 'INTERMEDIAIRE', 0, 'EXTRACTION_IA', NOW())
-                    ON CONFLICT ("professorId", "skillId") DO NOTHING
-                """, (professor_id, str(skill["id"])))
+                    VALUES (%s, %s, %s, %s, 'EXTRACTION_IA', NOW())
+                    ON CONFLICT ("professorId", "skillId") DO UPDATE
+                      SET niveau = EXCLUDED.niveau,
+                          "anneesExp" = COALESCE(EXCLUDED."anneesExp", "ProfessorSkill"."anneesExp")
+                """, (professor_id, str(skill["id"]), niveau, annees_exp))
 
             conn.commit()
     finally:

@@ -1,19 +1,38 @@
 // pages/cv.jsx
 "use client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import CvUploadSection from "@/components/professeur/cv/CvUploadSection";
 import CvManualSection from "@/components/professeur/cv/CvManualSection";
 import {useCvs} from "@/hooks/useProfessor";
 
 
 export default function CvPage() {
-  const [activeTab, setActiveTab] = useState("upload");
-  const { saveInfos, isSaving, infos, fetchInfos } = useCvs();
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") === "manual" ? "manual" : "upload"
+  );
+  const [pendingCvData, setPendingCvData] = useState(null);
+  const [formKey, setFormKey] = useState(0);
+  const { saveInfos, isSaving, infos, isLoadingInfos, fetchInfos } = useCvs();
 
   useEffect(() => { fetchInfos(); }, [fetchInfos]);
 
-
  const handleUploadValidated = async (cvData) => {
+   // Pré-remplir le formulaire manuel et basculer immédiatement
+   setPendingCvData(cvData);
+   setFormKey((k) => k + 1);
+   setActiveTab("manual");
+
+   // Fusionner certifications → formations avec niveauDiplome CERTIFICATION
+   const certAsFormations = (cvData.certifications ?? []).map((c) => ({
+     diplome:        c.title ?? "",
+     etablissement:  "",
+     anneeObtention: c.year ? String(c.year) : String(new Date().getFullYear()),
+     niveauDiplome:  "CERTIFICATION",
+   }));
+
+   // Sauvegarder en arrière-plan
    await saveInfos({
      profile: {
        telephone: cvData.telephone,
@@ -21,20 +40,28 @@ export default function CvPage() {
        siteWeb: cvData.siteWeb,
        linkedin: cvData.linkedin,
        resume: cvData.resume,
+       langues: cvData.langues ?? [],
      },
      experiences: cvData.experiences,
-     formations: cvData.formations,
+     formations: [...(cvData.formations ?? []), ...certAsFormations],
      competences: (cvData.competences ?? []).map((comp) => ({
-       nom:comp.nom,
+       nom: comp.nom,
        categorie: "autre",
        niveau: comp.niveau ?? "DEBUTANT",
-       anneesExp: 0,
+       anneesExp: comp.anneesExp ?? 0,
        source: "EXTRACTION_IA",
      })),
    });
  };
 
 const handleManualSave = async (cvData) => {
+  const certAsFormations = (cvData.certifications ?? []).map((c) => ({
+    diplome:        c.title ?? "",
+    etablissement:  "",
+    anneeObtention: c.year ? String(c.year) : String(new Date().getFullYear()),
+    niveauDiplome:  "CERTIFICATION",
+  }));
+
   await saveInfos({
     profile: {
       telephone: cvData.telephone,
@@ -45,7 +72,7 @@ const handleManualSave = async (cvData) => {
       langues: cvData.langues ?? [],
     },
     experiences: cvData.experiences,
-    formations: cvData.formations,
+    formations: [...(cvData.formations ?? []), ...certAsFormations],
     competences: (cvData.competences ?? []).map((comp) => ({
       nom: comp.nom,
       categorie: "autre",
@@ -83,7 +110,15 @@ const handleManualSave = async (cvData) => {
 
       {/* Contenu */}
       {activeTab === "upload" && <CvUploadSection onValidated={handleUploadValidated} />}
-      {activeTab === "manual" && <CvManualSection onSave={handleManualSave} initialData={infos} />}
+      {activeTab === "manual" && (
+        isLoadingInfos
+          ? <div className="flex justify-center py-20"><div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>
+          : <CvManualSection
+              key={formKey}
+              onSave={handleManualSave}
+              initialData={pendingCvData ?? infos}
+            />
+      )}
     </div>
   );
 }

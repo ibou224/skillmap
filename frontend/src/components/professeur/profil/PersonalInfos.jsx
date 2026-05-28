@@ -1,4 +1,4 @@
-import { User, Mail, Phone, MapPin, Link2, Globe } from "lucide-react";
+import { User, Mail, Phone, MapPin, Link2, Globe, GitBranch } from "lucide-react";
 
 
 function FieldRow({ icon: Icon, label, value, onChange, placeholder, type = "text" }) {
@@ -67,6 +67,13 @@ export default function PersonalInfos({ data, onChange }) {
           value={data.linkedin}
           onChange={(v) => update("linkedin", v)}
           placeholder="linkedin.com/in/jean-dupont"
+        />
+        <FieldRow
+          icon={GitBranch}
+          label="GitHub"
+          value={data.github ?? ""}
+          onChange={(v) => update("github", v)}
+          placeholder="github.com/jean-dupont"
         />
 
         <div className="space-y-1.5 sm:col-span-2">

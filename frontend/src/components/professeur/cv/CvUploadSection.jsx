@@ -11,6 +11,7 @@ import { ExperiencesEditor } from "../experiences/ExperiencesEditor";
 import { FormationsEditor } from "../formations/FormationsEditor";
 import { StringArrayEditor } from "../skills/StringArrayEditor";
 import { SkillsEditor } from "../skills/SkillsEditor";
+import { CertificationsEditor } from "../certifications/CertificationsEditor";
 
 export default function CvUploadSection({ onValidated }) {
   const [uploadState, setUploadState] = useState("idle");
@@ -32,8 +33,11 @@ export default function CvUploadSection({ onValidated }) {
     setUploadState("uploading");
 
     try {
-      const extractedFields = await extractCV(f);
-      const normalized = extractedFields.map((data) => normalizeField(data));
+      const result = await extractCV(f);
+      if (!result?.success || !Array.isArray(result.data)) {
+        throw new Error(result?.message || "Réponse invalide du serveur.");
+      }
+      const normalized = result.data.map((data) => normalizeField(data));
       const structuredData = buildStructuredData(normalized);
       setCvData(structuredData);
       setUploadState("extracted");
@@ -203,6 +207,18 @@ export default function CvUploadSection({ onValidated }) {
                 onChange={(newForms) => setCvData(prev => ({ ...prev, formations: newForms }))}
               />
             </div>
+
+            {cvData.certifications?.length > 0 && (
+              <div>
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                  Certifications
+                </h3>
+                <CertificationsEditor
+                  certifications={cvData.certifications}
+                  onChange={(newCerts) => setCvData(prev => ({ ...prev, certifications: newCerts }))}
+                />
+              </div>
+            )}
           </div>
 
           {/* Boutons d'action */}
