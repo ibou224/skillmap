@@ -49,6 +49,7 @@ export const NiveauDiplome = {
   MASTERS: 'MASTERS',
   BACHELORS: 'BACHELORS',
   DEC: 'DEC',
+  CERTIFICATION: 'CERTIFICATION',
   OTHER: 'OTHER'
 } as const
 

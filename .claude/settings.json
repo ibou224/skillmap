@@ -41,7 +41,8 @@
       "Bash(npx eslint *)",
       "Bash(grep -E \"\\\\.\\(json|ts|js|yml|yaml|prisma|md\\)$\")",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\" -Directory)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\\\\frontend\\\\src\\\\\" -Recurse -Directory | Select-Object -ExpandProperty FullName | head -30)"
     ],
     "additionalDirectories": [
       "c:\\Users\\tiamk\\Desktop\\Gestion_Cv\\skillmap\\frontend\\src\\app\\dashboard\\admin\\sections",

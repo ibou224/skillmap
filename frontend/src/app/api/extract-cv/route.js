@@ -16,6 +16,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getIp } from "@/lib/permission";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit.js";
+import { notifyByRole } from "@/lib/notify";
 
 const FASTAPI_URL =
   process.env.FASTAPI_INTERNAL_URL ||
@@ -50,7 +51,13 @@ function transformLLMResponse(cvData) {
 
   // Normalise les compétences : conserve nom, niveau, niveauSource, anneesExp
   const competences = (cvData.skills ?? []).map((s) => {
-    if (typeof s === "string") return { nom: s, niveau: "DEBUTANT", niveauSource: "INFERRED", anneesExp: null };
+    if (typeof s === "string")
+      return {
+        nom: s,
+        niveau: "DEBUTANT",
+        niveauSource: "INFERRED",
+        anneesExp: null,
+      };
     return {
       nom: s.nom ?? "",
       niveau: s.niveau ?? "INTERMEDIAIRE",
@@ -167,6 +174,13 @@ export async function POST(request) {
         ipAddress: getIp(request),
         userId: session.user.id,
       },
+    });
+    await notifyByRole({
+      roles: ["ADMIN", "RH"],
+      type:  "NOUVEAU_CV",
+      title: `Nouveau CV soumis — ${session.user.prenom} ${session.user.nom}`,
+      body:  session.user.email,
+      link:  "/dashboard/rh/cvs",
     });
 
     return NextResponse.json({

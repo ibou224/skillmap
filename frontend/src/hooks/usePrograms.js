@@ -57,11 +57,8 @@ export function usePrograms() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) {
-      return { success: false, message: data.message };
-    }
     const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
+    if (!res.ok || !data.success) return { success: false, message: data.message };
     return data;
   }, []);
 
@@ -75,11 +72,8 @@ export function usePrograms() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) {
-      return { success: false, message: data.message };
-    }
     const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
+    if (!res.ok || !data.success) return { success: false, message: data.message };
     return data;
   }, []);
 
@@ -87,11 +81,8 @@ export function usePrograms() {
     const res = await fetch(`/api/programs/${id}`, {
       method: "DELETE",
     });
-    if (!res.ok) {
-      return { success: false, message: data.message };
-    }
     const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
+    if (!res.ok || !data.success) return { success: false, message: data.message };
     return data;
   }, []);
 

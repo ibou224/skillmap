@@ -7,18 +7,6 @@ import DashboardHeader from "./DashboardHeader";
 import { useLogin } from "@/hooks/useAuth";
 import { useIdleTimeout } from "@/hooks/useIdleTimeout";
 
-/* ─────────────────────────────────────────────
-   Bannière session expirée (RefreshTokenError)
-───────────────────────────────────────────── */
-function SessionExpiredBanner({ secondsLeft }) {
-  return (
-    <div className="fixed top-0 inset-x-0 z-100 flex items-center justify-center gap-3 bg-amber-500 px-4 py-3 text-white text-sm font-medium shadow-lg">
-      <span className="inline-block w-2 h-2 rounded-full bg-white animate-pulse" />
-      Votre session a expiré. Redirection vers la page de connexion dans{" "}
-      <span className="font-bold">{secondsLeft}s</span>…
-    </div>
-  );
-}
 
 /* ─────────────────────────────────────────────
    Shell principal
@@ -26,31 +14,10 @@ function SessionExpiredBanner({ secondsLeft }) {
 export default function DashboardShell({ user, sessionError, children }) {
   const [isCollapsed, setIsCollapsed]   = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [countdown, setCountdown]       = useState(5);
 
   const { logout } = useLogin();
   useIdleTimeout();
 
-  const isExpired = sessionError === "RefreshTokenError";
-
-  /* Décompte 5s → signOut (setState uniquement dans le callback) */
-  useEffect(() => {
-    if (!isExpired) return;
-
-    let n = 5;
-    const interval = setInterval(() => {
-      n -= 1;
-      setCountdown(n);
-      if (n <= 0) {
-        clearInterval(interval);
-        signOut({ callbackUrl: "/login" });
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isExpired]);
-
-  /* Fermer la sidebar mobile au resize vers desktop */
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 768) setIsMobileOpen(false);
@@ -61,8 +28,6 @@ export default function DashboardShell({ user, sessionError, children }) {
 
   return (
     <>
-      {isExpired && <SessionExpiredBanner secondsLeft={countdown} />}
-
       <div className="flex min-h-screen">
         {/* Overlay mobile */}
         {isMobileOpen && (

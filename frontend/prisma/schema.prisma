@@ -15,6 +15,7 @@ model User {
   passwordHash     String
   role             Role       @default(PROFESSEUR)
   isActive         Boolean    @default(true)
+  isArchived       Boolean    @default(false)
   loginAttempts    Int        @default(0)
   lockedUntil      DateTime?
   refreshTokenHash String?
@@ -24,6 +25,8 @@ model User {
   updatedAt        DateTime   @updatedAt
   auditLogs        AuditLog[]
   professor        Professor?
+  notifications    Notification[]
+
 }
 
 model AuditLog {
@@ -46,7 +49,7 @@ model Professor {
   siteWeb       String?
   linkedIn      String?
   resume        String?
-  langues       String[]
+  langues       String[]         @default([])
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   assignments   Assignment[]
@@ -54,7 +57,7 @@ model Professor {
   experiences   Experience[]
   formations    Formation[]
   snapshots     CvSnapshot[]
-  user          User             @relation(fields: [userId], references: [id])
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   skills        ProfessorSkill[]
 }
 
@@ -214,6 +217,20 @@ model Assignment {
 
   @@unique([sessionId, professorId, courseId])
 }
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String?
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+
 
 enum Role {
   PROFESSEUR

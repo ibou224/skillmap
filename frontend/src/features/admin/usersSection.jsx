@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Banner } from "@/components/ui/Banner";
 import { UserToolbar } from "@/components/users/userToolbar";
@@ -9,11 +9,12 @@ import { UserModal } from "@/components/users/UserModal";
 import { useManagementUser } from "@/hooks/useManagementUser";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import SuccessAlert from "@/components/ui/SuccessAlert";
+import { AlertTriangle } from "lucide-react";
 
 const PAGE_SIZE = 10;
 
 export default function UsersSection() {
-  const { users, getUsers, updateUser, deleteUser, unlockUser } = useManagementUser();
+  const { users, getUsers, updateUser, deleteUser, unlockUser, error: hookError, isLoading } = useManagementUser();
 
   useEffect(() => {
     getUsers();
@@ -79,22 +80,38 @@ export default function UsersSection() {
     await getUsers();
     setIsDeleting(false);
     setPendingDeleteId(null);
-    if (u) setSuccessMessage(`Le compte de ${u.prenom} ${u.nom} a été désactivé.`);
+    if (u) setSuccessMessage(`Le compte de ${u.prenom} ${u.nom} a été supprimé avec succès.`);
   };
 
+  useEffect(() => {
+    if (successMessage) {
+      const id = setTimeout(() => setSuccessMessage(null), 3000);
+      return () => clearTimeout(id);
+    }
+  }, [successMessage]);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <Banner
         title="Utilisateurs"
         description="Gestion des professeurs, RH et administrateurs."
       />
+      {hookError && (
+        <div className="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          {hookError}
+        </div>
+      )}
 
       {successMessage && (
-        <SuccessAlert
-          message={successMessage}
-          onClose={() => setSuccessMessage(null)}
-        />
+        <div className="fixed top-6 right-6 z-50 w-full max-w-sm animate-in slide-in-from-top-2">
+          <SuccessAlert
+            message={successMessage}
+            onClose={() => setSuccessMessage(null)}
+          />
+        </div>
       )}
+
 
       <UserToolbar
         search={search}
@@ -171,12 +188,12 @@ export default function UsersSection() {
 
       <ConfirmModal
         isOpen={pendingDeleteId !== null}
-        title="Désactiver l'utilisateur"
+        title="Archiver l'utilisateur"
         message={(() => {
           const u = users.find((u) => u.id === pendingDeleteId);
           return u
-            ? `Voulez-vous vraiment désactiver le compte de ${u.prenom} ${u.nom} ? L'utilisateur ne pourra plus se connecter.`
-            : "Voulez-vous vraiment désactiver cet utilisateur ?";
+            ? `Voulez-vous vraiment archiver le compte de ${u.prenom} ${u.nom} ? L'utilisateur ne pourra plus se connecter.`
+            : "Voulez-vous vraiment archiver cet utilisateur ?";
         })()}
         onConfirm={confirmDelete}
         onCancel={() => setPendingDeleteId(null)}

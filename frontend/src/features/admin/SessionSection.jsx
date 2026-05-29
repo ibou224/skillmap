@@ -16,7 +16,6 @@ import {
   Search,
 } from "lucide-react";
 import { useSessions } from "@/hooks/useSessions";
-import { Button } from "@/components/ui/Button";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import SuccessAlert from "@/components/ui/SuccessAlert";
 import SessionTable from "@/components/sessions/SessionTable";
@@ -47,7 +46,6 @@ export default function SessionSection() {
 
   const itemsPerPage = 10;
 
-  // ── DONNÉES FORM ──
   const [formData, setFormData] = useState({
     nom: "",
     saison: "",
@@ -55,10 +53,6 @@ export default function SessionSection() {
     dateDebut: "",
     dateFin: "",
   });
-
-  // ═══════════════════════════════════════
-  //  EFFECTS
-  // ═══════════════════════════════════════
 
   useEffect(() => {
     if (!successMessage) return;
@@ -174,14 +168,14 @@ useEffect(() => {
     <div>
       <div className="space-y-6 w-full mx-auto pb-10">
         {/* ALERTE SUCCÈS */}
-        <div className="fixed left-1/2 -translate-x-1/2 top-4 w-full max-w-md z-50 space-y-2">
           {successMessage && (
+            <div className="fixed top-6 right-6 z-50 w-full max-w-sm animate-in slide-in-from-top-2">
             <SuccessAlert
               message={successMessage}
               onClose={() => setSuccessMessage("")}
             />
+            </div>
           )}
-        </div>
 
         {/* ── EN-TÊTE ── */}
         <div className="relative overflow-hidden bg-gradient-to-br from-cite-green to-[#135d55] rounded-3xl p-8 sm:p-10 shadow-lg border border-teal-600/30">

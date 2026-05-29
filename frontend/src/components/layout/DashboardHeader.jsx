@@ -16,6 +16,7 @@ import Link from "next/link";
 import { Bell, LogOut, ChevronDown, Settings, CalendarDays, Menu } from "lucide-react";
 import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
 import { ROLE_COLORS, ROLE_LABELS, SETTINGS_HREF, getInitials, formatToday } from "@/constants/header.js";
+import { useNotifications } from "@/hooks/useNotifications";
 
 
 export default function DashboardHeader({
@@ -23,23 +24,33 @@ export default function DashboardHeader({
   user,
   onLogout,
   onMobileMenuToggle,
-  notificationCount = 0,
 }) {
   const [showMenu, setShowMenu]               = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const menuRef = useRef(null);
+  const [showNotifs, setShowNotifs]           = useState(false);
+  const menuRef  = useRef(null);
+  const notifRef = useRef(null);
 
-  // Fermeture du menu au clic extérieur
+  const { notifications, count, markAllRead, markOneRead } = useNotifications();
+
+
   useEffect(() => {
     if (!showMenu) return;
     const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setShowMenu(false);
-      }
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [showMenu]);
+
+  useEffect(() => {
+    if (!showNotifs) return;
+    const handler = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) setShowNotifs(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showNotifs]);
 
   const roleColor  = ROLE_COLORS[user.role];
   const roleLabel  = ROLE_LABELS[user.role];
@@ -89,15 +100,56 @@ export default function DashboardHeader({
               </div>
 
               {/* Notifications */}
-              <button
-                aria-label="Notifications"
-                className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200/70 bg-white/70 text-gray-400 transition-all duration-200 hover:border-[hsl(134_35%_45%)]/30 hover:bg-[hsl(134_35%_45%)]/5 hover:text-[hsl(134_35%_45%)]"
-              >
-                <Bell className="h-[18px] w-[18px]" />
-                {notificationCount > 0 && (
-                  <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-red-500 ring-2 ring-white" />
+              <div className="relative" ref={notifRef}>
+                <button
+                  aria-label="Notifications"
+                  onClick={() => { setShowNotifs((p) => !p); if (!showNotifs) markAllRead(); }}
+                  className="relative flex h-9 w-9 items-center cursor-pointer justify-center rounded-xl border border-gray-200/70 bg-white/70 text-gray-400 transition-all duration-200 hover:border-cite-green/30 hover:bg-cite-green/5 hover:text-cite-green"
+                >
+                  <Bell className="h-4.5 w-4.5" />
+                  {count > 0 && (
+                    <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white">
+                      {count > 9 ? "9+" : count}
+                    </span>
+                  )}
+                </button>
+
+                {showNotifs && (
+                  <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-xl">
+                    <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
+                      <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Notifications</span>
+                    </div>
+                    {notifications.length === 0 ? (
+                      <p className="px-4 py-6 text-center text-sm text-slate-400">Aucune nouvelle notification</p>
+                    ) : (
+                      <ul>
+                        {notifications.map((n) => (
+                          <li key={n.id}>
+                            {n.link ? (
+                              <Link
+                                href={n.link}
+                                onClick={() => { markOneRead(n.id); setShowNotifs(false); }}
+                                className="flex flex-col gap-0.5 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0"
+                              >
+                                <span className="text-sm font-semibold text-slate-700">{n.title}</span>
+                                {n.body && <span className="text-xs text-slate-400">{n.body}</span>}
+                              </Link>
+                            ) : (
+                              <button
+                                onClick={() => markOneRead(n.id)}
+                                className="flex w-full flex-col gap-0.5 px-4 py-3 text-left hover:bg-slate-50 border-b border-slate-50 last:border-0"
+                              >
+                                <span className="text-sm font-semibold text-slate-700">{n.title}</span>
+                                {n.body && <span className="text-xs text-slate-400">{n.body}</span>}
+                              </button>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
-              </button>
+              </div>
 
               {/* Séparateur */}
               <div className="h-7 w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent" />

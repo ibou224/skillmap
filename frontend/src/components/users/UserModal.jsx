@@ -74,31 +74,27 @@ export function UserModal({ isOpen, onClose, userToEdit = null, onSuccess }) {
       }
     } else {
       const result = await createUser(form.nom.trim(), form.prenom.trim(), form.role);
-      
-      if (result && result.email) {
-        // Au lieu de fermer, on affiche l'écran de succès avec les identifiants
+
+      if (result?.success && result.email) {
         setCredentials({
           email: result.email,
           password: result.generatedPassword,
         });
       } else {
-        setErrors({ global: error || "Erreur lors de la création." });
+        setErrors({ global: result?.message || "Erreur lors de la création." });
       }
     }
   };
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
-      // Si on est sur l'écran de succès, on exécute aussi onSuccess avant de fermer
       if (credentials && onSuccess) onSuccess(); 
       onClose();
     }
   };
 
-  // Ne rien rendre si le modal est fermé
   if (!isOpen) return null;
 
-  // ─── ÉCRAN DE SUCCÈS (S'affiche uniquement après création) ────────────────
   if (credentials) {
     return (
       <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={handleBackdropClick}>

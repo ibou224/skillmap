@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Scale, Save, RotateCcw, AlertTriangle, Info, CheckCircle } from "lucide-react";
+import { Scale, Save, RotateCcw, AlertTriangle, Info } from "lucide-react";
 
 import { CRITERES } from "@/constants/constantes";
 import { CritereCard } from "@/features/weights/CritereCard";
@@ -9,6 +9,7 @@ import { TotalIndicator } from "@/features/weights/TotalIndicator";
 import { ScoreFormula } from "@/features/weights/ScoreFormula";
 import { useWeights } from "@/hooks/useWeights";
 import { useSessions } from "@/hooks/useSessions";
+import SuccessAlert from "@/components/ui/SuccessAlert";
 
 const DEFAULT_WEIGHTS = { competencesPct: 40, experiencePct: 25, formationPct: 20, historiquePct: 15 };
 
@@ -23,6 +24,7 @@ export default function WeightsConfigPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  
 
   useEffect(() => {
     fetchWeights();
@@ -112,10 +114,12 @@ export default function WeightsConfigPage() {
         </div>
       </div>
 
-      {/* ─── Alertes ─── */}
       {saveSuccess && (
-        <div className="flex items-center gap-2 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700 font-medium">
-          <CheckCircle className="w-4 h-4" /> Configuration enregistrée avec succès.
+        <div className="fixed top-6 right-6 z-50 w-full max-w-sm">
+          <SuccessAlert
+            message="Configuration enregistrée avec succès."
+            onClose={() => setSaveSuccess(false)}
+          />
         </div>
       )}
       {saveError && (

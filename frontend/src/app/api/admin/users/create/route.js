@@ -68,15 +68,16 @@ export async function POST(request) {
       );
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
     const normalizedRole = role.toUpperCase().trim();
 
-    const userUnique = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-    if (userUnique) {
-      return NextResponse.json(
-        { success: false, message: "Un utilisateur avec cette adresse email existe deja." },
-        { status: 409 }
-      );
+    // Résoudre les doublons de nom : jean.dupont → jean.dupont2 → jean.dupont3 …
+    const baseEmail = email.toLowerCase().trim();
+    const [localPart, domain] = baseEmail.split("@");
+    let normalizedEmail = baseEmail;
+    let suffix = 2;
+    while (await prisma.user.findUnique({ where: { email: normalizedEmail } })) {
+      normalizedEmail = `${localPart}${suffix}@${domain}`;
+      suffix++;
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -94,7 +95,7 @@ export async function POST(request) {
     });
 
     if (normalizedRole === "PROFESSEUR") {
-      await prisma.professor.create({ data: { userId: newUser.id } });
+      await prisma.professor.create({ data: { userId: newUser.id, langues: [] } });
     }
 
     const { passwordHash: _, ...userWithoutPassword } = newUser;

@@ -26,7 +26,7 @@ export async function DELETE(request, { params }) {
 
     const userDeleted = await prisma.user.update({
       where: { id },
-      data: { isActive: false },
+      data: { isArchived: true },
     });
 
     const { passwordHash, ...safeUser } = userDeleted;
@@ -40,7 +40,7 @@ export async function DELETE(request, { params }) {
         metadata: {
           email: session.user.email,
           role: session.user.role,
-          message: "Compte utilisateur désactivé",
+          message: "Compte utilisateur supprimé",
           cible: user.email,
         },
         ipAddress: getIp(request),
@@ -49,14 +49,14 @@ export async function DELETE(request, { params }) {
 
     return NextResponse.json({
       success: true,
-      message: "Utilisateur désactivé avec succès.",
+      message: "Utilisateur supprimé avec succès.",
       user: safeUser,
     });
 
   } catch (err) {
-    console.error("Erreur lors de la désactivation de l'utilisateur:", err);
+    console.error("Erreur lors de la suppression de l'utilisateur:", err);
     return NextResponse.json(
-      { success: false, message: "Une erreur interne est survenue lors de la désactivation." },
+      { success: false, message: "Une erreur interne est survenue lors de la suppression." },
       { status: 500 }
     );
   }

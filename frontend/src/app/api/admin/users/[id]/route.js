@@ -109,6 +109,13 @@ export async function DELETE(request, { params }) {
       );
     }
 
+    if (id === session.user.id) {
+      return NextResponse.json(
+        { success: false, message: "Vous ne pouvez pas archiver votre propre compte." },
+        { status: 403 }
+      );
+    }
+
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return NextResponse.json(
@@ -117,18 +124,21 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    await prisma.user.delete({ where: { id } });
+    await prisma.user.update({
+      where: { id },
+      data: { isArchived: true, isActive: false, loginAttempts: 0, lockedUntil: null },
+    });
 
     await prisma.auditLog.create({
       data: {
-        action: "DELETE",
+        action: "ARCHIVE",
         entityType: "USER",
         entityId: id,
         userId: session.user.id,
         metadata: {
           email: session.user.email,
           role: session.user.role,
-          message: "Compte utilisateur supprimé définitivement",
+          message: "Compte utilisateur archivé",
           cible: user.email,
         },
         ipAddress: getIp(request),
@@ -137,7 +147,7 @@ export async function DELETE(request, { params }) {
 
     return NextResponse.json({
       success: true,
-      message: `Le compte de ${user.prenom} ${user.nom} a été supprimé.`,
+      message: `Le compte de ${user.prenom} ${user.nom} a été archivé.`,
     });
 
   } catch (err) {

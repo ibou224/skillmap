@@ -121,3 +121,8 @@ export type WeightsConfig = Prisma.WeightsConfigModel
  * 
  */
 export type Assignment = Prisma.AssignmentModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

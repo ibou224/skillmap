@@ -66,7 +66,8 @@ export const ModelName = {
   CourseSkill: 'CourseSkill',
   Session: 'Session',
   WeightsConfig: 'WeightsConfig',
-  Assignment: 'Assignment'
+  Assignment: 'Assignment',
+  Notification: 'Notification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -93,6 +94,7 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   role: 'role',
   isActive: 'isActive',
+  isArchived: 'isArchived',
   loginAttempts: 'loginAttempts',
   lockedUntil: 'lockedUntil',
   refreshTokenHash: 'refreshTokenHash',
@@ -301,6 +303,20 @@ export const AssignmentScalarFieldEnum = {
 } as const
 
 export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  link: 'link',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -106,11 +106,13 @@ export function useManagementUser() {
             const data = await response.json()
 
             if(!data.success) {
-                setError(data.message || "Une erreur est survenue lors de la création de l'utilisateur.")
-                setIsLoading(false)
+                const msg = data.message || "Une erreur est survenue lors de la création de l'utilisateur.";
+                setError(msg);
+                setIsLoading(false);
+                return { success: false, message: msg };
             } else {
-                setIsLoading(false)
-                return {...data, generatedPassword: generatedPassword, email: generatedEmail};
+                setIsLoading(false);
+                return { success: true, ...data, generatedPassword, email: data.user?.email ?? generatedEmail };
             }
             
         } catch (error) {

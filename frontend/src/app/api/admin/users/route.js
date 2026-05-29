@@ -31,10 +31,14 @@ export async function GET(request) {
   try {
     const userSelect = {
       id: true, email: true, nom: true, prenom: true, role: true,
-      isActive: true, loginAttempts: true, lockedUntil: true,
+      isActive: true, isArchived: true, loginAttempts: true, lockedUntil: true,
     };
 
+    const { searchParams } = new URL(request.url);
+    const showArchived = searchParams.get("archived") === "true";
+
     const users = await prisma.user.findMany({
+      where:   { isArchived: showArchived },
       select:  userSelect,
       orderBy: { prenom: "asc" },
     });

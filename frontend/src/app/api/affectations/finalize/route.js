@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";
-import { sendFinalizationEmailBatch } from "@/lib/email";
+
 
 export async function PATCH(request) {
   const { session, error } = await requireRole("RH", "ADMIN");
@@ -13,7 +13,7 @@ export async function PATCH(request) {
   } catch {
     return NextResponse.json(
       { success: false, message: "Corps de requete invalide." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -21,7 +21,7 @@ export async function PATCH(request) {
   if (!sessionId) {
     return NextResponse.json(
       { success: false, message: "sessionId est requis." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -34,7 +34,7 @@ export async function PATCH(request) {
     if (!academicSession) {
       return NextResponse.json(
         { success: false, message: "Session introuvable." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -45,15 +45,19 @@ export async function PATCH(request) {
     });
 
     const countByStatus = Object.fromEntries(
-      counts.map((item) => [item.statut, item._count._all])
+      counts.map((item) => [item.statut, item._count._all]),
     );
 
-    const finalizableCount = (countByStatus.AJUSTEE ?? 0) + (countByStatus.PROPOSEE ?? 0);
+    const finalizableCount =
+      (countByStatus.AJUSTEE ?? 0) + (countByStatus.PROPOSEE ?? 0);
 
     if (finalizableCount === 0) {
       return NextResponse.json(
-        { success: false, message: "Aucune affectation à finaliser pour cette session." },
-        { status: 409 }
+        {
+          success: false,
+          message: "Aucune affectation à finaliser pour cette session.",
+        },
+        { status: 409 },
       );
     }
 
@@ -61,9 +65,13 @@ export async function PATCH(request) {
     const toFinalize = await prisma.assignment.findMany({
       where: { sessionId, statut: { in: ["PROPOSEE", "AJUSTEE"] } },
       include: {
-        course:    { select: { nom: true, code: true, etape: true } },
-        professor: { include: { user: { select: { prenom: true, nom: true, email: true } } } },
-        session:   { select: { nom: true } },
+        course: { select: { nom: true, code: true, etape: true } },
+        professor: {
+          include: {
+            user: { select: { prenom: true, nom: true, email: true } },
+          },
+        },
+        session: { select: { nom: true } },
       },
     });
 
@@ -71,19 +79,6 @@ export async function PATCH(request) {
       where: { sessionId, statut: { in: ["PROPOSEE", "AJUSTEE"] } },
       data: { statut: "FINALISEE" },
     });
-
-    // Emails de notification en lot — fire-and-forget
-    void sendFinalizationEmailBatch(
-      toFinalize.map((a) => ({
-        professorEmail:  a.professor.user.email,
-        professorPrenom: a.professor.user.prenom,
-        professorNom:    a.professor.user.nom,
-        coursNom:        a.course.nom,
-        coursCode:       a.course.code,
-        coursEtape:      a.course.etape,
-        sessionNom:      a.session?.nom ?? "",
-      }))
-    );
 
     await prisma.auditLog.create({
       data: {
@@ -101,6 +96,15 @@ export async function PATCH(request) {
         ipAddress: getIp(request),
       },
     });
+    await prisma.notification.createMany({
+      data: toFinalize.map((a) => ({
+        userId: a.professor.userId,
+        type: "AFFECTATION_FINALISEE",
+        title: `Affectation confirmée — ${a.course.nom}`,
+        body: `Session ${a.session?.nom ?? ""}`,
+        link: "/dashboard/professeur/affectations",
+      })),
+    });
 
     return NextResponse.json({
       success: true,
@@ -110,8 +114,11 @@ export async function PATCH(request) {
   } catch (err) {
     console.error("Erreur finalisation affectations :", err);
     return NextResponse.json(
-      { success: false, message: err.message || "Erreur lors de la finalisation." },
-      { status: 500 }
+      {
+        success: false,
+        message: err.message || "Erreur lors de la finalisation.",
+      },
+      { status: 500 },
     );
   }
 }

@@ -15,19 +15,14 @@ export function useCourses() {
   // ── Programmes ─────────────────────────────────────────────────────────────
   const fetchProgrammes = useCallback(async () => {
     try {
-      setIsLoading(true);
-      setError(null);
       const res  = await fetch('/api/courses?programs=true');
       const json = await res.json();
       if (!res.ok || !json.success) throw new Error(json.error ?? 'Erreur fetchProgrammes');
       setProgrammes(json.data ?? []);
       return json.data;
     } catch (err) {
-      setError(err.message);
       console.error('Erreur fetchProgrammes:', err);
       throw err;
-    } finally {
-      setIsLoading(false);
     }
   }, []);
 
@@ -36,14 +31,22 @@ export function useCourses() {
     setIsLoading(true);
     setError(null);
     try {
+      const [resCourses, resProgrammes] = await Promise.all([
+        fetch("/api/courses/"),
+        fetch("/api/courses?programs=true"),
+      ]);
+      const [jsonCourses, jsonProgrammes] = await Promise.all([
+        resCourses.json(),
+        resProgrammes.json(),
+      ]);
 
-      const res  = await fetch("/api/courses/");
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error ?? 'Erreur fetchCourses');
+      if (!resCourses.ok    || !jsonCourses.success)    throw new Error(jsonCourses.error    ?? 'Erreur fetchCourses');
+      if (!resProgrammes.ok || !jsonProgrammes.success) throw new Error(jsonProgrammes.error ?? 'Erreur fetchProgrammes');
 
-      setCourses(json.data ?? []);
+      setCourses(jsonCourses.data ?? []);
+      setProgrammes(jsonProgrammes.data ?? []);
       setPagination(DEFAULT_PAGINATION);
-      return json.data;
+      return jsonCourses.data;
     } catch (err) {
       setError(err.message);
       console.error('Erreur fetchCourses:', err);

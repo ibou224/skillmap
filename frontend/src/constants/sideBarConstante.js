@@ -138,6 +138,13 @@ export const NAV_ITEMS = [
     group: "admin",
   },
   {
+    icon: FileText,
+    label: "CVs",
+    href: "/dashboard/admin/cvs",
+    roles: ["ADMIN"],
+    group: "admin",
+  },
+  {
     icon: ClipboardList,
     label: "Affectations",
     href: "/dashboard/admin/affectations",
