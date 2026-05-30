@@ -67,17 +67,18 @@ function transformLLMResponse(cvData) {
   });
 
   return [
-    { label: "prénom", value: cvData.firstName ?? "" },
+    { label: "prenom", value: cvData.firstName ?? "" },
     { label: "nom", value: cvData.lastName ?? "" },
     { label: "email", value: cvData.email ?? "" },
-    { label: "téléphone", value: cvData.phone ?? "" },
+    { label: "telephone", value: cvData.phone ?? "" },
     { label: "ville", value: cvData.city ?? "" },
     { label: "linkedin", value: cvData.linkedin ?? "" },
-    { label: "site web", value: cvData.portfolio ?? "" },
+    { label: "siteWeb", value: cvData.portfolio ?? "" },
     { label: "github", value: cvData.github ?? "" },
-    { label: "compétences", value: JSON.stringify(competences) },
+    { label: "resume", value: cvData.summary ?? "" },
+    { label: "competences", value: JSON.stringify(competences) },
     { label: "langues", value: JSON.stringify(cvData.languages ?? []) },
-    { label: "expériences", value: JSON.stringify(experiences) },
+    { label: "experiences", value: JSON.stringify(experiences) },
     { label: "formations", value: JSON.stringify(formations) },
     { label: "certifications", value: JSON.stringify(cvData.certifications ?? []) },
   ];

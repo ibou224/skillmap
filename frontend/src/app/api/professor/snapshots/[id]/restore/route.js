@@ -80,6 +80,7 @@ export async function POST(request, { params }) {
       await tx.professor.update({
         where: { id: professor.id },
         data: {
+          titre:     cv.titre     ?? null,
           telephone: cv.telephone ?? null,
           ville:     cv.ville     ?? null,
           siteWeb:   cv.siteWeb   ?? null,

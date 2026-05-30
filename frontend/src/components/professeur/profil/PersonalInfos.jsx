@@ -1,4 +1,4 @@
-import { User, Mail, Phone, MapPin, Link2, Globe, GitBranch } from "lucide-react";
+import { User, Mail, Phone, MapPin, Link2, Globe, GitBranch, Briefcase } from "lucide-react";
 
 
 function FieldRow({ icon: Icon, label, value, onChange, placeholder, type = "text" }) {
@@ -24,6 +24,15 @@ export default function PersonalInfos({ data, onChange }) {
         Informations personnelles
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="sm:col-span-2">
+          <FieldRow
+            icon={Briefcase}
+            label="Titre du profil"
+            value={data.titre ?? ""}
+            onChange={(v) => update("titre", v)}
+            placeholder="Ex : Développeur Backend, Professeur d'informatique"
+          />
+        </div>
         <FieldRow
           icon={User}
           label="Prénom"

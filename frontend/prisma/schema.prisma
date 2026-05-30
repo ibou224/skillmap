@@ -44,10 +44,13 @@ model AuditLog {
 model Professor {
   id            String           @id @default(uuid())
   userId        String           @unique
+  titre         String?
+  email         String?           
   telephone     String?
   ville         String?
   siteWeb       String?
   linkedIn      String?
+  github        String?
   resume        String?
   langues       String[]         @default([])
   createdAt     DateTime         @default(now())

@@ -94,7 +94,7 @@ export default function CvUploadSection({ onValidated }) {
           {uploadState === "uploading" ? (
             <>
               <Loader2 className="w-10 h-10 text-[hsl(134,35%,45%)] animate-spin" />
-              <p className="text-sm font-semibold text-slate-600">Analyse IA en cours…</p>
+              <p className="text-sm font-semibold text-slate-600">Televersement du cv en cours ...</p>
               <div className="w-48 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div className="h-full bg-[hsl(134,35%,45%)] rounded-full animate-pulse w-3/4" />
               </div>

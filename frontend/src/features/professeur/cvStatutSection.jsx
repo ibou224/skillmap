@@ -35,6 +35,7 @@ export default function CvPage() {
    // Sauvegarder en arrière-plan
    await saveInfos({
      profile: {
+       titre: cvData.titre,
        telephone: cvData.telephone,
        ville: cvData.ville,
        siteWeb: cvData.siteWeb,
@@ -64,6 +65,7 @@ const handleManualSave = async (cvData) => {
 
   await saveInfos({
     profile: {
+      titre: cvData.titre,
       telephone: cvData.telephone,
       ville: cvData.ville,
       siteWeb: cvData.siteWeb,

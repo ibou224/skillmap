@@ -26,6 +26,7 @@ You are an expert CV parser for an academic HR system. Extract structured inform
   "linkedin": "string or null (full LinkedIn URL or username, e.g. linkedin.com/in/alice-tremblay)",
   "portfolio": "string or null (personal website, GitHub Pages, portfolio URL — NOT LinkedIn)",
   "github": "string or null (GitHub profile URL or username)",
+  "summary": "string or null (professional summary or objective — 2-5 sentences max)",
 
   "education": [
     {

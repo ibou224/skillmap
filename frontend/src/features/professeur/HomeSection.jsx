@@ -131,13 +131,13 @@ export default function HomeSection() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-gray-800">
-                        {aff.course?.nom}
+                        {aff.cours?.nom}
                       </span>
                       <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 text-blue-600">
-                        {aff.course?.programs?.[0]?.code ?? "—"}
+                        {aff.cours?.programs?.[0]?.code ?? "—"}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">{aff.course?.code}</p>
+                    <p className="text-xs text-slate-500 mt-1">{aff.cours?.code}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full ${s.bg} ${s.text}`}>

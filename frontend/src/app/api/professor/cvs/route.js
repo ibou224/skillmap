@@ -100,6 +100,7 @@ export async function POST(request) {
           version: (lastSnapshot?.version ?? 0) + 1,
           label: snapshotLabel ?? "Modification manuelle",
           data: {
+            titre: professor.titre,
             telephone: professor.telephone,
             ville: professor.ville,
             siteWeb: professor.siteWeb,
@@ -134,10 +135,12 @@ export async function POST(request) {
         await tx.professor.update({
           where: { id: professor.id },
           data: {
+            titre: profile.titre,
             telephone: profile.telephone,
             ville: profile.ville,
             siteWeb: profile.siteWeb,
             linkedIn: profile.linkedin,
+            github: profile.github,
             resume: profile.resume,
             ...(profile.langues !== undefined && { langues: profile.langues }),
           },

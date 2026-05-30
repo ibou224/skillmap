@@ -10,7 +10,7 @@ import { SkillsEditor } from "../skills/SkillsEditor";
 import { CertificationsEditor } from "../certifications/CertificationsEditor";
 
 const EMPTY = {
-  prenom: "", nom: "", email: "", telephone: "",
+  titre: "", prenom: "", nom: "", email: "", telephone: "",
   ville: "", siteWeb: "", linkedin: "", github: "", resume: "",
   competences: [], langues: [], certifications: [],
   experiences: [], formations: [],

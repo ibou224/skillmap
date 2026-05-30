@@ -1,4 +1,3 @@
-import { LABEL_MAPPING } from "@/constants/constantes";
 
 /**
  * @brief Analyse un champ extrait et détermine son type de données réel.
@@ -37,7 +36,8 @@ export const normalizeField = (field) => {
             ...field, 
             type: "object", 
             parsedValue: parsed, 
-            value: field.value };
+            value: field.value 
+          };
         }
       } catch {}
       
@@ -86,7 +86,7 @@ export function buildStructuredData(fieldsArray) {
 
   fieldsArray.forEach((field) => {
     const label = field.label.toLowerCase().trim();
-    const key = LABEL_MAPPING[label] || label;
+    const key = label;
 
     if (key === "experiences" || key === "formations" || key === "competences" || key === "langues" || key === "certifications") {
       if (field.type === "array" && Array.isArray(field.parsedValue)) {
@@ -214,16 +214,18 @@ export const groupBySession = (courses) => {
 }
 
 export const normalizeInfosProfessor = (infos) => {
-  const { user, skills, experiences, formations, telephone, ville, siteWeb, linkedIn, resume, langues, cvExtractions } = infos;
+  const { user, email, skills, experiences, formations, titre, telephone, ville, siteWeb, linkedIn, github, resume, langues, cvExtractions } = infos;
 
   return {
+    titre: titre || "",
     prenom: user.prenom,
     nom: user.nom,
-    email: user.email,
+    email: email ||user.email,
     telephone: telephone ?? "",
     ville: ville || "Ottawa, ON",
     siteWeb: siteWeb || "",
     linkedin: linkedIn || "",
+    github: github || "",
     resume: resume || "",
     competences: skills.map((s) => ({ nom: s.skill.nom, niveau: s.niveau ?? "DEBUTANT" })),
     langues: langues ?? [],

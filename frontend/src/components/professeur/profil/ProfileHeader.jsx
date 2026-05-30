@@ -8,8 +8,8 @@ const STATS = [
   { icon: Languages,     key: "langues",      label: "Langues"     },
 ];
 
-export default function ProfileHeader({ user, onRefresh, editLink = "/dashboard/professeur/cv?tab=manual" }) {
-  const initials = `${user.prenom?.[0] ?? ""}${user.nom?.[0] ?? ""}`.toUpperCase();
+export default function ProfileHeader({ professeur, onRefresh, editLink = "/dashboard/professeur/cv?tab=manual" }) {
+  const initials = `${professeur.prenom?.[0] ?? ""}${professeur.nom?.[0] ?? ""}`.toUpperCase();
 
   return (
     <div className="relative overflow-hidden rounded-3xl p-8 md:p-10 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">
@@ -25,9 +25,9 @@ export default function ProfileHeader({ user, onRefresh, editLink = "/dashboard/
           <div>
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/50 mb-1.5">Mon profil</p>
             <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-none">
-              {user.prenom} {user.nom}
+              {professeur.prenom} {professeur.nom}
             </h1>
-            <p className="text-sm text-white/50 mt-1.5 font-light">Professeur · Informatique</p>
+            <p className="text-sm text-white/50 mt-1.5 font-light">{professeur.titre}</p>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export default function ProfileHeader({ user, onRefresh, editLink = "/dashboard/
             </div>
             <div>
               <p className="text-2xl font-black text-white leading-none">
-                {user[key]?.length ?? 0}
+                {professeur[key]?.length ?? 0}
               </p>
               <p className="text-[11px] text-white/50 mt-0.5">{label}</p>
             </div>

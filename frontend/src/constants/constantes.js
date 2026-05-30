@@ -66,24 +66,9 @@ export const PERIODE = {
   },
 };
 
-export const LABEL_MAPPING = {
-  "prénom": "prenom",
-  "nom": "nom",
-  "email": "email",
-  "téléphone": "telephone",
-  "ville": "ville",
-  "site web": "siteWeb",
-  "linkedin": "linkedin",
-  "github": "github",
-  "résumé": "resume",
-  "compétences": "competences",
-  "langues": "langues",
-  "formations": "formations",
-  "expériences": "experiences",
-  "certifications": "certifications",
-};
 
 export const initialCvData = {
+  titre: "",
   prenom: "",
   nom: "",
   email: "",

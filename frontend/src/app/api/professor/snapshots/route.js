@@ -29,7 +29,7 @@ export async function GET() {
     const snapshots = await prisma.cvSnapshot.findMany({
       where:   { professorId: professor.id },
       orderBy: { version: "desc" },
-      select:  { id: true, version: true, label: true, createdAt: true },
+      select:  { id: true, version: true, label: true, createdAt: true, data: true },
     });
 
     return NextResponse.json({ success: true, data: snapshots });
