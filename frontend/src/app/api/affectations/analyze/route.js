@@ -32,7 +32,7 @@ export async function POST(request) {
     return NextResponse.json({ success: false, message: "Corps de requête invalide." }, { status: 400 });
   }
 
-  const { sessionId, programId, topN = 5, minScore = 25 } = body ?? {};
+  const { sessionId, programId } = body ?? {};
   if (!sessionId) {
     return NextResponse.json({ success: false, message: "sessionId est requis." }, { status: 400 });
   }
@@ -41,11 +41,17 @@ export async function POST(request) {
   const rl = checkRateLimit(`${sessionId}:analyze`, 3, 60_000);
   if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
 
-  // Vérification rapide de la session avant de créer le job
+  // Vérification rapide de la session + chargement config
   const existingSession = await prisma.session.findUnique({ where: { id: sessionId } });
   if (!existingSession) {
     return NextResponse.json({ success: false, message: "Session non trouvée." }, { status: 404 });
   }
+
+  const weightsConfig = await prisma.weightsConfig.findUnique({ where: { sessionId } });
+  console.log(`[analyze] weightsConfig brut:`, JSON.stringify(weightsConfig));
+  const topN     = weightsConfig?.topN     ?? 5;
+  const minScore = weightsConfig?.minScore ?? 25;
+  console.log(`[analyze] topN=${topN} minScore=${minScore}`);
 
   // Créer le job et lancer le traitement en arrière-plan
   const jobId  = randomUUID();
@@ -150,7 +156,6 @@ async function runAnalysisBackground(jobId, { sessionId, programId, topN, minSco
         poidsCritique: cs.poidsCritique,
       })),
     }));
-
     const controller = new AbortController();
     const timeoutId  = setTimeout(() => controller.abort(), 90_000); // 90s pour le background
     let backendRes;
@@ -207,8 +212,8 @@ async function runAnalysisBackground(jobId, { sessionId, programId, topN, minSco
       const nbForCourse = courseCount.get(a.course_id)    ?? 0;
       const nbForProf   = profCount.get(a.professor_id)   ?? 0;
 
-      if (nbForCourse >= topN) continue; // cours complet
-      if (nbForProf   >= topN) continue; // prof a atteint sa limite
+      if (nbForCourse >= topN) continue; 
+      if (nbForProf   >= topN) continue; 
 
       assignments.push(a);
       courseCount.set(a.course_id,   nbForCourse + 1);

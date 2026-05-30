@@ -29,10 +29,13 @@ export const useWeights = () => {
         const newConfiguration = {
             sessionId,
             competencesPct: newWeights.competencesPct,
-            experiencePct: newWeights.experiencePct,
-            formationPct: newWeights.formationPct,
-            historiquePct: newWeights.historiquePct,
+            experiencePct:  newWeights.experiencePct,
+            formationPct:   newWeights.formationPct,
+            historiquePct:  newWeights.historiquePct,
+            topN:           newWeights.topN,
+            minScore:       newWeights.minScore,
         };
+        console.log("[useWeights] envoi:", JSON.stringify(newConfiguration));
         const validation = isValidateWeights(newConfiguration);
         if (!validation.valid) {
             setError(validation.message);

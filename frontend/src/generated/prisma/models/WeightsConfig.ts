@@ -31,6 +31,8 @@ export type WeightsConfigAvgAggregateOutputType = {
   experiencePct: number | null
   formationPct: number | null
   historiquePct: number | null
+  topN: number | null
+  minScore: number | null
 }
 
 export type WeightsConfigSumAggregateOutputType = {
@@ -38,6 +40,8 @@ export type WeightsConfigSumAggregateOutputType = {
   experiencePct: number | null
   formationPct: number | null
   historiquePct: number | null
+  topN: number | null
+  minScore: number | null
 }
 
 export type WeightsConfigMinAggregateOutputType = {
@@ -47,6 +51,8 @@ export type WeightsConfigMinAggregateOutputType = {
   experiencePct: number | null
   formationPct: number | null
   historiquePct: number | null
+  topN: number | null
+  minScore: number | null
 }
 
 export type WeightsConfigMaxAggregateOutputType = {
@@ -56,6 +62,8 @@ export type WeightsConfigMaxAggregateOutputType = {
   experiencePct: number | null
   formationPct: number | null
   historiquePct: number | null
+  topN: number | null
+  minScore: number | null
 }
 
 export type WeightsConfigCountAggregateOutputType = {
@@ -65,6 +73,8 @@ export type WeightsConfigCountAggregateOutputType = {
   experiencePct: number
   formationPct: number
   historiquePct: number
+  topN: number
+  minScore: number
   _all: number
 }
 
@@ -74,6 +84,8 @@ export type WeightsConfigAvgAggregateInputType = {
   experiencePct?: true
   formationPct?: true
   historiquePct?: true
+  topN?: true
+  minScore?: true
 }
 
 export type WeightsConfigSumAggregateInputType = {
@@ -81,6 +93,8 @@ export type WeightsConfigSumAggregateInputType = {
   experiencePct?: true
   formationPct?: true
   historiquePct?: true
+  topN?: true
+  minScore?: true
 }
 
 export type WeightsConfigMinAggregateInputType = {
@@ -90,6 +104,8 @@ export type WeightsConfigMinAggregateInputType = {
   experiencePct?: true
   formationPct?: true
   historiquePct?: true
+  topN?: true
+  minScore?: true
 }
 
 export type WeightsConfigMaxAggregateInputType = {
@@ -99,6 +115,8 @@ export type WeightsConfigMaxAggregateInputType = {
   experiencePct?: true
   formationPct?: true
   historiquePct?: true
+  topN?: true
+  minScore?: true
 }
 
 export type WeightsConfigCountAggregateInputType = {
@@ -108,6 +126,8 @@ export type WeightsConfigCountAggregateInputType = {
   experiencePct?: true
   formationPct?: true
   historiquePct?: true
+  topN?: true
+  minScore?: true
   _all?: true
 }
 
@@ -204,6 +224,8 @@ export type WeightsConfigGroupByOutputType = {
   experiencePct: number
   formationPct: number
   historiquePct: number
+  topN: number
+  minScore: number
   _count: WeightsConfigCountAggregateOutputType | null
   _avg: WeightsConfigAvgAggregateOutputType | null
   _sum: WeightsConfigSumAggregateOutputType | null
@@ -236,6 +258,8 @@ export type WeightsConfigWhereInput = {
   experiencePct?: Prisma.IntFilter<"WeightsConfig"> | number
   formationPct?: Prisma.IntFilter<"WeightsConfig"> | number
   historiquePct?: Prisma.IntFilter<"WeightsConfig"> | number
+  topN?: Prisma.IntFilter<"WeightsConfig"> | number
+  minScore?: Prisma.IntFilter<"WeightsConfig"> | number
   session?: Prisma.XOR<Prisma.SessionScalarRelationFilter, Prisma.SessionWhereInput>
 }
 
@@ -246,6 +270,8 @@ export type WeightsConfigOrderByWithRelationInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
   session?: Prisma.SessionOrderByWithRelationInput
 }
 
@@ -259,6 +285,8 @@ export type WeightsConfigWhereUniqueInput = Prisma.AtLeast<{
   experiencePct?: Prisma.IntFilter<"WeightsConfig"> | number
   formationPct?: Prisma.IntFilter<"WeightsConfig"> | number
   historiquePct?: Prisma.IntFilter<"WeightsConfig"> | number
+  topN?: Prisma.IntFilter<"WeightsConfig"> | number
+  minScore?: Prisma.IntFilter<"WeightsConfig"> | number
   session?: Prisma.XOR<Prisma.SessionScalarRelationFilter, Prisma.SessionWhereInput>
 }, "id" | "sessionId">
 
@@ -269,6 +297,8 @@ export type WeightsConfigOrderByWithAggregationInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
   _count?: Prisma.WeightsConfigCountOrderByAggregateInput
   _avg?: Prisma.WeightsConfigAvgOrderByAggregateInput
   _max?: Prisma.WeightsConfigMaxOrderByAggregateInput
@@ -286,6 +316,8 @@ export type WeightsConfigScalarWhereWithAggregatesInput = {
   experiencePct?: Prisma.IntWithAggregatesFilter<"WeightsConfig"> | number
   formationPct?: Prisma.IntWithAggregatesFilter<"WeightsConfig"> | number
   historiquePct?: Prisma.IntWithAggregatesFilter<"WeightsConfig"> | number
+  topN?: Prisma.IntWithAggregatesFilter<"WeightsConfig"> | number
+  minScore?: Prisma.IntWithAggregatesFilter<"WeightsConfig"> | number
 }
 
 export type WeightsConfigCreateInput = {
@@ -294,6 +326,8 @@ export type WeightsConfigCreateInput = {
   experiencePct?: number
   formationPct?: number
   historiquePct?: number
+  topN?: number
+  minScore?: number
   session: Prisma.SessionCreateNestedOneWithoutWeightsInput
 }
 
@@ -304,6 +338,8 @@ export type WeightsConfigUncheckedCreateInput = {
   experiencePct?: number
   formationPct?: number
   historiquePct?: number
+  topN?: number
+  minScore?: number
 }
 
 export type WeightsConfigUpdateInput = {
@@ -312,6 +348,8 @@ export type WeightsConfigUpdateInput = {
   experiencePct?: Prisma.IntFieldUpdateOperationsInput | number
   formationPct?: Prisma.IntFieldUpdateOperationsInput | number
   historiquePct?: Prisma.IntFieldUpdateOperationsInput | number
+  topN?: Prisma.IntFieldUpdateOperationsInput | number
+  minScore?: Prisma.IntFieldUpdateOperationsInput | number
   session?: Prisma.SessionUpdateOneRequiredWithoutWeightsNestedInput
 }
 
@@ -322,6 +360,8 @@ export type WeightsConfigUncheckedUpdateInput = {
   experiencePct?: Prisma.IntFieldUpdateOperationsInput | number
   formationPct?: Prisma.IntFieldUpdateOperationsInput | number
   historiquePct?: Prisma.IntFieldUpdateOperationsInput | number
+  topN?: Prisma.IntFieldUpdateOperationsInput | number
+  minScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WeightsConfigCreateManyInput = {
@@ -331,6 +371,8 @@ export type WeightsConfigCreateManyInput = {
   experiencePct?: number
   formationPct?: number
   historiquePct?: number
+  topN?: number
+  minScore?: number
 }
 
 export type WeightsConfigUpdateManyMutationInput = {
@@ -339,6 +381,8 @@ export type WeightsConfigUpdateManyMutationInput = {
   experiencePct?: Prisma.IntFieldUpdateOperationsInput | number
   formationPct?: Prisma.IntFieldUpdateOperationsInput | number
   historiquePct?: Prisma.IntFieldUpdateOperationsInput | number
+  topN?: Prisma.IntFieldUpdateOperationsInput | number
+  minScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WeightsConfigUncheckedUpdateManyInput = {
@@ -348,6 +392,8 @@ export type WeightsConfigUncheckedUpdateManyInput = {
   experiencePct?: Prisma.IntFieldUpdateOperationsInput | number
   formationPct?: Prisma.IntFieldUpdateOperationsInput | number
   historiquePct?: Prisma.IntFieldUpdateOperationsInput | number
+  topN?: Prisma.IntFieldUpdateOperationsInput | number
+  minScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WeightsConfigNullableScalarRelationFilter = {
@@ -362,6 +408,8 @@ export type WeightsConfigCountOrderByAggregateInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
 }
 
 export type WeightsConfigAvgOrderByAggregateInput = {
@@ -369,6 +417,8 @@ export type WeightsConfigAvgOrderByAggregateInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
 }
 
 export type WeightsConfigMaxOrderByAggregateInput = {
@@ -378,6 +428,8 @@ export type WeightsConfigMaxOrderByAggregateInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
 }
 
 export type WeightsConfigMinOrderByAggregateInput = {
@@ -387,6 +439,8 @@ export type WeightsConfigMinOrderByAggregateInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
 }
 
 export type WeightsConfigSumOrderByAggregateInput = {
@@ -394,6 +448,8 @@ export type WeightsConfigSumOrderByAggregateInput = {
   experiencePct?: Prisma.SortOrder
   formationPct?: Prisma.SortOrder
   historiquePct?: Prisma.SortOrder
+  topN?: Prisma.SortOrder
+  minScore?: Prisma.SortOrder
 }
 
 export type WeightsConfigCreateNestedOneWithoutSessionInput = {
@@ -434,6 +490,8 @@ export type WeightsConfigCreateWithoutSessionInput = {
   experiencePct?: number
   formationPct?: number
   historiquePct?: number
+  topN?: number
+  minScore?: number
 }
 
 export type WeightsConfigUncheckedCreateWithoutSessionInput = {
@@ -442,6 +500,8 @@ export type WeightsConfigUncheckedCreateWithoutSessionInput = {
   experiencePct?: number
   formationPct?: number
   historiquePct?: number
+  topN?: number
+  minScore?: number
 }
 
 export type WeightsConfigCreateOrConnectWithoutSessionInput = {
@@ -466,6 +526,8 @@ export type WeightsConfigUpdateWithoutSessionInput = {
   experiencePct?: Prisma.IntFieldUpdateOperationsInput | number
   formationPct?: Prisma.IntFieldUpdateOperationsInput | number
   historiquePct?: Prisma.IntFieldUpdateOperationsInput | number
+  topN?: Prisma.IntFieldUpdateOperationsInput | number
+  minScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WeightsConfigUncheckedUpdateWithoutSessionInput = {
@@ -474,6 +536,8 @@ export type WeightsConfigUncheckedUpdateWithoutSessionInput = {
   experiencePct?: Prisma.IntFieldUpdateOperationsInput | number
   formationPct?: Prisma.IntFieldUpdateOperationsInput | number
   historiquePct?: Prisma.IntFieldUpdateOperationsInput | number
+  topN?: Prisma.IntFieldUpdateOperationsInput | number
+  minScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -485,6 +549,8 @@ export type WeightsConfigSelect<ExtArgs extends runtime.Types.Extensions.Interna
   experiencePct?: boolean
   formationPct?: boolean
   historiquePct?: boolean
+  topN?: boolean
+  minScore?: boolean
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["weightsConfig"]>
 
@@ -495,6 +561,8 @@ export type WeightsConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   experiencePct?: boolean
   formationPct?: boolean
   historiquePct?: boolean
+  topN?: boolean
+  minScore?: boolean
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["weightsConfig"]>
 
@@ -505,6 +573,8 @@ export type WeightsConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   experiencePct?: boolean
   formationPct?: boolean
   historiquePct?: boolean
+  topN?: boolean
+  minScore?: boolean
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["weightsConfig"]>
 
@@ -515,9 +585,11 @@ export type WeightsConfigSelectScalar = {
   experiencePct?: boolean
   formationPct?: boolean
   historiquePct?: boolean
+  topN?: boolean
+  minScore?: boolean
 }
 
-export type WeightsConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "competencesPct" | "experiencePct" | "formationPct" | "historiquePct", ExtArgs["result"]["weightsConfig"]>
+export type WeightsConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "competencesPct" | "experiencePct" | "formationPct" | "historiquePct" | "topN" | "minScore", ExtArgs["result"]["weightsConfig"]>
 export type WeightsConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
 }
@@ -540,6 +612,8 @@ export type $WeightsConfigPayload<ExtArgs extends runtime.Types.Extensions.Inter
     experiencePct: number
     formationPct: number
     historiquePct: number
+    topN: number
+    minScore: number
   }, ExtArgs["result"]["weightsConfig"]>
   composites: {}
 }
@@ -970,6 +1044,8 @@ export interface WeightsConfigFieldRefs {
   readonly experiencePct: Prisma.FieldRef<"WeightsConfig", 'Int'>
   readonly formationPct: Prisma.FieldRef<"WeightsConfig", 'Int'>
   readonly historiquePct: Prisma.FieldRef<"WeightsConfig", 'Int'>
+  readonly topN: Prisma.FieldRef<"WeightsConfig", 'Int'>
+  readonly minScore: Prisma.FieldRef<"WeightsConfig", 'Int'>
 }
     
 

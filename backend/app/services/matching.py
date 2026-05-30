@@ -16,11 +16,11 @@ NIVEAU_SCORE = {
 #  Niveaux de diplôme (bonus formation)
 
 DIPLOME_SCORE = {
-    "DOCTORATE": 1.0,
-    "MASTERS": 0.8,
-    "BACHELORS": 0.6,
-    "DEC": 0.4,
-    "OTHER": 0.2
+    "DOCTORATE": 1.0,   # Doctorat  → plein score (dépasse le requis)
+    "MASTERS":   1.0,   # Maîtrise  → plein score (niveau cible)
+    "BACHELORS": 0.6,   # Baccalauréat → 60%
+    "DEC":       0.3,   # DEC        → 30%
+    "OTHER":     0.1,   # Autre      → 10%
 }
 
 #  Fonction principale

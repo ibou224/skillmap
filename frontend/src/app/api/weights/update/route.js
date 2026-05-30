@@ -15,7 +15,8 @@ export async function PUT(request) {
 
   try {
     const body = await request.json();
-    const { sessionId, competencesPct, experiencePct, formationPct, historiquePct } = body;
+    console.log("[weights/update] body reçu:", JSON.stringify(body));
+    const { sessionId, competencesPct, experiencePct, formationPct, historiquePct, topN, minScore } = body;
 
     if (!sessionId) {
       return NextResponse.json(
@@ -40,11 +41,15 @@ export async function PUT(request) {
       );
     }
 
+    const topNVal     = Number.isInteger(topN)     && topN     > 0  ? topN     : undefined;
+    const minScoreVal = Number.isInteger(minScore) && minScore >= 0 ? minScore : undefined;
+
     const weight = await prisma.weightsConfig.upsert({
-      where: { sessionId },
-      create: { sessionId, competencesPct, experiencePct, formationPct, historiquePct },
-      update: { competencesPct, experiencePct, formationPct, historiquePct },
+      where:  { sessionId },
+      create: { sessionId, competencesPct, experiencePct, formationPct, historiquePct,topN, minScore },
+      update: { competencesPct, experiencePct, formationPct, historiquePct, topN, minScore},
     });
+    console.log("[weights/update] Pondérations enregistrées:", JSON.stringify(weight));
 
     await prisma.auditLog.create({
       data: {

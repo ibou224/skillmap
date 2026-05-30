@@ -200,6 +200,8 @@ model WeightsConfig {
   experiencePct  Int     @default(25)
   formationPct   Int     @default(20)
   historiquePct  Int     @default(15)
+  topN           Int     @default(5)
+  minScore       Int     @default(25)
   session        Session @relation(fields: [sessionId], references: [id])
 }
 

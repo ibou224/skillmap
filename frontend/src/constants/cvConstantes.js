@@ -47,11 +47,12 @@ export const NIVEAU_LABEL = {
 };
 
 export const DIPLOME_LABEL = {
-  DOCTORATE: "Doctorat",
+  DOCTORATE: "Doctorat (Ph.D.)",
   MASTERS:   "Maîtrise",
   BACHELORS: "Baccalauréat",
   DEC:       "DEC",
   OTHER:     "Autre",
+  CERTIFICATION: "Certification",
 };
 
 export const CV_STATUT_META = {

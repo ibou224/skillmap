@@ -270,6 +270,8 @@ export const normalizeWeights = (weights) => {
       experiencePct: w.experiencePct ?? 25,
       formationPct: w.formationPct ?? 20,
       historiquePct: w.historiquePct ?? 15,
+      topN:      w.topN     ?? 5,
+      minScore:  w.minScore ?? 25,
       total: (w.competencesPct ?? 40) + (w.experiencePct ?? 25) + (w.formationPct ?? 20) + (w.historiquePct ?? 15),
       isValid: ((w.competencesPct ?? 40) + (w.experiencePct ?? 25) + (w.formationPct ?? 20) + (w.historiquePct ?? 15)) === 100,
     });

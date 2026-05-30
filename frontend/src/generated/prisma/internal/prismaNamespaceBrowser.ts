@@ -124,10 +124,13 @@ export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typ
 export const ProfessorScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  titre: 'titre',
+  email: 'email',
   telephone: 'telephone',
   ville: 'ville',
   siteWeb: 'siteWeb',
   linkedIn: 'linkedIn',
+  github: 'github',
   resume: 'resume',
   langues: 'langues',
   createdAt: 'createdAt',
@@ -283,7 +286,9 @@ export const WeightsConfigScalarFieldEnum = {
   competencesPct: 'competencesPct',
   experiencePct: 'experiencePct',
   formationPct: 'formationPct',
-  historiquePct: 'historiquePct'
+  historiquePct: 'historiquePct',
+  topN: 'topN',
+  minScore: 'minScore'
 } as const
 
 export type WeightsConfigScalarFieldEnum = (typeof WeightsConfigScalarFieldEnum)[keyof typeof WeightsConfigScalarFieldEnum]

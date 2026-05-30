@@ -27,10 +27,13 @@ export type AggregateProfessor = {
 export type ProfessorMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  titre: string | null
+  email: string | null
   telephone: string | null
   ville: string | null
   siteWeb: string | null
   linkedIn: string | null
+  github: string | null
   resume: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -39,10 +42,13 @@ export type ProfessorMinAggregateOutputType = {
 export type ProfessorMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  titre: string | null
+  email: string | null
   telephone: string | null
   ville: string | null
   siteWeb: string | null
   linkedIn: string | null
+  github: string | null
   resume: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,10 +57,13 @@ export type ProfessorMaxAggregateOutputType = {
 export type ProfessorCountAggregateOutputType = {
   id: number
   userId: number
+  titre: number
+  email: number
   telephone: number
   ville: number
   siteWeb: number
   linkedIn: number
+  github: number
   resume: number
   langues: number
   createdAt: number
@@ -66,10 +75,13 @@ export type ProfessorCountAggregateOutputType = {
 export type ProfessorMinAggregateInputType = {
   id?: true
   userId?: true
+  titre?: true
+  email?: true
   telephone?: true
   ville?: true
   siteWeb?: true
   linkedIn?: true
+  github?: true
   resume?: true
   createdAt?: true
   updatedAt?: true
@@ -78,10 +90,13 @@ export type ProfessorMinAggregateInputType = {
 export type ProfessorMaxAggregateInputType = {
   id?: true
   userId?: true
+  titre?: true
+  email?: true
   telephone?: true
   ville?: true
   siteWeb?: true
   linkedIn?: true
+  github?: true
   resume?: true
   createdAt?: true
   updatedAt?: true
@@ -90,10 +105,13 @@ export type ProfessorMaxAggregateInputType = {
 export type ProfessorCountAggregateInputType = {
   id?: true
   userId?: true
+  titre?: true
+  email?: true
   telephone?: true
   ville?: true
   siteWeb?: true
   linkedIn?: true
+  github?: true
   resume?: true
   langues?: true
   createdAt?: true
@@ -176,10 +194,13 @@ export type ProfessorGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type ProfessorGroupByOutputType = {
   id: string
   userId: string
+  titre: string | null
+  email: string | null
   telephone: string | null
   ville: string | null
   siteWeb: string | null
   linkedIn: string | null
+  github: string | null
   resume: string | null
   langues: string[]
   createdAt: Date
@@ -210,10 +231,13 @@ export type ProfessorWhereInput = {
   NOT?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
   id?: Prisma.StringFilter<"Professor"> | string
   userId?: Prisma.StringFilter<"Professor"> | string
+  titre?: Prisma.StringNullableFilter<"Professor"> | string | null
+  email?: Prisma.StringNullableFilter<"Professor"> | string | null
   telephone?: Prisma.StringNullableFilter<"Professor"> | string | null
   ville?: Prisma.StringNullableFilter<"Professor"> | string | null
   siteWeb?: Prisma.StringNullableFilter<"Professor"> | string | null
   linkedIn?: Prisma.StringNullableFilter<"Professor"> | string | null
+  github?: Prisma.StringNullableFilter<"Professor"> | string | null
   resume?: Prisma.StringNullableFilter<"Professor"> | string | null
   langues?: Prisma.StringNullableListFilter<"Professor">
   createdAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
@@ -230,10 +254,13 @@ export type ProfessorWhereInput = {
 export type ProfessorOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  titre?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
   ville?: Prisma.SortOrderInput | Prisma.SortOrder
   siteWeb?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedIn?: Prisma.SortOrderInput | Prisma.SortOrder
+  github?: Prisma.SortOrderInput | Prisma.SortOrder
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
   langues?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -253,10 +280,13 @@ export type ProfessorWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
   OR?: Prisma.ProfessorWhereInput[]
   NOT?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
+  titre?: Prisma.StringNullableFilter<"Professor"> | string | null
+  email?: Prisma.StringNullableFilter<"Professor"> | string | null
   telephone?: Prisma.StringNullableFilter<"Professor"> | string | null
   ville?: Prisma.StringNullableFilter<"Professor"> | string | null
   siteWeb?: Prisma.StringNullableFilter<"Professor"> | string | null
   linkedIn?: Prisma.StringNullableFilter<"Professor"> | string | null
+  github?: Prisma.StringNullableFilter<"Professor"> | string | null
   resume?: Prisma.StringNullableFilter<"Professor"> | string | null
   langues?: Prisma.StringNullableListFilter<"Professor">
   createdAt?: Prisma.DateTimeFilter<"Professor"> | Date | string
@@ -273,10 +303,13 @@ export type ProfessorWhereUniqueInput = Prisma.AtLeast<{
 export type ProfessorOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  titre?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
   ville?: Prisma.SortOrderInput | Prisma.SortOrder
   siteWeb?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedIn?: Prisma.SortOrderInput | Prisma.SortOrder
+  github?: Prisma.SortOrderInput | Prisma.SortOrder
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
   langues?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -292,10 +325,13 @@ export type ProfessorScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ProfessorScalarWhereWithAggregatesInput | Prisma.ProfessorScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Professor"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Professor"> | string
+  titre?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  email?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   telephone?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   ville?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   siteWeb?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   linkedIn?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
+  github?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   resume?: Prisma.StringNullableWithAggregatesFilter<"Professor"> | string | null
   langues?: Prisma.StringNullableListFilter<"Professor">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Professor"> | Date | string
@@ -304,10 +340,13 @@ export type ProfessorScalarWhereWithAggregatesInput = {
 
 export type ProfessorCreateInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -324,10 +363,13 @@ export type ProfessorCreateInput = {
 export type ProfessorUncheckedCreateInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -342,10 +384,13 @@ export type ProfessorUncheckedCreateInput = {
 
 export type ProfessorUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -362,10 +407,13 @@ export type ProfessorUpdateInput = {
 export type ProfessorUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -381,10 +429,13 @@ export type ProfessorUncheckedUpdateInput = {
 export type ProfessorCreateManyInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -393,10 +444,13 @@ export type ProfessorCreateManyInput = {
 
 export type ProfessorUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -406,10 +460,13 @@ export type ProfessorUpdateManyMutationInput = {
 export type ProfessorUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -432,10 +489,13 @@ export type StringNullableListFilter<$PrismaModel = never> = {
 export type ProfessorCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  titre?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   ville?: Prisma.SortOrder
   siteWeb?: Prisma.SortOrder
   linkedIn?: Prisma.SortOrder
+  github?: Prisma.SortOrder
   resume?: Prisma.SortOrder
   langues?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -445,10 +505,13 @@ export type ProfessorCountOrderByAggregateInput = {
 export type ProfessorMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  titre?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   ville?: Prisma.SortOrder
   siteWeb?: Prisma.SortOrder
   linkedIn?: Prisma.SortOrder
+  github?: Prisma.SortOrder
   resume?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -457,10 +520,13 @@ export type ProfessorMaxOrderByAggregateInput = {
 export type ProfessorMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  titre?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   ville?: Prisma.SortOrder
   siteWeb?: Prisma.SortOrder
   linkedIn?: Prisma.SortOrder
+  github?: Prisma.SortOrder
   resume?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -598,10 +664,13 @@ export type ProfessorUpdateOneRequiredWithoutAssignmentsNestedInput = {
 
 export type ProfessorCreateWithoutUserInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -616,10 +685,13 @@ export type ProfessorCreateWithoutUserInput = {
 
 export type ProfessorUncheckedCreateWithoutUserInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -650,10 +722,13 @@ export type ProfessorUpdateToOneWithWhereWithoutUserInput = {
 
 export type ProfessorUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -668,10 +743,13 @@ export type ProfessorUpdateWithoutUserInput = {
 
 export type ProfessorUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -686,10 +764,13 @@ export type ProfessorUncheckedUpdateWithoutUserInput = {
 
 export type ProfessorCreateWithoutSnapshotsInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -705,10 +786,13 @@ export type ProfessorCreateWithoutSnapshotsInput = {
 export type ProfessorUncheckedCreateWithoutSnapshotsInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -738,10 +822,13 @@ export type ProfessorUpdateToOneWithWhereWithoutSnapshotsInput = {
 
 export type ProfessorUpdateWithoutSnapshotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -757,10 +844,13 @@ export type ProfessorUpdateWithoutSnapshotsInput = {
 export type ProfessorUncheckedUpdateWithoutSnapshotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -774,10 +864,13 @@ export type ProfessorUncheckedUpdateWithoutSnapshotsInput = {
 
 export type ProfessorCreateWithoutCvExtractionsInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -793,10 +886,13 @@ export type ProfessorCreateWithoutCvExtractionsInput = {
 export type ProfessorUncheckedCreateWithoutCvExtractionsInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -826,10 +922,13 @@ export type ProfessorUpdateToOneWithWhereWithoutCvExtractionsInput = {
 
 export type ProfessorUpdateWithoutCvExtractionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,10 +944,13 @@ export type ProfessorUpdateWithoutCvExtractionsInput = {
 export type ProfessorUncheckedUpdateWithoutCvExtractionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -862,10 +964,13 @@ export type ProfessorUncheckedUpdateWithoutCvExtractionsInput = {
 
 export type ProfessorCreateWithoutExperiencesInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -881,10 +986,13 @@ export type ProfessorCreateWithoutExperiencesInput = {
 export type ProfessorUncheckedCreateWithoutExperiencesInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -914,10 +1022,13 @@ export type ProfessorUpdateToOneWithWhereWithoutExperiencesInput = {
 
 export type ProfessorUpdateWithoutExperiencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,10 +1044,13 @@ export type ProfessorUpdateWithoutExperiencesInput = {
 export type ProfessorUncheckedUpdateWithoutExperiencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -950,10 +1064,13 @@ export type ProfessorUncheckedUpdateWithoutExperiencesInput = {
 
 export type ProfessorCreateWithoutFormationsInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -969,10 +1086,13 @@ export type ProfessorCreateWithoutFormationsInput = {
 export type ProfessorUncheckedCreateWithoutFormationsInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -1002,10 +1122,13 @@ export type ProfessorUpdateToOneWithWhereWithoutFormationsInput = {
 
 export type ProfessorUpdateWithoutFormationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1021,10 +1144,13 @@ export type ProfessorUpdateWithoutFormationsInput = {
 export type ProfessorUncheckedUpdateWithoutFormationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1038,10 +1164,13 @@ export type ProfessorUncheckedUpdateWithoutFormationsInput = {
 
 export type ProfessorCreateWithoutSkillsInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -1057,10 +1186,13 @@ export type ProfessorCreateWithoutSkillsInput = {
 export type ProfessorUncheckedCreateWithoutSkillsInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -1090,10 +1222,13 @@ export type ProfessorUpdateToOneWithWhereWithoutSkillsInput = {
 
 export type ProfessorUpdateWithoutSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1109,10 +1244,13 @@ export type ProfessorUpdateWithoutSkillsInput = {
 export type ProfessorUncheckedUpdateWithoutSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1126,10 +1264,13 @@ export type ProfessorUncheckedUpdateWithoutSkillsInput = {
 
 export type ProfessorCreateWithoutAssignmentsInput = {
   id?: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -1145,10 +1286,13 @@ export type ProfessorCreateWithoutAssignmentsInput = {
 export type ProfessorUncheckedCreateWithoutAssignmentsInput = {
   id?: string
   userId: string
+  titre?: string | null
+  email?: string | null
   telephone?: string | null
   ville?: string | null
   siteWeb?: string | null
   linkedIn?: string | null
+  github?: string | null
   resume?: string | null
   langues?: Prisma.ProfessorCreatelanguesInput | string[]
   createdAt?: Date | string
@@ -1178,10 +1322,13 @@ export type ProfessorUpdateToOneWithWhereWithoutAssignmentsInput = {
 
 export type ProfessorUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1197,10 +1344,13 @@ export type ProfessorUpdateWithoutAssignmentsInput = {
 export type ProfessorUncheckedUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  titre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ville?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteWeb?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedIn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   langues?: Prisma.ProfessorUpdatelanguesInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1291,10 +1441,13 @@ export type ProfessorCountOutputTypeCountSkillsArgs<ExtArgs extends runtime.Type
 export type ProfessorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  titre?: boolean
+  email?: boolean
   telephone?: boolean
   ville?: boolean
   siteWeb?: boolean
   linkedIn?: boolean
+  github?: boolean
   resume?: boolean
   langues?: boolean
   createdAt?: boolean
@@ -1312,10 +1465,13 @@ export type ProfessorSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type ProfessorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  titre?: boolean
+  email?: boolean
   telephone?: boolean
   ville?: boolean
   siteWeb?: boolean
   linkedIn?: boolean
+  github?: boolean
   resume?: boolean
   langues?: boolean
   createdAt?: boolean
@@ -1326,10 +1482,13 @@ export type ProfessorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type ProfessorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  titre?: boolean
+  email?: boolean
   telephone?: boolean
   ville?: boolean
   siteWeb?: boolean
   linkedIn?: boolean
+  github?: boolean
   resume?: boolean
   langues?: boolean
   createdAt?: boolean
@@ -1340,17 +1499,20 @@ export type ProfessorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type ProfessorSelectScalar = {
   id?: boolean
   userId?: boolean
+  titre?: boolean
+  email?: boolean
   telephone?: boolean
   ville?: boolean
   siteWeb?: boolean
   linkedIn?: boolean
+  github?: boolean
   resume?: boolean
   langues?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "telephone" | "ville" | "siteWeb" | "linkedIn" | "resume" | "langues" | "createdAt" | "updatedAt", ExtArgs["result"]["professor"]>
+export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "titre" | "email" | "telephone" | "ville" | "siteWeb" | "linkedIn" | "github" | "resume" | "langues" | "createdAt" | "updatedAt", ExtArgs["result"]["professor"]>
 export type ProfessorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Professor$assignmentsArgs<ExtArgs>
   cvExtractions?: boolean | Prisma.Professor$cvExtractionsArgs<ExtArgs>
@@ -1382,10 +1544,13 @@ export type $ProfessorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
+    titre: string | null
+    email: string | null
     telephone: string | null
     ville: string | null
     siteWeb: string | null
     linkedIn: string | null
+    github: string | null
     resume: string | null
     langues: string[]
     createdAt: Date
@@ -1822,10 +1987,13 @@ export interface Prisma__ProfessorClient<T, Null = never, ExtArgs extends runtim
 export interface ProfessorFieldRefs {
   readonly id: Prisma.FieldRef<"Professor", 'String'>
   readonly userId: Prisma.FieldRef<"Professor", 'String'>
+  readonly titre: Prisma.FieldRef<"Professor", 'String'>
+  readonly email: Prisma.FieldRef<"Professor", 'String'>
   readonly telephone: Prisma.FieldRef<"Professor", 'String'>
   readonly ville: Prisma.FieldRef<"Professor", 'String'>
   readonly siteWeb: Prisma.FieldRef<"Professor", 'String'>
   readonly linkedIn: Prisma.FieldRef<"Professor", 'String'>
+  readonly github: Prisma.FieldRef<"Professor", 'String'>
   readonly resume: Prisma.FieldRef<"Professor", 'String'>
   readonly langues: Prisma.FieldRef<"Professor", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Professor", 'DateTime'>

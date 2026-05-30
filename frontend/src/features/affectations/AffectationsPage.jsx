@@ -69,8 +69,12 @@ export default function AffectationPage() {
             formation:   { ...PONDERATIONS_DEFAUT.formation,   weight: found.formationPct   },
             historique:  { ...PONDERATIONS_DEFAUT.historique,  weight: found.historiquePct  },
           });
+          setTopN(found.topN ?? 5);
+          setMinScore(found.minScore ?? 25);
         } else {
           setLocalWeights(PONDERATIONS_DEFAUT);
+          setTopN(5);
+          setMinScore(25);
         }
       } catch {
         setToast({ message: "Impossible de charger les pondérations.", type: "error" });
@@ -159,6 +163,8 @@ const filteredGroups = useMemo(() => {
         experiencePct:  localWeights.experience.weight,
         formationPct:   localWeights.formation.weight,
         historiquePct:  localWeights.historique.weight,
+        topN,
+        minScore,
       });
     } catch {
       setToast({ message: "Erreur lors de la mise à jour des pondérations", type: "error" });
