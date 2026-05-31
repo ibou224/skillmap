@@ -56,11 +56,11 @@ def save_professor_skills(professor_id: str, skills: list) -> None:
                 if isinstance(skill_entry, dict):
                     skill_name = (skill_entry.get("nom") or "").strip()
                     niveau = skill_entry.get("niveau", "INTERMEDIAIRE")
-                    annees_exp = skill_entry.get("anneesExp") or None
+                    annees_exp = skill_entry.get("anneesExp") or 0
                 else:
                     skill_name = str(skill_entry).strip()
                     niveau = "INTERMEDIAIRE"
-                    annees_exp = None
+                    annees_exp = 0
 
                 if not skill_name:
                     continue
