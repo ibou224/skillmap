@@ -1,0 +1,290 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String     @id @default(uuid())
+  email            String     @unique
+  nom              String
+  prenom           String
+  passwordHash     String
+  role             Role       @default(PROFESSEUR)
+  isActive         Boolean    @default(true)
+  isArchived       Boolean    @default(false)
+  loginAttempts    Int        @default(0)
+  lockedUntil      DateTime?
+  refreshTokenHash String?
+  refreshExpiresAt DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  auditLogs        AuditLog[]
+  professor        Professor?
+  notifications    Notification[]
+
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  entityType String?
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id])
+}
+
+model Professor {
+  id            String           @id @default(uuid())
+  userId        String           @unique
+  titre         String?
+  email         String?           
+  telephone     String?
+  ville         String?
+  siteWeb       String?
+  linkedIn      String?
+  github        String?
+  resume        String?
+  langues       String[]         @default([])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  assignments   Assignment[]
+  cvExtractions CvExtraction[]
+  experiences   Experience[]
+  formations    Formation[]
+  snapshots     CvSnapshot[]
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills        ProfessorSkill[]
+}
+
+model CvSnapshot {
+  id          String    @id @default(uuid())
+  professorId String
+  version     Int
+  label       String
+  data        Json
+  createdAt   DateTime  @default(now())
+  professor   Professor @relation(fields: [professorId], references: [id])
+}
+
+model CvExtraction {
+  id          String    @id @default(uuid())
+  professorId String
+  filePath    String
+  fileName    String
+  status      CvStatus  @default(PENDING)
+  version     Int       @default(1)
+  extractedAt DateTime?
+  validatedAt DateTime?
+  createdAt   DateTime  @default(now())
+  professor   Professor @relation(fields: [professorId], references: [id])
+}
+
+model Experience {
+  id          String    @id @default(uuid())
+  professorId String
+  poste       String
+  domaine     String
+  dateDebut   DateTime
+  dateFin     DateTime?
+  entreprise  String   @map("Entreprise")
+  description String?
+  createdAt   DateTime  @default(now())
+  professor   Professor @relation(fields: [professorId], references: [id])
+}
+
+model Formation {
+  id             String        @id @default(uuid())
+  professorId    String
+  diplome        String
+  niveauDiplome  NiveauDiplome
+  etablissement  String
+  anneeObtention Int
+  createdAt      DateTime      @default(now())
+  professor      Professor     @relation(fields: [professorId], references: [id])
+}
+
+model Skill {
+  id              String           @id @default(uuid())
+  nom             String           @unique
+  categorie       String
+  description     String?
+  createdAt       DateTime         @default(now())
+  courseSkills    CourseSkill[]
+  professorSkills ProfessorSkill[]
+}
+
+model ProfessorSkill {
+  professorId String
+  skillId     String
+  niveau      SkillLevel
+  anneesExp   Int
+  source      SkillSource @default(EXTRACTION_IA)
+  createdAt   DateTime    @default(now())
+  professor   Professor   @relation(fields: [professorId], references: [id])
+  skill       Skill       @relation(fields: [skillId], references: [id])
+
+  @@id([professorId, skillId])
+}
+
+model Departement {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  nom         String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  programs    Program[]
+}
+
+model Program {
+  id            String       @id @default(uuid())
+  code          String       @unique
+  nom           String
+  nbEtapes      Int
+  departementId String?
+  createdAt     DateTime     @default(now())
+  departement   Departement? @relation(fields: [departementId], references: [id])
+  courses       Course[]
+}
+
+model Course {
+  id           String        @id @default(uuid())
+  code         String        @unique
+  nom          String
+  etape        Int
+  isArchived   Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  assignments  Assignment[]
+  programs     Program[]
+  courseSkills CourseSkill[]
+}
+
+model CourseSkill {
+  courseId      String
+  skillId       String
+  niveauRequis  SkillLevel
+  poidsCritique Int        @default(1)
+  course        Course     @relation(fields: [courseId], references: [id])
+  skill         Skill      @relation(fields: [skillId], references: [id])
+
+  @@id([courseId, skillId])
+}
+
+model Session {
+  id          String         @id @default(uuid())
+  nom         String         @unique
+  annee       Int?
+  periode     Periode?
+  dateDebut   DateTime?
+  dateFin     DateTime?
+  statut      SessionStatut  @default(PLANIFIEE)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  assignments Assignment[]
+  weights     WeightsConfig?
+}
+
+model WeightsConfig {
+  id             String  @id @default(uuid())
+  sessionId      String  @unique
+  competencesPct Int     @default(40)
+  experiencePct  Int     @default(25)
+  formationPct   Int     @default(20)
+  historiquePct  Int     @default(15)
+  topN           Int     @default(5)
+  minScore       Int     @default(25)
+  session        Session @relation(fields: [sessionId], references: [id])
+}
+
+model Assignment {
+  id          String           @id @default(uuid())
+  sessionId   String
+  professorId String
+  courseId    String
+  score       Float
+  scoreDetail Json
+  statut      AssignmentStatut @default(PROPOSEE)
+  notes       String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  course      Course           @relation(fields: [courseId], references: [id])
+  professor   Professor        @relation(fields: [professorId], references: [id])
+  session     Session          @relation(fields: [sessionId], references: [id])
+
+  @@unique([sessionId, professorId, courseId])
+}
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String?
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+
+
+enum Role {
+  PROFESSEUR
+  RH
+  ADMIN
+}
+
+enum CvStatus {
+  PENDING
+  EXTRACTED
+  VALIDATED
+}
+
+enum SkillLevel {
+  DEBUTANT
+  INTERMEDIAIRE
+  AVANCE
+}
+
+enum SkillSource {
+  EXTRACTION_IA
+  SAISIE_MANUELLE
+}
+
+enum NiveauDiplome {
+  DOCTORATE
+  MASTERS
+  BACHELORS
+  DEC
+  CERTIFICATION
+  OTHER
+}
+
+enum Periode {
+  AUTOMNE
+  HIVER
+  ETE
+  PRINTEMPS
+}
+
+enum SessionStatut {
+  PLANIFIEE
+  ACTIVE
+  ARCHIVEE
+}
+
+enum AssignmentStatut {
+  PROPOSEE
+  AJUSTEE
+  FINALISEE
+  ANNULEE
+}

@@ -1,0 +1,49 @@
+@startuml
+title Flux d'upload et extraction CV
+
+actor Professeur as P
+participant "Navigateur" as B
+participant "Next.js\nAPI Routes" as N
+participant "FastAPI\n(IA)" as F
+participant "LLM API\n(open-source)" as L
+database "PostgreSQL" as DB
+collections "Stockage\nfichiers" as S
+
+P -> B : Glisse-dépose PDF/Word
+B -> N : POST /api/cv/upload\n(multipart/form-data, max 5 MB)
+
+N -> N : Valide format (PDF/.docx)\net taille (<= 5 MB)
+
+alt Format ou taille invalide
+  N --> B : 400 Bad Request
+  B --> P : Message d'erreur
+else Fichier valide
+  N -> S : Sauvegarde fichier\ncvs/{professorId}/v{n}_{fileName}
+  N -> DB : INSERT CvExtraction\n{ filePath, fileName, status: PENDING, version: n }
+  N --> B : 202 Accepted { extractionId }
+  B --> P : Barre de progression
+
+  N -> F : POST /extract\n{ filePath, professorId }
+
+  F -> S : Lit le fichier
+  F -> F : Extrait texte brut\n(PyMuPDF si PDF\npython-docx si Word)
+  F -> L : Prompt structuré\n+ texte brut du CV
+  L --> F : JSON structuré\n{ nom, prenom, formations[],\n  experiences[], competences[] }
+
+  F -> DB : INSERT Experience[] \nINSERT Formation[]\nUPSERT ProfessorSkill[]\nUPDATE Professor { nom, prenom, telephone }
+  F -> DB : UPDATE CvExtraction\n{ status: EXTRACTED }
+  F --> N : 200 OK
+
+  N --> B : Notification : extraction terminée
+  B --> P : Affiche formulaire pré-rempli\navec données extraites
+
+  == Validation par le professeur ==
+
+  P -> B : Corrige les champs incorrects\net soumet
+  B -> N : PUT /api/cv/{extractionId}/validate\n{ formations[], experiences[], skills[] }
+  N -> DB : UPDATE Experience[]\nUPDATE Formation[]\nUPDATE ProfessorSkill[]\nUPDATE CvExtraction { status: VALIDATED }
+  N --> B : 200 OK
+  B --> P : Profil mis à jour
+end
+
+@enduml

@@ -1,0 +1,52 @@
+@startuml
+title Flux d'authentification
+
+actor Utilisateur as U
+participant "Navigateur" as B
+participant "Next.js\nAPI Routes" as N
+database "PostgreSQL" as DB
+
+U -> B : Saisit email + mot de passe
+B -> N : POST /api/auth/login\n{ email, password }
+
+N -> DB : SELECT user WHERE email = ?
+DB --> N : User { passwordHash, role, isActive }
+
+alt Compte inactif ou email introuvable
+  N --> B : 401 Unauthorized
+  B --> U : Message d'erreur
+else
+  N -> N : bcrypt.verify(password, passwordHash)
+
+  alt Mot de passe incorrect
+    N -> N : Incrémente compteur tentatives
+    alt 5 tentatives échouées
+      N -> DB : isActive = false (blocage temporaire)
+      N --> B : 403 Compte bloqué
+    else
+      N --> B : 401 Identifiants invalides
+    end
+  else Authentification réussie
+    N -> N : Génère JWT (exp: 2h)\n+ refreshToken (exp: 7j)
+    N --> B : 200 OK\nSet-Cookie: jwt=...; HttpOnly; Secure\nSet-Cookie: refresh=...; HttpOnly; Secure
+    B -> B : Redirige selon role:\n- PROFESSEUR → /dashboard\n- RH → /rh/dashboard\n- ADMIN → /admin
+    B --> U : Dashboard personnalisé
+  end
+end
+
+== Expiration de session ==
+
+B -> N : Requête avec JWT expiré
+N --> B : 401 Token expiré
+B -> N : POST /api/auth/refresh\n(cookie refreshToken)
+N -> N : Vérifie refreshToken
+N --> B : Nouveau JWT\nSet-Cookie: jwt=...; HttpOnly; Secure
+
+== Déconnexion ==
+
+U -> B : Clic Déconnexion
+B -> N : POST /api/auth/logout
+N --> B : 200 OK\nClear-Cookie: jwt\nClear-Cookie: refresh
+B --> U : Redirige vers /login
+
+@enduml

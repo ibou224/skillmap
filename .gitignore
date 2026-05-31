@@ -1,0 +1,46 @@
+# Variables d'environnement — ne jamais commiter les fichiers .env
+.env
+.env.local
+.env.*.local
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+backend/.env
+backend/.env.local
+
+# Python
+__pycache__/
+*.pyc
+backend/venv/
+backend/.venv/
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+node_modules/
+.next/
+
+# Prisma généré
+frontend/src/generated/prisma
+
+# Uploads et fichiers CV
+backend/uploads/
+cv_uploads/
+*.pdf
+*.docx
+*.doc
+
+# Fichiers de test
+backend/test_*.py
+backend/cv_test.*
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+
+# Documentation Doxygen générée
+docs/doxygen/

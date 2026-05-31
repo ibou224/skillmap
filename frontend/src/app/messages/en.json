@@ -1,0 +1,40 @@
+{
+  "errors": {
+    "unauthorized": "Authentication required.",
+    "forbidden": "Access denied."
+  },
+  "login": {
+    "brand": "SkillMap",
+    "languageSwitcher": "FR | EN",
+    "leftPanel": {
+      "title": "Showcase every skill",
+      "description": "Manage faculty CVs, detect skills with AI, and optimize course assignments, all in one place.",
+      "features": {
+        "centralizedCvs": "Centralized and structured CVs",
+        "mappedSkills": "AI-mapped skills",
+        "roleAccess": "Secure role-based access"
+      }
+    },
+    "mobile": {
+      "subtitle": "CV management platform - College La Cite"
+    },
+    "form": {
+      "title": "Login",
+      "welcome": "Welcome to SkillMap",
+      "description": "Sign in to access your CV and course assignment management workspace.",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "first.last@lacitec.on.ca",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Password",
+      "institutionalAccount": "Institutional account",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Sign in",
+      "loading": "Signing in..."
+    },
+    "footer": {
+      "copyright": "(c) 2026 College La Cite. All rights reserved.",
+      "description": "SkillMap - CV, skills, and assignment management"
+    }
+  }
+}

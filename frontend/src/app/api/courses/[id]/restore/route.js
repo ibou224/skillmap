@@ -1,0 +1,63 @@
+/**
+ * @module app/api/courses/[id]/restore/route
+ * @description Route API de restauration (désarchivage) d'un cours.
+ */
+
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma.js';
+import { requireRole, getIp } from '@/lib/permission.js';
+
+/**
+ * Restaure un cours précédemment archivé.
+ *
+ * Passe le champ `isArchived` à `false`. Aucune vérification de rôle
+ * n'est appliquée sur cette route.
+ *
+ * @route POST /api/courses/[id]/restore
+ *
+ * @param {Request} _ - La requête HTTP (non utilisée).
+ * @param {{ params: { id: string } }} context - L'identifiant du cours dans l'URL.
+ *
+ * @returns {200} Le cours restauré avec ses programmes.
+ * @returns {404} Cours introuvable.
+ * @returns {500} Erreur interne du serveur.
+ */
+export async function POST(request, { params }) {
+  const { session, error } = await requireRole("ADMIN", "RH");
+  if (error) return error;
+  
+  const { id } = await params;
+  try {
+    const existing = await prisma.course.findUnique({ where: { id } });
+    if (!existing) {
+      return NextResponse.json({ success: false, message: 'Cours introuvable' }, { status: 404 });
+    }
+
+    const restored = await prisma.course.update({
+      where:   { id },
+      data:    { isArchived: false },
+      include: { programs: { select: { id: true, nom: true } } },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        action: "UPDATE",
+        entityType: "COURS",
+        entityId: id,
+        userId: session.user.id,
+        metadata: {
+          email: session.user.email,
+          role: session.user.role,
+          message: "Cours restauré (désarchivé)",
+          nom: existing.nom,
+        },
+        ipAddress: getIp(request),
+      },
+    });
+
+    return NextResponse.json({ success: true, data: restored });
+  } catch (error) {
+    console.error('[RESTORE_COURSE_ERROR]:', error);
+    return NextResponse.json({ success: false, message: 'Erreur interne du serveur' }, { status: 500 });
+  }
+}

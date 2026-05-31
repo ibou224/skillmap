@@ -1,0 +1,263 @@
+@startuml diagramme_classes
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty methods
+
+' =====================
+' ENUMS
+' =====================
+
+enum Role {
+  PROFESSEUR
+  RH
+  ADMIN
+}
+
+enum StatutExtraction {
+  PENDING
+  EXTRACTED
+  VALIDATED
+}
+
+enum NiveauCompetence {
+  DEBUTANT
+  INTERMEDIAIRE
+  AVANCE
+}
+
+enum NiveauDiplome {
+  DOCTORAT
+  MAITRISE
+  BACCALAUREAT
+  DEC_TECHNIQUE
+  AUTRE
+}
+
+enum StatutSession {
+  PLANIFIEE
+  ACTIVE
+  ARCHIVEE
+}
+
+enum PeriodeSession {
+  AUTOMNE
+  HIVER
+  ETE
+}
+
+enum StatutAffectation {
+  PROPOSEE
+  AJUSTEE
+  FINALISEE
+}
+
+enum TypeNotification {
+  CV_UPLOADED
+  CV_EXTRACTED
+  CV_VALIDATED
+  ASSIGNMENT_PROPOSED
+  ASSIGNMENT_FINALIZED
+  SESSION_ACTIVATED
+  SESSION_ARCHIVED
+}
+
+' =====================
+' UTILISATEURS & SÉCURITÉ
+' =====================
+
+class User {
+  +id : String
+  +email : String
+  +passwordHash : String
+  +role : Role
+  +isActive : Boolean
+  +loginAttempts : Int
+  +lockedUntil : DateTime?
+  +refreshTokenHash : String?
+  +refreshExpiresAt : DateTime?
+  +lastLoginAt : DateTime?
+  +createdAt : DateTime
+  +updatedAt : DateTime
+}
+
+class AuditLog {
+  +id : String
+  +userId : String?
+  +action : String
+  +entityType : String?
+  +entityId : String?
+  +metadata : Json?
+  +ipAddress : String?
+  +createdAt : DateTime
+}
+
+class Notification {
+  +id : String
+  +userId : String
+  +type : TypeNotification
+  +message : String
+  +isRead : Boolean
+  +entityType : String?
+  +entityId : String?
+  +createdAt : DateTime
+}
+
+' =====================
+' PROFILS PROFESSEURS
+' =====================
+
+class Professor {
+  +id : String
+  +userId : String
+  +nom : String
+  +prenom : String
+  +telephone : String?
+  +maxCours : Int
+  +createdAt : DateTime
+}
+
+class CvExtraction {
+  +id : String
+  +professorId : String
+  +filePath : String
+  +fileName : String
+  +status : StatutExtraction
+  +version : Int
+  +extractedAt : DateTime?
+  +validatedAt : DateTime?
+  +createdAt : DateTime
+}
+
+class Experience {
+  +id : String
+  +professorId : String
+  +poste : String
+  +domaine : String
+  +dateDebut : DateTime
+  +dateFin : DateTime?
+  +description : String?
+  +cvExtractionId : String?
+}
+
+class Formation {
+  +id : String
+  +professorId : String
+  +diplome : String
+  +niveauDiplome : NiveauDiplome
+  +etablissement : String
+  +anneeObtention : Int
+  +cvExtractionId : String?
+}
+
+' =====================
+' RÉFÉRENTIEL MÉTIER
+' =====================
+
+class Skill {
+  +id : String
+  +nom : String
+  +categorie : String
+  +description : String?
+  +createdAt : DateTime
+}
+
+class ProfessorSkill {
+  +professorId : String
+  +skillId : String
+  +anneesExp : Int
+  +niveau : NiveauCompetence
+  +cvExtractionId : String?
+  +updatedAt : DateTime
+}
+
+class Program {
+  +id : String
+  +code : String
+  +nom : String
+  +description : String?
+  +nbEtapes : Int
+}
+
+class Course {
+  +id : String
+  +code : String
+  +nom : String
+  +programId : String
+  +etape : Int
+  +isArchived : Boolean
+  +createdAt : DateTime
+}
+
+class CourseSkill {
+  +courseId : String
+  +skillId : String
+  +niveauRequis : NiveauCompetence
+  +poidsCritique : Int
+}
+
+' =====================
+' SESSIONS & AFFECTATIONS
+' =====================
+
+class Session {
+  +id : String
+  +nom : String
+  +annee : Int
+  +periode : PeriodeSession
+  +statut : StatutSession
+  +createdAt : DateTime
+}
+
+class WeightsConfig {
+  +id : String
+  +sessionId : String
+  +competencesPct : Int
+  +experiencePct : Int
+  +formationPct : Int
+  +historiquePct : Int
+  +createdAt : DateTime
+}
+
+class Assignment {
+  +id : String
+  +sessionId : String
+  +professorId : String
+  +courseId : String
+  +score : Float
+  +scoreDetail : Json
+  +statut : StatutAffectation
+  +updatedById : String?
+  +createdAt : DateTime
+  +updatedAt : DateTime
+}
+
+' =====================
+' RELATIONS
+' =====================
+
+User "1" --  "0..1" Professor      : possède >
+User "1" --  "0..*" AuditLog       : génère >
+User "1" --  "0..*" Notification   : reçoit >
+User "1" --  "0..*" Assignment     : ajuste (updatedById) >
+
+Professor "1" -- "0..*" CvExtraction  : soumet >
+Professor "1" -- "0..*" Experience    : a >
+Professor "1" -- "0..*" Formation     : a >
+Professor "1" -- "0..*" ProfessorSkill : maîtrise >
+Professor "1" -- "0..*" Assignment    : est affecté dans >
+
+CvExtraction "1" -- "0..*" Experience    : est source de >
+CvExtraction "1" -- "0..*" Formation     : est source de >
+CvExtraction "1" -- "0..*" ProfessorSkill : est source de >
+
+ProfessorSkill "0..*" -- "1" Skill : référence >
+CourseSkill    "0..*" -- "1" Skill : référence >
+
+Program "1" -- "0..*" Course      : contient >
+Course  "1" -- "0..*" CourseSkill : requiert >
+Course  "1" -- "0..*" Assignment  : est assigné dans >
+
+Session "1" -- "0..1" WeightsConfig : configure >
+Session "1" -- "0..*" Assignment    : regroupe >
+
+@enduml

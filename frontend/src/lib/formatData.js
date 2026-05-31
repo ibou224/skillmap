@@ -1,0 +1,286 @@
+/**
+ * @module lib/formatData
+ * @description Utilitaires de normalisation et de formatage des données de CV
+ * extraites (détection de type, parsing JSON, mise en forme pour l'affichage).
+ */
+
+/**
+ * @brief Analyse un champ extrait et détermine son type de données réel.
+ * 
+ * Cette fonction prend un objet contenant une valeur brute (généralement une chaîne de caractères),
+ * tente de la convertir vers son type logique (tableau JSON, objet JSON, nombre ou booléen),
+ * et retourne un nouvel objet enrichi avec le type détecté et la valeur convertie.
+ * 
+ * @param {Object} field L'objet représentant le champ extrait.
+ * @param {string} [field.label] L'étiquette ou l'identifiant du champ (optionnel).
+ * @param {string|any} field.value La valeur brute à analyser et à normaliser.
+ * @param {number} [field.confidence] Le score de confiance de l'extraction (optionnel).
+ * 
+ * @returns {Object} Le champ original enrichi des nouvelles propriétés :
+ * - `type` {string} : Le type détecté ("array", "object", "number", "boolean", ou "text").
+ * - `parsedValue` {any} : La valeur convertie dans son type réel.
+ * - `value` {string|any} : La valeur brute d'origine conservée intacte.
+ */
+export const normalizeField = (field) => {
+  if (typeof field.value === "string") {
+    const trimmed = field.value.trim();
+
+    // 1. Détection JSON (Tableau ou Objet)
+    if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(field.value);
+        if (Array.isArray(parsed)) {
+          return { 
+            ...field, 
+            type: "array", 
+            parsedValue: parsed, 
+            value: field.value 
+        };
+        } else if (typeof parsed === "object" && parsed !== null) {
+          return { 
+            ...field, 
+            type: "object", 
+            parsedValue: parsed, 
+            value: field.value 
+          };
+        }
+      } catch {}
+      
+    }
+    // 2. Détection de nombre (Sorti du bloc JSON)
+    if (!isNaN(trimmed) && trimmed !== "") {
+      return { 
+        ...field, 
+        type: "number", 
+        parsedValue: parseFloat(trimmed) 
+      };
+    }
+
+    const lower = trimmed.toLowerCase();
+    if (lower === "true" || lower === "false") {
+      return {
+        ...field, 
+        type: "boolean", 
+        parsedValue: lower === "true" 
+        };
+    }
+  }
+  return {
+    ...field,
+    type: "text",
+    parsedValue: field.value,
+  };
+}
+
+export function buildStructuredData(fieldsArray) {
+  const result = {
+    prenom: "",
+    nom: "",
+    email: "",
+    telephone: "",
+    ville: "",
+    siteWeb: "",
+    linkedin: "",
+    resume: "",
+    competences: [],
+    langues: [],
+    experiences: [],
+    formations: [],
+    certifications: [],
+  };
+
+  fieldsArray.forEach((field) => {
+    const label = field.label.toLowerCase().trim();
+    const key = label;
+
+    if (key === "experiences" || key === "formations" || key === "competences" || key === "langues" || key === "certifications") {
+      if (field.type === "array" && Array.isArray(field.parsedValue)) {
+        result[key] = field.parsedValue;
+      } else {
+        try {
+          const parsed = JSON.parse(field.value);
+          result[key] = Array.isArray(parsed) ? parsed : [];
+        } catch {
+          result[key] = [];
+        }
+      }
+    } else {
+      result[key] = field.parsedValue ?? field.value;
+    }
+  });
+
+  result.experiences = result.experiences.map((exp, index) => ({
+    id: exp.id || index + 1,
+    ...exp,
+  }));
+ result.formations = result.formations.map((form, index) => ({
+  id: form.id || index + 1,
+  diplome: form.diplome || "",
+  etablissement: form.etablissement || "",
+  anneeObtention: form.anneeObtention || form.annee || "",
+}));
+
+  return result;
+}
+
+export function fmtDate(str, opts) {
+  if (!str) return "";
+  return new Date(str).toLocaleDateString("fr-CA", opts);
+}
+
+/**
+ * Normalise les affectations en sessions avec cours
+ * @param {Array} assignments - Affectations brutes de Prisma
+ * @returns {Array} Sessions normalisées
+ */
+export function normalizeAssignments(assignments) {
+  const sessionsMap = new Map();
+
+  assignments.forEach(assignment => {
+    const { session, course, professor, statut, score } = assignment;
+    const sessionId = session.id;
+
+    if (!sessionsMap.has(sessionId)) {
+      sessionsMap.set(sessionId, {
+        id: session.id,
+        nom: session.nom,
+        annee: session.annee,
+        periode: session.periode,
+        statut: session.statut,
+        dateDebut: formatDate(session.dateDebut),
+        dateFin: formatDate(session.dateFin),
+        cours: []
+      });
+    }
+
+    sessionsMap.get(sessionId).cours.push({
+      code: course.code,
+      nom: course.nom,
+      programmes: course.programs ?? [],
+      etape: course.etape,
+      statut,
+      score,
+      professeur: {
+        id: professor.id,
+        nom: professor.user.nom,
+        prenom: professor.user.prenom,
+        email: professor.user.email,
+      }
+    });
+  });
+
+  return Array.from(sessionsMap.values());
+}
+
+function formatDate(date) {
+  if (!date) return null;
+  return new Date(date).toISOString().split('T')[0];
+}
+
+/**
+ * Normalise les affectations depuis le format aplati (flattenAssignments)
+ * Regroupe par session — compatible avec la sortie de /api/affectations
+ * @param {Array} flatAssignments - Affectations aplaties (clés: sessionId, sessionNom, cours, professeur)
+ * @returns {Array} Sessions normalisées avec leurs cours
+ */
+export function normalizeAssignmentsProf(assignment) {
+  const sessionsMap = new Map();
+
+  assignment.forEach((aff) => {
+    const { sessionId, sessionNom, sessionStatut, statut, score, cours } = aff;
+    if (!sessionsMap.has(sessionId)) {
+      sessionsMap.set(sessionId, { id: sessionId, nom: sessionNom, statut: sessionStatut, cours: [] });
+    }
+    sessionsMap.get(sessionId).cours.push({
+      code:       cours.code,
+      nom:        cours.nom,
+      programme:  cours.programmes?.[0]?.code ?? "—",
+      etape:      cours.etape,
+      statut,
+      score,
+    });
+  });
+
+  return Array.from(sessionsMap.values());
+}
+
+/**
+ * Groupe les cours par session
+ */
+export const groupBySession = (courses) => {
+  return courses.reduce((acc, course) => {
+    const sessionKey = course.sessionId;
+    if (!acc[sessionKey]) {
+      acc[sessionKey] = [];
+    }
+    acc[sessionKey].push(course);
+    return acc;
+  }, {});
+}
+
+export const normalizeInfosProfessor = (infos) => {
+  const { user, email, skills, experiences, formations, titre, telephone, ville, siteWeb, linkedIn, github, resume, langues, cvExtractions } = infos;
+
+  return {
+    titre: titre || "",
+    prenom: user.prenom,
+    nom: user.nom,
+    email: email||user.email,
+    telephone: telephone ?? "",
+    ville: ville || "Ottawa, ON",
+    siteWeb: siteWeb || "",
+    linkedin: linkedIn || "",
+    github: github || "",
+    resume: resume || "",
+    competences: skills.map((s) => ({ nom: s.skill.nom, niveau: s.niveau ?? "DEBUTANT" })),
+    langues: langues ?? [],
+    experiences: experiences.map((e) => ({
+      poste: e.poste,
+      entreprise: e.entreprise,
+      debut: e.dateDebut ? new Date(e.dateDebut).toISOString().slice(0, 7) : "",
+      fin: e.dateFin ? new Date(e.dateFin).toISOString().slice(0, 7) : "",
+      description: e.description ?? "",
+    })),
+    formations: formations
+      .filter((f) => f.niveauDiplome !== "CERTIFICATION")
+      .map((f) => ({
+        diplome: f.diplome,
+        etablissement: f.etablissement,
+        anneeObtention: String(f.anneeObtention),
+        niveauDiplome: f.niveauDiplome,
+      })),
+    certifications: formations
+      .filter((f) => f.niveauDiplome === "CERTIFICATION")
+      .map((f) => ({
+        title: f.diplome,
+        year: f.anneeObtention ? Number(f.anneeObtention) : null,
+      })),
+    cvStatut: cvExtractions?.[0]?.status ?? null,
+  };
+}
+
+export const normalizeWeights = (weights) => {
+  const sessionWeights = new Map();
+
+  weights.forEach(w => {
+    const sessionId = w.session.id;
+    
+    sessionWeights.set(sessionId, {
+      sessionId,
+      session: w.session.nom.toUpperCase(),
+      annee: w.session.annee ?? null,
+      periode: w.session.periode?.toUpperCase() ?? null,
+      statut: w.session.statut?.toUpperCase() ?? null,
+      competencesPct: w.competencesPct ?? 40,
+      experiencePct: w.experiencePct ?? 25,
+      formationPct: w.formationPct ?? 20,
+      historiquePct: w.historiquePct ?? 15,
+      topN:      w.topN     ?? 5,
+      minScore:  w.minScore ?? 25,
+      total: (w.competencesPct ?? 40) + (w.experiencePct ?? 25) + (w.formationPct ?? 20) + (w.historiquePct ?? 15),
+      isValid: ((w.competencesPct ?? 40) + (w.experiencePct ?? 25) + (w.formationPct ?? 20) + (w.historiquePct ?? 15)) === 100,
+    });
+  });
+
+  return Array.from(sessionWeights.values());
+};

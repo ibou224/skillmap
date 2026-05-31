@@ -1,0 +1,64 @@
+@startuml
+title Flux de lancement des affectations
+
+actor "Responsable RH" as RH
+participant "Navigateur" as B
+participant "Next.js\nAPI Routes" as N
+participant "FastAPI\n(Algorithme)" as F
+database "PostgreSQL" as DB
+
+RH -> B : Sélectionne une session ACTIVE
+RH -> B : Configure les pondérations\n(competences/experience/formation/historique)
+B -> N : POST /api/sessions/{id}/weights\n{ competencesPct, experiencePct,\n  formationPct, historiquePct }
+
+N -> N : Valide que la somme = 100%
+alt Somme != 100%
+  N --> B : 400 Bad Request
+  B --> RH : Erreur de configuration
+else Pondérations valides
+  N -> DB : INSERT WeightsConfig
+  N --> B : 200 OK
+end
+
+RH -> B : Clic "Lancer les affectations"
+B -> N : POST /api/assignments/launch\n{ sessionId }
+N --> B : 202 Accepted
+B --> RH : Calcul en cours...
+
+N -> F : POST /score\n{ sessionId }
+
+F -> DB : Charge tous les professeurs\navec CVs VALIDATED + leurs skills/formations/expériences
+F -> DB : Charge tous les cours actifs\navec leurs CourseSkill
+F -> DB : Charge WeightsConfig de la session
+F -> DB : Charge assignments des sessions ARCHIVEES\n(pour scoreHistorique)
+
+loop Pour chaque paire (Professeur, Cours)
+  F -> F : Calcule scoreCompetences\n(matching ProfessorSkill vs CourseSkill)
+  F -> F : Calcule scoreExperience\n(moyenne anneesExp compétences validées / 10)
+  F -> F : Calcule scoreFormation\n(PhD=100, Maitrise=80, Bacc=60, DEC=40, Autre=20)
+  F -> F : Calcule scoreHistorique\n(a déjà enseigné ce cours = 100, sinon = 0)
+  F -> F : Score final =\n(comp×pct + exp×pct + form×pct + hist×pct) / 100
+  F -> DB : INSERT Assignment\n{ score, scoreDetail, statut: PROPOSEE }
+end
+
+F --> N : 200 OK { assignmentsCount }
+N --> B : Affectations générées
+B --> RH : Tableau des propositions\navec scores détaillés par critère
+
+== Ajustement manuel ==
+
+RH -> B : Remplace un professeur\npar un autre sur un cours
+B -> N : PUT /api/assignments/{id}\n{ professorId: nouveauProfId }
+N -> DB : UPDATE Assignment\n{ professorId, statut: AJUSTEE, updatedById }
+N --> B : 200 OK
+
+== Finalisation ==
+
+RH -> B : Clic "Finaliser les affectations"
+B -> N : PUT /api/assignments/finalize\n{ sessionId }
+N -> DB : UPDATE Assignment SET statut = FINALISEE\nWHERE sessionId = ? AND statut IN (PROPOSEE, AJUSTEE)
+N -> DB : UPDATE Session SET statut = ARCHIVEE
+N --> B : 200 OK
+B --> RH : Affectations archivées\nExport PDF disponible
+
+@enduml
