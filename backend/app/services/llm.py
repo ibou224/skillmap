@@ -132,7 +132,7 @@ def _call_llm(cv_text: str) -> dict:
             {"role": "user", "content": prompt}
         ],
         temperature=settings.llm_temperature,
-        timeout=30
+        timeout=60
     )
 
     raw = response.choices[0].message.content
