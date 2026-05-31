@@ -108,7 +108,7 @@ export function useCourses() {
     }
 
     try {
-      const res  = await fetch('/api/courses/add', {
+      const res  = await fetch('/api/courses/Add', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
