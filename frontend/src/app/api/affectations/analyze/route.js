@@ -277,7 +277,7 @@ async function runAnalysisBackground(jobId, { sessionId, programId, topN, minSco
       return {
         id:        assignmentIdMap[`${p.course_id}-${p.professor_id}`],
         sessionId,
-        role:      session.user.role,
+        role:      userRole,
         cours: {
           id:         course.id,
           code:       course.code,
