@@ -206,8 +206,19 @@ export async function POST(request) {
               });
             }
 
-            await tx.professorSkill.create({
-              data: {
+            await tx.professorSkill.upsert({
+              where: {
+                professorId_skillId: {
+                  professorId: professor.id,
+                  skillId: skill.id,
+                },
+              },
+              update: {
+                niveau: comp.niveau || "DEBUTANT",
+                anneesExp: comp.anneesExp || 0,
+                source: comp.source || "SAISIE_MANUELLE",
+              },
+              create: {
                 professorId: professor.id,
                 skillId: skill.id,
                 niveau: comp.niveau || "DEBUTANT",
@@ -221,7 +232,7 @@ export async function POST(request) {
 
       const { count: validatedCount } = await tx.cvExtraction.updateMany({
         where: { professorId: professor.id, status: "EXTRACTED" },
-        data:  { status: "VALIDATED", validatedAt: new Date() },
+        data: { status: "VALIDATED", validatedAt: new Date() },
       });
 
       const updatedProfessor = await tx.professor.findUnique({
