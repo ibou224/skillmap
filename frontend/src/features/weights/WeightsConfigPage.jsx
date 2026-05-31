@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * @module features/weights/WeightsConfigPage
+ * @description Page de configuration des pondérations de l'algorithme de matching
+ * par session : édition des critères, validation (total = 100 %), formule de score
+ * et sauvegarde, via {@link module:hooks/useWeights}.
+ * @returns {ReactNode} La page de configuration des pondérations.
+ */
+
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Scale, Save, RotateCcw, AlertTriangle, Info } from "lucide-react";
 

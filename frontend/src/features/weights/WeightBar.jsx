@@ -1,3 +1,16 @@
+/**
+ * @module features/weights/WeightBar
+ * @description Barre de progression affichant la valeur d'une pondération.
+ */
+
+/**
+ * Barre d'affichage d'une pondération.
+ * @param {Object} props
+ * @param {number} props.value - Valeur (%) de la pondération.
+ * @param {string} props.color - Classe de couleur de la barre.
+ * @param {string} [props.lightColor] - Variante claire de la couleur.
+ * @returns {JSX.Element} La barre de pondération.
+ */
 export function WeightBar({ value, color, lightColor }) {
   return (
     <div className="flex items-center gap-3">

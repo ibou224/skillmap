@@ -1,9 +1,21 @@
 "use client";
 
+/**
+ * @module features/settings/AccountSettingsSection
+ * @description Section de paramètres du compte (partagée admin/RH/professeur) :
+ * carte de profil et carte de changement de mot de passe.
+ */
+
 import { Settings, ShieldCheck, UserCircle2 } from "lucide-react";
 import { ProfileCard } from "@/components/settings/ProfileCard";
 import { PasswordCard } from "@/components/settings/PasswordCard";
 
+/**
+ * Section de paramètres du compte connecté.
+ * @param {Object} props
+ * @param {Object} [props.user={}] - Données du compte connecté.
+ * @returns {JSX.Element} La section de paramètres.
+ */
 export default function AccountSettingsSection({ user = {} }) {
   return (
     <div className="max-w-6xl mx-auto space-y-10">

@@ -4,14 +4,17 @@ Application de gestion des affectations d'enseignants, construite avec Next.js 1
 
 ## Stack technique
 
-| Couche          | Technologie                       |
-| --------------- | --------------------------------- |
-| Framework       | Next.js 16.2 (App Router)         |
-| Authentification| NextAuth v5 (beta)                |
-| Base de données | PostgreSQL 16 + Prisma 7          |
-| Styles          | Tailwind CSS v4                   |
-| Backend IA      | FastAPI (service interne Docker)  |
-| Tests           | Vitest                            |
+| Couche           | Technologie                                            |
+| ---------------- | ------------------------------------------------------ |
+| Framework        | Next.js 16.2 (App Router)                              |
+| Authentification | NextAuth v5 (beta)                                     |
+| Base de données  | PostgreSQL 16 + Prisma 7 (Supabase compatible en prod) |
+| Styles           | Tailwind CSS v4                                        |
+| Emails           | Resend (notifications)                                 |
+| i18n             | next-intl (FR / EN)                                    |
+| Doc API          | Swagger UI (`/api-docs`) via OpenAPI                   |
+| Backend IA       | FastAPI (service interne Docker)                       |
+| Tests            | Vitest                                                 |
 
 ## Prérequis
 
@@ -90,31 +93,52 @@ npm run test    # Tests Vitest
 
 ## Variables d'environnement
 
-Créer un fichier `.env.local` à la racine de `frontend/` :
+Créer un fichier `.env.local` à la racine de `frontend/` (modèle complet dans `.env.example`) :
 
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/skillmap
+# ── Base de données (PostgreSQL local, ou Supabase/Neon en prod) ──
+DATABASE_URL="postgresql://user:password@localhost:5432/skillmap_bd"
+
+# ── Authentification (NextAuth) — générer : openssl rand -hex 32 ──
+AUTH_SECRET=your-secret-here
 NEXTAUTH_SECRET=your-secret-here
 NEXTAUTH_URL=http://localhost:3000
-FASTAPI_INTERNAL_URL=http://localhost:8000
-INTERNAL_API_KEY=your-api-key-here
+
+# ── Backend FastAPI ──
+# Local : BACKEND_URL ; en Docker : FASTAPI_INTERNAL_URL=http://fastapi:8000
+BACKEND_URL="http://localhost:8000"
+INTERNAL_API_KEY=your-api-key-here   # doit être identique à backend/.env
+
+# ── Emails (Resend) — optionnel en dev ──
+RESEND_API_KEY=re_xxx
+RESEND_FROM_EMAIL=no-reply@votredomaine.com
 ```
+
+> En **Docker**, ces variables sont déjà injectées par `docker-compose.yml` ; ce fichier
+> `.env.local` ne sert que pour le développement **hors Docker**.
 
 ## Architecture
 
 ```text
-src/
-├── app/              # Routes Next.js (App Router) — pages et API routes
-│   ├── api/          # Routes API (auth, affectations, weights, history…)
-│   └── dashboard/    # Pages dashboard (admin, rh, professeur)
-├── features/         # Sections métier (une par page, usage unique)
-├── components/       # Composants UI réutilisables
-│   ├── ui/           # Composants génériques (boutons, modales…)
-│   ├── layout/       # Sidebar, Header
-│   └── professeur/   # Composants spécifiques au rôle professeur
-├── hooks/            # Hooks React (fetch, état)
-├── lib/              # Utilitaires (prisma, auth, permissions, formatData)
-└── constants/        # Constantes partagées (statuts, CRUD options)
+frontend/
+├── prisma/           # Schéma Prisma, migrations et scripts de seed
+├── public/           # Fichiers statiques (images, polices)
+└── src/
+    ├── app/              # Routes Next.js (App Router) — pages et API routes
+    │   ├── api/          # Routes API (auth, affectations, weights, history…)
+    │   ├── api-docs/     # Swagger UI (documentation OpenAPI)
+    │   └── dashboard/    # Pages dashboard (admin, rh, professeur)
+    ├── features/         # Sections métier (une par page, usage unique)
+    ├── components/       # Composants UI réutilisables
+    │   ├── ui/           # Composants génériques (boutons, modales…)
+    │   ├── layout/       # Sidebar, Header
+    │   └── professeur/   # Composants spécifiques au rôle professeur
+    ├── hooks/            # Hooks React (fetch, état)
+    ├── lib/              # Utilitaires (prisma, auth, permissions, formatData)
+    ├── constants/        # Constantes partagées (statuts, CRUD options)
+    ├── i18n/             # Configuration next-intl (FR / EN)
+    ├── generated/        # Client Prisma généré (non commité)
+    └── proxy.js          # Middleware d'authentification (NextAuth)
 ```
 
 ## Rôles utilisateur

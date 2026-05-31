@@ -1,5 +1,16 @@
+/**
+ * @module features/weights/ScoreFormula
+ * @description Affiche la formule de calcul du score pondéré à partir des poids courants.
+ */
+
 import { Scale } from "lucide-react";
 
+/**
+ * Carte explicative de la formule de score.
+ * @param {Object} props
+ * @param {Object} props.weights - Pondérations courantes par critère.
+ * @returns {JSX.Element} La carte de formule.
+ */
 export function ScoreFormula({ weights }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-6">

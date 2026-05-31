@@ -1,10 +1,18 @@
 "use client";
 
+/**
+ * @module features/professeur/CompetencesSection
+ * @description Section professeur d'édition des compétences avec statistiques par
+ * niveau, via {@link module:hooks/useProfessor}.
+ * @returns {ReactNode} La section des compétences du professeur.
+ */
+
 import { useState, useEffect } from "react";
 import { Save, RefreshCw, CheckCircle2, AlertCircle, Lightbulb } from "lucide-react";
 import { useCvs } from "@/hooks/useProfessor";
 import { SkillsEditor } from "@/components/professeur/skills/SkillsEditor";
 
+/** Niveaux de compétence et leurs styles (bar/badge). */
 const NIVEAU_STATS = [
   { key: "DEBUTANT",      label: "Débutant",      bar: "bg-slate-400",    badge: "bg-slate-100 text-slate-600"    },
   { key: "INTERMEDIAIRE", label: "Intermédiaire",  bar: "bg-blue-500",     badge: "bg-blue-50 text-blue-700"       },

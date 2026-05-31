@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/professeur/AffectationSection
+ * @description Section professeur de l'historique de ses affectations, regroupées
+ * par session, via {@link module:hooks/useProfessor}.
+ * @returns {ReactNode} La section des affectations du professeur.
+ */
+
 import { useState, useEffect, useMemo } from "react";
 import { Search, RefreshCw, AlertCircle } from "lucide-react";
 import { SessionCard } from "@/components/professeur/affectation/SessionCard";

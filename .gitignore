@@ -41,3 +41,6 @@ backend/cv_test.*
 
 # Logs
 *.log
+
+# Documentation Doxygen générée
+docs/doxygen/

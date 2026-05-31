@@ -52,7 +52,7 @@
 └──────────────────────┬──────────────────────────┘
                        │
 ┌──────────────────────▼──────────────────────────┐
-│           NEXT.JS 14  ·  port 3000              │
+│           NEXT.JS 16  ·  port 3000              │
 │  Auth · API Routes CRUD · Prisma ORM · Uploads  │
 └────────┬────────────────────────┬───────────────┘
          │ Prisma ORM             │ HTTP interne Docker
@@ -75,14 +75,19 @@
 
 | Couche | Technologie | Version |
 | --- | --- | --- |
-| 🎨 Frontend | Next.js + Tailwind CSS | 14 |
-| 🔐 Auth & API | Next.js API Routes + NextAuth.js + Prisma | 14 / 5.x |
-| 🤖 Backend IA | FastAPI + SQLAlchemy + Alembic | Python 3.11 |
-| 🗄️ Base de données | PostgreSQL | 16 |
-| 📄 Parsing PDF | pdfplumber | — |
-| 📝 Parsing Word | python-docx | — |
-| 🧠 LLM | gpt-oss-ctx24k:120B | — |
+| 🎨 Frontend | Next.js (App Router) + Tailwind CSS v4 | 16.2 |
+| 🔐 Auth & API | Next.js API Routes + NextAuth.js + Prisma | 16 / 5.x / 7.x |
+| 🤖 Backend IA | FastAPI + psycopg2 (+ SQLAlchemy/Alembic) | Python 3.11 |
+| 🗄️ Base de données | PostgreSQL (local/Docker · Supabase compatible en prod) | 16 |
+| 📄 Parsing PDF/Word | PyMuPDF · pdfplumber · python-docx | — |
+| 🧠 LLM | Client compatible OpenAI → `gpt-oss-ctx24k:120B` (CoCalc) | — |
+| ✉️ Emails | Resend (notifications) | — |
+| 🌍 i18n | next-intl (FR / EN) | — |
 | 🐳 Déploiement | Docker Compose | — |
+
+> **Base de données :** en développement, PostgreSQL 16 est fourni par Docker Compose.
+> En production, n'importe quelle base **PostgreSQL gérée** (ex. **Supabase**, Neon) convient :
+> il suffit de pointer `DATABASE_URL` vers son instance (voir `frontend/.env.example`).
 
 ---
 
@@ -181,7 +186,7 @@ venv\Scripts\activate         # Windows
 
 pip install -r requirements.txt
 cp .env.example .env
-uvicorn main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000
 ```
 
 #### Frontend
@@ -206,13 +211,38 @@ Pour faciliter les tests locaux (sans risque de sécurité), voici les valeurs r
 | `POSTGRES_USER` | Utilisateur PostgreSQL | `admin` |
 | `POSTGRES_PASSWORD` | Mot de passe PostgreSQL | `SkillMap2026` |
 | `POSTGRES_DB` | Nom de la base de données | `skillmap_bd` |
-| `NEXTAUTH_SECRET` | Secret de session (JWT) | `secret-local-skillmap-2026-lacite` |
-| `NEXTAUTH_URL` | URL publique de l'application | `http://localhost:3000` |
-| `LLM_API_URL` | URL de l'API globale du LLM | _[Dépend de votre modèle LLM]_ |
+| `NEXTAUTH_SECRET` | Secret de session (JWT) — `openssl rand -hex 32` | `secret-local-skillmap-2026-lacite` |
+| `INTERNAL_API_KEY` | Clé partagée Next.js ↔ FastAPI (identique des deux côtés) | `cle-interne-securite-docker` |
+| `LLM_BASE_URL` | URL de base de l'API LLM (compatible OpenAI) | `https://defi-informatique.cocalc.cloud/api` |
 | `LLM_API_KEY` | Clé d'accès à l'API LLM | 🛑 **[Sensible : Demander la clé à l'équipe]** |
-| `INTERNAL_API_KEY` | Clé partagée Next.js ↔ FastAPI | `cle-interne-securite-docker` |
-| `PGADMIN_EMAIL` | Email de connexion pgAdmin | `admin@lacitec.on.ca` |
+| `LLM_COOKIE` | Cookie d'authentification CoCalc (si requis) | 🛑 **[Sensible]** |
+| `LLM_MODEL` | Modèle LLM utilisé | `gpt-oss-ctx24k:120b` |
+| `PGADMIN_EMAIL` | Email de connexion pgAdmin | `admin@gestion-cv.com` |
 | `PGADMIN_PASSWORD` | Mot de passe pgAdmin | `admin` |
+
+---
+
+## 📚 Documentation du code (Doxygen)
+
+Le code du frontend (`frontend/src`) est annoté avec des commentaires JSDoc/Doxygen
+(en-tête `@module` par fichier, blocs `@param` / `@returns` sur les fonctions,
+hooks, composants et routes API). Une configuration Doxygen prête à l'emploi est
+fournie à la racine.
+
+**Prérequis :** [Doxygen](https://www.doxygen.nl/download.html) et Node.js
+(déjà présent dans le projet). Aucune dépendance npm supplémentaire — un filtre
+maison (`tools/doxygen-js-filter.js`) convertit le JS/JSX en pseudo-code analysable
+par Doxygen.
+
+**Générer la documentation** (depuis la racine du dépôt) :
+
+```bash
+doxygen Doxyfile
+```
+
+La documentation HTML est produite dans `docs/doxygen/html/` ; ouvrir
+`docs/doxygen/html/index.html` dans un navigateur. Le dossier `docs/doxygen/` est
+ignoré par Git (régénérable à volonté).
 
 ---
 

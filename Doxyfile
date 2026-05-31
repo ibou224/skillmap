@@ -4,15 +4,14 @@
 #  Génération de la documentation à partir des commentaires JSDoc/Doxygen
 #  présents dans frontend/src.
 #
-#  Doxygen ne parse pas nativement le JavaScript/JSX. On utilise donc le filtre
-#  d'entrée « doxygen-jsdoc » qui convertit les commentaires JSDoc en une forme
-#  compréhensible par Doxygen.
+#  Doxygen ne parse pas nativement le JavaScript/JSX. On utilise donc un filtre
+#  d'entrée maison (tools/doxygen-js-filter.js, exécuté avec Node) qui convertit
+#  les déclarations annotées en JSDoc en prototypes lisibles par Doxygen.
 #
-#  Pré-requis (une seule fois) :
-#      npm install -g doxygen-jsdoc      # ou : npm install --save-dev doxygen-jsdoc
-#      (et installer Doxygen : https://www.doxygen.nl/download.html)
+#  Pré-requis : Doxygen (https://www.doxygen.nl/download.html) et Node.js
+#  (déjà présent dans ce projet). Aucune dépendance npm supplémentaire.
 #
-#  Génération :
+#  Génération (depuis la racine du dépôt) :
 #      doxygen Doxyfile
 #  La doc HTML est produite dans  docs/doxygen/html/index.html
 # =============================================================================
@@ -41,11 +40,23 @@ EXCLUDE_PATTERNS       = */node_modules/* \
 INPUT_ENCODING         = UTF-8
 
 # --- Filtre JS/JSX -----------------------------------------------------------
-#  Convertit le JSDoc en pseudo-code documentable par Doxygen.
-#  Nécessite le paquet npm « doxygen-jsdoc » (voir en-tête).
-FILTER_PATTERNS        = "*.js=doxygen-jsdoc" \
-                         "*.jsx=doxygen-jsdoc"
+#  Convertit le JS/JSX en pseudo-C++ documentable par Doxygen (voir en-tête).
+#  Les fichiers sont ensuite analysés avec le parseur C++ de Doxygen.
+EXTENSION_MAPPING      = js=C++ jsx=C++
+FILTER_PATTERNS        = "*.js=node tools/doxygen-js-filter.js" \
+                         "*.jsx=node tools/doxygen-js-filter.js"
 FILTER_SOURCE_FILES    = NO
+
+# --- Alias des tags JSDoc personnalisés --------------------------------------
+#  Définit les tags JSDoc non standard pour qu'ils soient rendus proprement
+#  (et n'émettent plus l'avertissement « Found unknown command »).
+ALIASES                = "description=@details" \
+                         "route=@par Route:^^" \
+                         "access=@par Accès requis:^^" \
+                         "body=@par Corps de requête:^^" \
+                         "queryParam=@par Paramètre (query):^^" \
+                         "type=@par Type:^^" \
+                         "hook=@par Hook:^^"
 
 # --- Extraction --------------------------------------------------------------
 EXTRACT_ALL            = YES
@@ -57,15 +68,17 @@ HIDE_UNDOC_CLASSES     = NO
 JAVADOC_AUTOBRIEF      = YES
 QT_AUTOBRIEF           = YES
 MULTILINE_CPP_IS_BRIEF = NO
-OPTIMIZE_OUTPUT_JAVA   = YES
+OPTIMIZE_OUTPUT_JAVA   = NO
 MARKDOWN_SUPPORT       = YES
 AUTOLINK_SUPPORT       = YES
 
 # --- Diagnostics -------------------------------------------------------------
-QUIET                  = NO
+QUIET                  = YES
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
-WARN_IF_DOC_ERROR      = YES
+#  Désactivé : les signatures sont reconstituées par le filtre JS et ne
+#  correspondent pas toujours exactement aux @param (faux positifs).
+WARN_IF_DOC_ERROR      = NO
 WARN_NO_PARAMDOC       = NO
 
 # --- Sortie HTML -------------------------------------------------------------
@@ -83,7 +96,6 @@ GENERATE_LATEX         = NO
 
 # --- Graphes (nécessite Graphviz, désactivé par défaut) ----------------------
 HAVE_DOT               = NO
-CLASS_DIAGRAMS         = YES
 SOURCE_BROWSER         = YES
 INLINE_SOURCES         = NO
 

@@ -1,11 +1,19 @@
 "use client";
 
+/**
+ * @module features/professeur/HistoriqueCvSection
+ * @description Section professeur de l'historique des versions de CV (snapshots),
+ * avec restauration d'une version précédente.
+ * @returns {ReactNode} La section d'historique des CV.
+ */
+
 import { useState, useEffect, useCallback } from "react";
 import {
   History, RefreshCw, AlertCircle, RotateCcw,
   FileText, Clock, CheckCircle2, ChevronDown, ChevronUp,
 } from "lucide-react";
 
+/** Styles d'affichage par source de version de CV. */
 const SOURCE_STYLE = {
   "Extraction IA":         { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400"   },
   "Analyse du document":   { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400"   },

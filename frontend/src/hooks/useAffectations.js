@@ -180,9 +180,14 @@ export const useAffectations = () => {
     });
     const result = await res.json().catch(() => ({}));
     if (!res.ok || !result.success) throw new Error(result.message || "Echec finalisation des affectations");
+    // Le backend finalise toutes les affectations PROPOSEE *et* AJUSTEE de la
+    // session : on reflète exactement le même périmètre dans le state local
+    // pour que les statuts se mettent à jour immédiatement (sans rechargement).
     setProposals((prev) =>
       prev.map((p) =>
-        p.sessionId === sessionId && p.statut === "AJUSTEE" ? { ...p, statut: "FINALISEE" } : p
+        p.sessionId === sessionId && (p.statut === "AJUSTEE" || p.statut === "PROPOSEE")
+          ? { ...p, statut: "FINALISEE" }
+          : p
       )
     );
     return result;

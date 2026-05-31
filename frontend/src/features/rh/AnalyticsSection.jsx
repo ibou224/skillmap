@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/rh/AnalyticsSection
+ * @description Tableau de bord analytique RH : graphiques (Recharts) des affectations
+ * par session, distribution des scores et top professeurs, via {@link module:hooks/useProfessor}.
+ * @returns {ReactNode} La section d'analytique RH.
+ */
+
 import { useEffect} from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,

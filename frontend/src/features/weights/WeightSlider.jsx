@@ -1,3 +1,19 @@
+/**
+ * @module features/weights/WeightSlider
+ * @description Curseur (range) d'ajustement d'une pondération entre des bornes min/max.
+ */
+
+/**
+ * Curseur d'édition d'une pondération.
+ * @param {Object} props
+ * @param {number} props.value - Valeur courante.
+ * @param {Function} props.onChange - Callback de changement (reçoit un nombre).
+ * @param {number} props.min - Borne minimale.
+ * @param {number} props.max - Borne maximale.
+ * @param {string} props.color - Classe de couleur du curseur.
+ * @param {boolean} props.disabled - Désactive le curseur.
+ * @returns {JSX.Element} Le curseur de pondération.
+ */
 export function WeightSlider({ value, onChange, min, max, color, disabled }) {
   const percentage = ((value - min) / (max - min)) * 100;
   

@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/professeur/HomeSection
+ * @description Tableau de bord d'accueil du professeur : statistiques de profil et
+ * raccourcis, via {@link module:hooks/useProfessor}.
+ * @returns {ReactNode} La section d'accueil professeur.
+ */
+
 import { useEffect } from "react";
 import { StatCard } from "@/components/professeur/StatCard";
 import {

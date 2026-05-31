@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/professeur/ProfilSection
+ * @description Section professeur d'affichage du profil complet (coordonnées,
+ * formations, expériences, compétences), via {@link module:hooks/useProfessor}.
+ * @returns {ReactNode} La section de profil du professeur.
+ */
+
 import { useEffect } from "react";
 import { Edit3, FileText } from "lucide-react";
 import Link from "next/link";

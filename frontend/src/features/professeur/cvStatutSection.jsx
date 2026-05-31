@@ -1,5 +1,13 @@
 // pages/cv.jsx
 "use client";
+
+/**
+ * @module features/professeur/cvStatutSection
+ * @description Section professeur de gestion du CV : bascule entre import de
+ * fichier (extraction IA) et saisie manuelle, selon le paramètre d'URL `tab`.
+ * @returns {ReactNode} La section de gestion du CV.
+ */
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import CvUploadSection from "@/components/professeur/cv/CvUploadSection";

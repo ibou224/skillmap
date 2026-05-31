@@ -48,6 +48,16 @@ export default function CoursesSection() {
   const [isArchiving, setIsArchiving] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
 
+  // Timer sur les messages de succès
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000); 
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   useEffect(() => {
     fetchCourses();
     fetchProgrammes();
@@ -158,83 +168,88 @@ export default function CoursesSection() {
   };
 
   return (
-    <div className="space-y-6">
-      <Banner
-        title="Cours"
-        description="Gestion des cours et de leurs programmes associés."
-      />
-
-      {successMessage && (
-        <SuccessAlert
-          message={successMessage}
-          onClose={() => setSuccessMessage(null)}
+    <>
+      <div className="space-y-6">
+        <Banner
+          title="Cours"
+          description="Gestion des cours et de leurs programmes associés."
         />
-      )}
 
-      <CourseToolbar
-        search={search}
-        onSearchChange={handleSearchChange}
-        filterProgram={filterProgram}
-        programs={programmes}
-        onFilterChange={handleFilterChange}
-        filterSkill={filterSkill}
-        skills={skillsFromCourses}
-        onFilterSkillChange={handleFilterSkillChange}
-        onAdd={openAdd}
-        showArchived={showArchived}
-        onToggleArchived={handleToggleArchived}
-      />
+        <CourseToolbar
+          search={search}
+          onSearchChange={handleSearchChange}
+          filterProgram={filterProgram}
+          programs={programmes}
+          onFilterChange={handleFilterChange}
+          filterSkill={filterSkill}
+          skills={skillsFromCourses}
+          onFilterSkillChange={handleFilterSkillChange}
+          onAdd={openAdd}
+          showArchived={showArchived}
+          onToggleArchived={handleToggleArchived}
+        />
 
-      <CourseTable
-        courses={paginated}
-        onEdit={openEdit}
-        onDelete={(id) => setPendingArchiveId(id)}
-        onRestore={handleRestore}
-        showArchived={showArchived}
-      />
+        <CourseTable
+          courses={paginated}
+          onEdit={openEdit}
+          onDelete={(id) => setPendingArchiveId(id)}
+          onRestore={handleRestore}
+          showArchived={showArchived}
+        />
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between px-1">
-          <p className="text-xs text-slate-400">
-            {filtered.length} cours — page {currentPage} / {totalPages}
-          </p>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage <= 1}
-              className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
-            >
-              <ChevronLeft className="w-4 h-4 text-slate-500" />
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1)
-              .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
-              .reduce((acc, p, i, arr) => {
-                if (i > 0 && p - arr[i - 1] > 1) acc.push("…");
-                acc.push(p);
-                return acc;
-              }, [])
-              .map((p, i) =>
-                p === "…" ? (
-                  <span key={`e-${i}`} className="px-1 text-slate-400 text-xs">…</span>
-                ) : (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={`w-7 h-7 rounded-lg text-xs font-semibold transition
-                      ${p === currentPage ? "bg-[hsl(134,35%,45%)] text-white" : "hover:bg-slate-100 text-slate-500"}`}
-                  >
-                    {p}
-                  </button>
-                )
-              )}
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage >= totalPages}
-              className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
-            >
-              <ChevronRight className="w-4 h-4 text-slate-500" />
-            </button>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-1">
+            <p className="text-xs text-slate-400">
+              {filtered.length} cours — page {currentPage} / {totalPages}
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
+              >
+                <ChevronLeft className="w-4 h-4 text-slate-500" />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                .reduce((acc, p, i, arr) => {
+                  if (i > 0 && p - arr[i - 1] > 1) acc.push("…");
+                  acc.push(p);
+                  return acc;
+                }, [])
+                .map((p, i) =>
+                  p === "…" ? (
+                    <span key={`e-${i}`} className="px-1 text-slate-400 text-xs">…</span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`w-7 h-7 rounded-lg text-xs font-semibold transition
+                        ${p === currentPage ? "bg-[hsl(134,35%,45%)] text-white" : "hover:bg-slate-100 text-slate-500"}`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages}
+                className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40 transition"
+              >
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </button>
+            </div>
           </div>
+        )}
+      </div>
+
+      {/* OVERLAYS ET MODALES HORS DU FLUX space-y-6 */}
+      {successMessage && (
+        <div className="fixed top-6 right-6 z-50 w-full max-w-sm animate-in slide-in-from-top-2">
+          <SuccessAlert
+            message={successMessage}
+            onClose={() => setSuccessMessage(null)}
+          />
         </div>
       )}
 
@@ -272,6 +287,6 @@ export default function CoursesSection() {
         onCancel={() => setPendingArchiveId(null)}
         isLoading={isArchiving}
       />
-    </div>
+    </>
   );
 }

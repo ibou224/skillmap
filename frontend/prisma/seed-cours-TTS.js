@@ -29,38 +29,6 @@ const SKILLS = [
 ]
 
 // ─────────────────────────────────────────────────────────────
-// COURS COMMUNS À TOUS LES PROGRAMMES (FGE / FRA / ENL)
-// etape: null car ils ne sont pas liés à une étape spécifique
-// ─────────────────────────────────────────────────────────────
-const COURS_COMMUNS = [
-  // ── FORMATION GÉNÉRALE (FGE) ──────────────────────────────
-  { code: '025636-FGE', nom: 'Citoyenneté canadienne',                              etape: 0 },
-  { code: '025827-FGE', nom: 'Santé, environnement et prévention des infections',   etape: 0 },
-  { code: '025830-FGE', nom: 'De l\'identité à la culture',                         etape: 0 },
-  { code: '025831-FGE', nom: 'Vive l\'espagnol',                                    etape: 0 },
-  { code: '025833-FGE', nom: 'Réalités autochtones contemporaines',                 etape: 0 },
-  { code: '025834-FGE', nom: 'La perception en psychologie',                        etape: 0 },
-  { code: '025700-FGE', nom: 'Découvrir l\'éthique appliquée : comment décider ?',  etape: 0 },
-  { code: '027192-FGE', nom: 'Le bonheur : nourrir, équilibrer et renforcer votre qualité de vie', etape: 0 },
-  { code: '028230-FGE', nom: 'La compassion',                                       etape: 0 },
-  { code: '029848-FGE', nom: 'La résilience',                                       etape: 0 },
-  { code: '030018-FGE', nom: 'Équité, diversité, inclusivité',                      etape: 0 },
-  { code: '025636-FGE-EM', nom: 'Exploration des métiers',                          etape: 0 },
-
-  // ── FRANÇAIS (FRA) ───────────────────────────────────────
-  { code: '032308-FRA', nom: 'Stratégies de communication en milieu professionnel', etape: 0 },
-  { code: '032313-FRA', nom: 'Communication orale en milieu professionnel',         etape: 0 },
-  { code: '032317-FRA', nom: 'Communication écrite en milieu professionnel',        etape: 0 },
-
-  // ── ANGLAIS (ENL) ────────────────────────────────────────
-  { code: '026883-ENL', nom: 'Foundations of English',                              etape: 0 },
-  { code: '029990-ENL', nom: 'Oral Communication: Beginner Level',                  etape: 0 },
-  { code: '029992-ENL', nom: 'Oral Communication: Intermediate Level',              etape: 0 },
-  { code: '029999-ENL', nom: 'Written Communication: Beginner Level',               etape: 0 },
-  { code: '029941-ENL', nom: 'Written Communication: Intermediate Level',           etape: 0 },
-]
-
-// ─────────────────────────────────────────────────────────────
 // COURS OBLIGATOIRES — TRAVAIL SOCIAL (SSH-TTS)
 // ─────────────────────────────────────────────────────────────
 const COURS_TTS = [
@@ -192,7 +160,7 @@ async function upsertCours(cours, programmeIds) {
 }
 
 async function main() {
-  console.log('Seed — Travail Social (SSH-TTS) + Cours communs tous programmes\n')
+  console.log('Seed — Travail Social (SSH-TTS)\n')
 
   // ── Vérification programme principal ────────────────────
   const programme = await prisma.program.findUnique({ where: { code: PROGRAMME_CODE } })
@@ -201,11 +169,6 @@ async function main() {
     console.error('Lance d\'abord seed-departements.js puis seed-programmes.js')
     process.exit(1)
   }
-
-  // ── Récupérer TOUS les programmes en BD ─────────────────
-  const tousLesProgrammes = await prisma.program.findMany({ select: { id: true, code: true } })
-  const tousLesIds = tousLesProgrammes.map(p => p.id)
-  console.log(`${tousLesProgrammes.length} programmes trouvés en BD — les cours communs y seront tous liés.\n`)
 
   // ── ÉTAPE 1 : Compétences ─────────────────────────────────
   console.log('--- Catalogue des compétences ---')
@@ -222,28 +185,11 @@ async function main() {
     }
   }
 
-  // ── ÉTAPE 2 : Cours communs → liés à TOUS les programmes ─
-  console.log('\n--- Cours communs (FGE / FRA / ENL) → tous les programmes ---')
-  let communsInseres = 0
-  let communsLies    = 0
-  const coursIdMap   = {}
-
-  for (const c of COURS_COMMUNS) {
-    const { action, id } = await upsertCours(c, tousLesIds)
-    coursIdMap[c.code] = id
-    if (action === 'inséré') {
-      console.log(`Inséré + lié (${tousLesIds.length} prog) : ${c.code} — ${c.nom}`)
-      communsInseres++
-    } else {
-      console.log(`Lié (${tousLesIds.length} prog)           : ${c.code} — ${c.nom}`)
-      communsLies++
-    }
-  }
-
-  // ── ÉTAPE 3 : Cours obligatoires Travail Social ───────────
+  // ── ÉTAPE 2 : Cours obligatoires Travail Social ───────────
   console.log('\n--- Cours obligatoires Travail Social ---')
   let ttsInseres = 0
   let ttsLies    = 0
+  const coursIdMap = {}
 
   for (const c of COURS_TTS) {
     const { action, id } = await upsertCours(c, [programme.id])
@@ -257,7 +203,7 @@ async function main() {
     }
   }
 
-  // ── ÉTAPE 4 : Liens cours → compétences ──────────────────
+  // ── ÉTAPE 3 : Liens cours → compétences ──────────────────
   console.log('\n--- Liens cours → compétences ---')
   let liensInseres = 0
   let liensIgnores = 0
@@ -299,8 +245,6 @@ async function main() {
 
   console.log(`\n══════════════════════════════════════════`)
   console.log(`Résumé`)
-  console.log(`  Cours communs insérés         : ${communsInseres}`)
-  console.log(`  Cours communs liés (existants): ${communsLies}`)
   console.log(`  Cours TTS insérés             : ${ttsInseres}`)
   console.log(`  Cours TTS liés (existants)    : ${ttsLies}`)
   console.log(`  Liens cours→compétences insérés : ${liensInseres}`)

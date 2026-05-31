@@ -14,7 +14,9 @@ const scripts = [
   'seedCours1.js',
   'seedCourPI.js',
   'seed-cours-IAI.js',
-  'seed-cours-TTS.js'
+  'seed-cours-TTS.js',
+  // Filet de sécurité : ajoute des compétences à tout cours qui n'en a aucune.
+  'seed-cours-competences-backfill.js'
 ];
 
 console.log('🚀 Démarrage du seed global...\n');

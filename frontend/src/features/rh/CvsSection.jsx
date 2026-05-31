@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/rh/CvsSection
+ * @description Section RH/admin de consultation des CV des professeurs : recherche,
+ * filtres par statut, tri, pagination et ouverture du détail (CvModal).
+ * @returns {ReactNode} La section des CV.
+ */
+
 import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Search, RefreshCw, AlertCircle, FileText,

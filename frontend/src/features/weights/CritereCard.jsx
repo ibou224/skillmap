@@ -1,8 +1,26 @@
+/**
+ * @module features/weights/CritereCard
+ * @description Carte d'un critère de pondération : affichage de la valeur (barre)
+ * et édition (slider) en mode édition.
+ */
+
 import { Pencil, Check, X } from "lucide-react";
 import { WeightBar } from "./WeightBar";
 import { WeightSlider } from "./WeightSlider";
 
-export function CritereCard({ 
+/**
+ * Carte d'édition d'un critère de pondération.
+ * @param {Object} props
+ * @param {string} props.id - Clé du critère.
+ * @param {Object} props.config - Configuration du critère (label, bornes, icône).
+ * @param {number} props.value - Valeur courante (%).
+ * @param {boolean} props.isEditing - Mode édition actif.
+ * @param {Function} props.onChange - Callback de changement de valeur.
+ * @param {Function} props.onStartEdit - Passe en mode édition.
+ * @param {Function} props.onCancel - Annule l'édition.
+ * @returns {JSX.Element} La carte de critère.
+ */
+export function CritereCard({
   id, 
   config, 
   value, 

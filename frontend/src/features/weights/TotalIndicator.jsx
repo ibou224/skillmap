@@ -1,5 +1,17 @@
+/**
+ * @module features/weights/TotalIndicator
+ * @description Indicateur visuel du total des pondérations (valide si = 100 %).
+ */
+
 import { Check, AlertTriangle } from "lucide-react";
 
+/**
+ * Indicateur du total des pondérations.
+ * @param {Object} props
+ * @param {number} props.total - Somme courante des pondérations (%).
+ * @param {boolean} props.isValid - Vrai si le total vaut 100 %.
+ * @returns {JSX.Element} L'indicateur de total.
+ */
 export function TotalIndicator({ total, isValid }) {
   return (
     <div className={`flex items-center gap-3 px-5 py-4 rounded-2xl border-2 transition-all ${
