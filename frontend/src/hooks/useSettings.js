@@ -1,7 +1,22 @@
+/**
+ * @module hooks/useSettings
+ * @description Hook de gestion des paramètres du compte connecté : changement de
+ * mot de passe (avec validation) et mise à jour des informations de profil.
+ */
+
 import { useState, useEffect, useCallback } from "react";
 import { isValidPassword } from "@/lib/validation";
 
 
+/**
+ * Hook de paramètres de compte.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Function} returns.changePassword - Change le mot de passe ({ password, newpassword, confirmPassword }).
+ * @returns {Function} returns.changeProfile - Met à jour le profil ({ prenom, nom }).
+ * @returns {boolean} returns.isloading - Indicateur de chargement.
+ * @returns {string|null} returns.error - Message d'erreur éventuel.
+ */
 export const useSettings = () => {
 
     const [isloading, setIsloading] = useState(false)

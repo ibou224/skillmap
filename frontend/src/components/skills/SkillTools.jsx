@@ -1,7 +1,25 @@
 "use client";
 
+/**
+ * @module components/skills/SkillTools
+ * @description Barre d'outils des compétences : recherche, filtre par programme et
+ * ajout d'une compétence.
+ */
+
 import { Search, Plus } from "lucide-react";
 
+/**
+ * Barre d'outils de la liste des compétences.
+ * @param {Object} props
+ * @param {string} props.search - Texte de recherche.
+ * @param {Function} props.setSearch - Setter de recherche.
+ * @param {string} props.filterProgramme - Programme filtré.
+ * @param {Function} props.setFilterProgramme - Setter du filtre programme.
+ * @param {Array<Object>} props.programmes - Programmes disponibles.
+ * @param {Function} props.setPage - Réinitialise la pagination.
+ * @param {Function} props.onOpenAdd - Ouvre le formulaire d'ajout.
+ * @returns {JSX.Element} La barre d'outils.
+ */
 export function SkillsToolbar({
   search,
   setSearch,

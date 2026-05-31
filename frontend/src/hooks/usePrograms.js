@@ -1,7 +1,28 @@
 "use client";
 
+/**
+ * @module hooks/usePrograms
+ * @description Hook CRUD pour les programmes académiques et leurs départements :
+ * chargement, validation des champs, création, mise à jour et suppression.
+ * Les actions retournent toujours un objet `{ success, message?, fieldErrors?, data? }`.
+ */
+
 import { useState, useCallback } from "react";
 
+/**
+ * Hook de gestion des programmes académiques.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Array<Object>} returns.programs - Liste des programmes.
+ * @returns {Array<Object>} returns.departements - Liste des départements.
+ * @returns {boolean} returns.isLoading - Indicateur de chargement.
+ * @returns {string|null} returns.error - Message d'erreur éventuel.
+ * @returns {Function} returns.fetchPrograms - Charge les programmes.
+ * @returns {Function} returns.fetchDepartements - Charge les départements (non bloquant).
+ * @returns {Function} returns.createProgram - Crée un programme (avec validation).
+ * @returns {Function} returns.updateProgram - Met à jour un programme.
+ * @returns {Function} returns.deleteProgram - Supprime un programme.
+ */
 export function usePrograms() {
   const [programs, setPrograms] = useState([]);
   const [departements, setDepartements] = useState([]);
@@ -36,6 +57,11 @@ export function usePrograms() {
     }
   }, []);
 
+  /**
+   * Valide le payload d'un programme (code, nom, nombre d'étapes).
+   * @param {Object} payload - Données du programme.
+   * @returns {Object} Dictionnaire des erreurs par champ (vide si valide).
+   */
   const validate = (payload) => {
     const fieldErrors = {};
     if (!payload.code?.trim()) fieldErrors.code = "Le code est obligatoire.";

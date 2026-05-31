@@ -1,7 +1,20 @@
+/**
+ * @module components/professeur/formations/FormationList
+ * @description Liste d'affichage des formations et certifications (lecture seule).
+ */
+
 import { GraduationCap, Award } from "lucide-react";
 
+/** Indique si une formation est une certification. */
 const isCert = (f) => f.niveauDiplome === "CERTIFICATION";
 
+/**
+ * Liste des formations et certifications.
+ * @param {Object} props
+ * @param {Array<Object>} props.formations - Formations à afficher.
+ * @param {string} [props.emptyMessage] - Message si la liste est vide.
+ * @returns {JSX.Element} La liste des formations.
+ */
 export default function FormationList({ formations, emptyMessage = "Aucune formation renseignée." }) {
   if (!formations || formations.length === 0) {
     return <p className="text-xs text-slate-300">{emptyMessage}</p>;

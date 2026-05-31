@@ -1,6 +1,12 @@
+/**
+ * @module components/professeur/profil/ProfileHeader
+ * @description En-tête du profil professeur (avatar, identité, compteurs et lien d'édition).
+ */
+
 import { RefreshCw, Edit3, Briefcase, Lightbulb, GraduationCap, Languages } from "lucide-react";
 import Link from "next/link";
 
+/** Définition des compteurs affichés dans l'en-tête. */
 const STATS = [
   { icon: Briefcase,     key: "experiences",  label: "Expériences" },
   { icon: Lightbulb,     key: "competences",  label: "Compétences" },
@@ -8,6 +14,14 @@ const STATS = [
   { icon: Languages,     key: "langues",      label: "Langues"     },
 ];
 
+/**
+ * En-tête de profil du professeur.
+ * @param {Object} props
+ * @param {Object} props.professeur - Données du professeur (et compteurs).
+ * @param {Function} props.onRefresh - Recharge les données du profil.
+ * @param {string} [props.editLink] - Lien vers l'édition du CV.
+ * @returns {JSX.Element} L'en-tête de profil.
+ */
 export default function ProfileHeader({ professeur, onRefresh, editLink = "/dashboard/professeur/cv?tab=manual" }) {
   const initials = `${professeur.prenom?.[0] ?? ""}${professeur.nom?.[0] ?? ""}`.toUpperCase();
 

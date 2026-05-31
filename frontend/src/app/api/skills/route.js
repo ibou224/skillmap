@@ -3,6 +3,17 @@ import prisma from "@/lib/prisma.js";
 import { isValidString } from "@/lib/validation.js";
 import { requireRole, getIp } from "@/lib/permission.js";
 
+/**
+ * @module app/api/skills/route
+ * @description Routes API du référentiel de compétences : listing (GET) et création (POST).
+ */
+
+/**
+ * Liste toutes les compétences (id, nom, catégorie, description) triées par nom.
+ * @route GET /api/skills
+ * @access ADMIN, RH, PROFESSEUR
+ * @returns {NextResponse} 200 avec les compétences, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function GET() {
   const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;
@@ -18,6 +29,13 @@ export async function GET() {
   }
 }
 
+/**
+ * Crée une nouvelle compétence.
+ * @route POST /api/skills
+ * @access ADMIN
+ * @param {Request} request - Corps JSON `{ nom, categorie, description? }`.
+ * @returns {NextResponse} 201 si créée, 400 si invalide, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function POST(request) {
   const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;

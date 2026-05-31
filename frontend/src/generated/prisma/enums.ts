@@ -78,7 +78,8 @@ export type SessionStatut = (typeof SessionStatut)[keyof typeof SessionStatut]
 export const AssignmentStatut = {
   PROPOSEE: 'PROPOSEE',
   AJUSTEE: 'AJUSTEE',
-  FINALISEE: 'FINALISEE'
+  FINALISEE: 'FINALISEE',
+  ANNULEE: 'ANNULEE'
 } as const
 
 export type AssignmentStatut = (typeof AssignmentStatut)[keyof typeof AssignmentStatut]

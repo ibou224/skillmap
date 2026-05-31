@@ -1,10 +1,17 @@
 "use client";
 
+/**
+ * @module features/history/components/HistorySessionCard
+ * @description Carte dépliable d'une session listant ses affectations historisées (paginées).
+ */
+
 import { useState } from "react";
 import { BookOpen, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Mail, User } from "lucide-react";
 
+/** Nombre d'affectations affichées par page dans la carte. */
 const ASSIGNMENTS_PER_PAGE = 50;
 
+/** Styles de badge par statut d'affectation. */
 const STATUT_STYLE = {
   PROPOSEE:  "bg-blue-50 text-blue-700 border-blue-200",
   AJUSTEE:   "bg-amber-50 text-amber-700 border-amber-200",

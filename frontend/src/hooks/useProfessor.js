@@ -1,9 +1,40 @@
+/**
+ * @module hooks/useProfessor
+ * @description Hook polyvalent autour des CV et des professeurs : extraction LLM
+ * d'un CV, chargement/sauvegarde des informations du professeur connecté, liste
+ * des professeurs côté RH, détail d'un professeur et données d'analytics RH.
+ */
+
 import { useState, useCallback } from "react";
 
 // URL de l'API d'extraction – idéalement dans une variable d'environnement
 const EXTRACT_API_URL =
   process.env.NEXT_PUBLIC_EXTRACT_API_URL || "/api/extract-cv";
 
+/**
+ * Hook de gestion des CV et données professeur.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Array<Object>} returns.affectations - Affectations du professeur ciblé.
+ * @returns {boolean} returns.isLoadingAffectations - Chargement des affectations.
+ * @returns {Error|null} returns.affectationsError - Erreur des affectations.
+ * @returns {Function} returns.fetchAffectations - Charge les affectations d'un professeur.
+ * @returns {Object|null} returns.infos - Informations du professeur connecté.
+ * @returns {Array<Object>} returns.professors - Liste des professeurs (RH).
+ * @returns {boolean} returns.loading - Chargement générique (liste/analytics).
+ * @returns {string|null} returns.error - Erreur générique.
+ * @returns {boolean} returns.isLoadingInfos - Chargement des infos.
+ * @returns {Error|null} returns.infosError - Erreur des infos.
+ * @returns {Function} returns.fetchInfos - Charge les infos du professeur connecté.
+ * @returns {Function} returns.extractCV - Extrait un CV via l'API d'extraction LLM.
+ * @returns {boolean} returns.isExtracting - Extraction en cours.
+ * @returns {Error|null} returns.extractionError - Erreur d'extraction.
+ * @returns {Function} returns.saveInfos - Sauvegarde les infos CV du professeur.
+ * @returns {boolean} returns.isSaving - Sauvegarde en cours.
+ * @returns {Function} returns.fetchProfessorById - Récupère le profil CV complet d'un professeur.
+ * @returns {Function} returns.fetchAnalytics - Charge les données d'analytics RH.
+ * @returns {Object|null} returns.data - Données d'analytics RH.
+ */
 export function useCvs() {
   const [affectations, setAffectations] = useState([]);
   const [isLoadingAffectations, setIsLoadingAffectations] = useState(false);

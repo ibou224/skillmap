@@ -1,16 +1,30 @@
 "use client";
 
+/**
+ * @module components/layout/DashboardShell
+ * @description Ossature des pages du dashboard (sidebar + header + zone de contenu),
+ * avec gestion du repli/déploiement, du menu mobile et de la déconnexion auto.
+ */
+
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
+import QuickActionsFab from "@/components/admin/QuickActionsFab";
 import { useLogin } from "@/hooks/useAuth";
 import { useIdleTimeout } from "@/hooks/useIdleTimeout";
 
 
-/* ─────────────────────────────────────────────
-   Shell principal
-───────────────────────────────────────────── */
+/**
+ * Shell principal du dashboard : assemble la sidebar, l'en-tête et le contenu,
+ * gère l'état d'ouverture/réduction et la déconnexion par inactivité.
+ *
+ * @param {Object} props
+ * @param {{ role: string }} props.user - Utilisateur connecté.
+ * @param {string} [props.sessionError] - Erreur de session éventuelle.
+ * @param {React.ReactNode} props.children - Contenu de la page.
+ * @returns {JSX.Element} Le shell du dashboard.
+ */
 export default function DashboardShell({ user, sessionError, children }) {
   const [isCollapsed, setIsCollapsed]   = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -62,6 +76,9 @@ export default function DashboardShell({ user, sessionError, children }) {
           </main>
         </div>
       </div>
+
+      {/* Bouton flottant d'actions rapides — visible pour ADMIN et RH */}
+      {(user.role === "ADMIN" || user.role === "RH") && <QuickActionsFab role={user.role} />}
     </>
   );
 }

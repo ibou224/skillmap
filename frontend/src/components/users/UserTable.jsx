@@ -1,5 +1,12 @@
+/**
+ * @module components/users/UserTable
+ * @description Tableau des utilisateurs avec rôle, statut (actif/verrouillé) et
+ * actions (éditer, supprimer, (dé)verrouiller).
+ */
+
 import { Edit2, Trash2, CheckCircle2, XCircle, GraduationCap, Shield, Users, LockKeyhole, LockKeyholeOpen } from "lucide-react";
 
+/** Métadonnées d'affichage (label, couleur, icône) par rôle. */
 const roleMeta = {
   admin:      { label: "ADMIN",      color: "bg-blue-100 text-blue-700",   icon: <Shield       className="w-3 h-3" /> },
   rh:         { label: "RH",         color: "bg-yellow-100 text-yellow-700", icon: <Users       className="w-3 h-3" /> },

@@ -110,20 +110,20 @@ class TestScoreEducation:
     def test_doctorate_returns_max(self):
         assert _score_education([{"niveauDiplome": "DOCTORATE"}]) == 1.0
 
-    def test_masters_returns_08(self):
-        assert _score_education([{"niveauDiplome": "MASTERS"}]) == 0.8
+    def test_masters_returns_full(self):
+        assert _score_education([{"niveauDiplome": "MASTERS"}]) == 1.0
 
     def test_bachelors_returns_06(self):
         assert _score_education([{"niveauDiplome": "BACHELORS"}]) == 0.6
 
-    def test_dec_returns_04(self):
-        assert _score_education([{"niveauDiplome": "DEC"}]) == 0.4
+    def test_dec_returns_03(self):
+        assert _score_education([{"niveauDiplome": "DEC"}]) == 0.3
 
-    def test_other_returns_02(self):
-        assert _score_education([{"niveauDiplome": "OTHER"}]) == 0.2
+    def test_other_returns_01(self):
+        assert _score_education([{"niveauDiplome": "OTHER"}]) == 0.1
 
-    def test_unknown_level_defaults_to_02(self):
-        assert _score_education([{"niveauDiplome": "INCONNU"}]) == 0.2
+    def test_unknown_level_defaults_to_01(self):
+        assert _score_education([{"niveauDiplome": "INCONNU"}]) == 0.1
 
     def test_multiple_diplomas_returns_best(self):
         formations = [
@@ -131,10 +131,10 @@ class TestScoreEducation:
             {"niveauDiplome": "MASTERS"},
             {"niveauDiplome": "BACHELORS"},
         ]
-        assert _score_education(formations) == 0.8
+        assert _score_education(formations) == 1.0
 
     def test_missing_niveauDiplome_key_defaults_to_other(self):
-        assert _score_education([{}]) == 0.2
+        assert _score_education([{}]) == 0.1
 
 
 # ─────────────────────────────────────────────────────────────

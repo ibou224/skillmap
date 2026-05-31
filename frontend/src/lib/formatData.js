@@ -1,3 +1,8 @@
+/**
+ * @module lib/formatData
+ * @description Utilitaires de normalisation et de formatage des données de CV
+ * extraites (détection de type, parsing JSON, mise en forme pour l'affichage).
+ */
 
 /**
  * @brief Analyse un champ extrait et détermine son type de données réel.
@@ -220,7 +225,7 @@ export const normalizeInfosProfessor = (infos) => {
     titre: titre || "",
     prenom: user.prenom,
     nom: user.nom,
-    email: email ||user.email,
+    email: email||user.email,
     telephone: telephone ?? "",
     ville: ville || "Ottawa, ON",
     siteWeb: siteWeb || "",

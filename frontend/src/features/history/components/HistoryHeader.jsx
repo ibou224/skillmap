@@ -1,7 +1,20 @@
 "use client";
 
+/**
+ * @module features/history/components/HistoryHeader
+ * @description En-tête de la page d'historique des affectations (admin/RH).
+ */
+
 import { Calendar, History, RefreshCw } from "lucide-react";
 
+/**
+ * En-tête de l'historique des affectations.
+ * @param {Object} props
+ * @param {number} props.totalSessions - Nombre de sessions affichées.
+ * @param {boolean} props.loading - Indicateur de rechargement.
+ * @param {Function} props.onRefresh - Recharge l'historique.
+ * @returns {JSX.Element} L'en-tête.
+ */
 export default function HistoryHeader({ totalSessions, loading, onRefresh }) {
   return (
     <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">

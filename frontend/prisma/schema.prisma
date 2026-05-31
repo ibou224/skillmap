@@ -286,4 +286,5 @@ enum AssignmentStatut {
   PROPOSEE
   AJUSTEE
   FINALISEE
+  ANNULEE
 }

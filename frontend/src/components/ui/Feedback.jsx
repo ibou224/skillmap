@@ -1,5 +1,17 @@
+/**
+ * @module components/ui/Feedback
+ * @description Message de retour inline (succès ou erreur) avec icône.
+ */
+
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 
+/**
+ * Affiche un message de feedback coloré selon son type.
+ * @param {Object} props
+ * @param {"error"|"success"} props.type - Type de message.
+ * @param {string} props.message - Texte à afficher (rien n'est rendu si vide).
+ * @returns {JSX.Element|null} Le message, ou null si aucun message.
+ */
 export default function Feedback({ type, message }) {
     if (!message) return null;
     const isError = type === "error";

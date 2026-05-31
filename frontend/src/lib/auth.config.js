@@ -1,15 +1,29 @@
+/**
+ * @module lib/auth.config
+ * @description Configuration NextAuth « edge-safe » (sans dépendance Node/Prisma)
+ * utilisée par le middleware. Définit la redirection par rôle et le contrôle
+ * d'accès des sous-chemins du dashboard via le callback `authorized`.
+ */
+
+/** Page d'accueil par défaut selon le rôle de l'utilisateur. */
 const ROLE_HOME = {
   ADMIN:      '/dashboard/admin',
   RH:         '/dashboard/rh',
   PROFESSEUR: '/dashboard/professeur',
 }
 
+/** Rôles autorisés pour chaque préfixe de chemin du dashboard. */
 const ROLE_PATHS = {
   '/dashboard/admin':      ['ADMIN'],
   '/dashboard/rh':         ['RH', 'ADMIN'],
   '/dashboard/professeur': ['PROFESSEUR'],
 }
 
+/**
+ * Configuration NextAuth partagée (pages, callbacks `session` et `authorized`).
+ * Les providers sont injectés dans {@link module:lib/auth}.
+ * @type {import('next-auth').NextAuthConfig}
+ */
 export const authConfig = {
   providers: [],
   pages: {

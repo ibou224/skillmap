@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/history/HistoryPage
+ * @description Page d'historique des affectations (partagée admin/RH/professeur) :
+ * filtres par session, regroupement et statistiques, via {@link module:hooks/useHistory}.
+ * @returns {ReactNode} La page d'historique.
+ */
+
 import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, ChevronLeft, ChevronRight, RefreshCw, Search } from "lucide-react";
 

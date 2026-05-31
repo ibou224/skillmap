@@ -1,3 +1,9 @@
+/**
+ * @module lib/permission
+ * @description Helpers d'autorisation pour les route handlers : vérification du
+ * rôle de l'utilisateur authentifié et extraction de l'adresse IP cliente.
+ */
+
 import { auth } from './auth.js'
 import { NextResponse } from 'next/server'
 
@@ -35,6 +41,13 @@ export async function requireRole(...roles) {
   return { session }
 }
 
+/**
+ * Extrait l'adresse IP du client à partir des en-têtes de proxy.
+ * Privilégie `x-forwarded-for` (première entrée) puis `x-real-ip`.
+ *
+ * @param {Request} request - La requête entrante.
+ * @returns {string|null} L'adresse IP, ou null si indéterminable.
+ */
 export function getIp(request) {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();

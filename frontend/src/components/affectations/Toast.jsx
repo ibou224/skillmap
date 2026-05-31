@@ -1,9 +1,15 @@
 "use client";
 
+/**
+ * @module components/affectations/Toast
+ * @description Notification toast légère et auto-disparaissante.
+ */
+
 import { useEffect } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+/** Styles de couleur par type de toast. */
 const STYLES = {
   success: "bg-emerald-50 border-emerald-200 text-emerald-800",
   error:   "bg-red-50   border-red-200   text-red-800",
@@ -12,7 +18,11 @@ const STYLES = {
 
 /**
  * Notification légère auto-disparaissante (4s).
- * @param {{ message: string, type: "success"|"error"|"info", onClose: () => void }} props
+ * @param {Object} props
+ * @param {string} props.message - Message à afficher.
+ * @param {"success"|"error"|"info"} props.type - Type de notification.
+ * @param {Function} props.onClose - Callback de fermeture (auto après 4s ou clic).
+ * @returns {JSX.Element} Le toast.
  */
 export default function Toast({ message, type, onClose }) {
   useEffect(() => {

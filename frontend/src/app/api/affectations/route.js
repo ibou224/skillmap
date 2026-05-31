@@ -1,3 +1,9 @@
+/**
+ * @module app/api/affectations/route
+ * @description Route API de listing des affectations, avec filtrage selon le rôle
+ * (un professeur ne voit que ses affectations finalisées ; RH/ADMIN voient tout).
+ */
+
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";
@@ -43,6 +49,11 @@ export async function GET(request) {
   }
 }
 
+/**
+ * Récupère les affectations FINALISEE du professeur connecté.
+ * @param {import('next-auth').Session} session - Session de l'utilisateur connecté.
+ * @returns {Promise<NextResponse>} 200 avec les affectations, 404 si profil introuvable.
+ */
 async function getProfesseurAffectations(session) {
   const professor = await prisma.professor.findUnique({
     where: { userId: session.user.id },
@@ -57,7 +68,7 @@ async function getProfesseurAffectations(session) {
   }
 
   const affectations = await prisma.assignment.findMany({
-    where: { professorId: professor.id },
+    where: { professorId: professor.id, statut:"FINALISEE" },
     include: { 
       course: { 
         select: { 
@@ -106,6 +117,12 @@ async function getProfesseurAffectations(session) {
   });
 }
 
+/**
+ * Récupère les affectations pour RH/ADMIN, avec filtres optionnels.
+ * @param {string|null} professeurId - Filtre par professeur (optionnel).
+ * @param {string|null} sessionId - Filtre par session (optionnel).
+ * @returns {Promise<NextResponse>} 200 avec les affectations.
+ */
 async function getRHAffectations(professeurId, sessionId) {
   const affectations = await prisma.assignment.findMany({
     where: {
@@ -160,6 +177,11 @@ async function getRHAffectations(professeurId, sessionId) {
   });
 }
 
+/**
+ * Aplatit les affectations Prisma en objets plats prêts pour l'UI.
+ * @param {Array<Object>} assignments - Affectations issues de Prisma (avec relations).
+ * @returns {Array<Object>} Affectations normalisées (cours, professeur, scores, statut...).
+ */
 function flattenAssignments(assignments) {
   return assignments.map((a) => ({
     id:            a.id,

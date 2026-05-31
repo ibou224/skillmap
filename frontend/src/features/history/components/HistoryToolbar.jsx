@@ -1,7 +1,20 @@
 "use client";
 
+/**
+ * @module features/history/components/HistoryToolbar
+ * @description Barre d'outils de recherche/réinitialisation de l'historique.
+ */
+
 import { Search, X } from "lucide-react";
 
+/**
+ * Barre d'outils de l'historique.
+ * @param {Object} props
+ * @param {string} props.search - Texte de recherche.
+ * @param {Function} props.onSearchChange - Callback de changement de recherche.
+ * @param {Function} props.onReset - Réinitialise la recherche.
+ * @returns {JSX.Element} La barre d'outils.
+ */
 export default function HistoryToolbar({ search, onSearchChange, onReset }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">

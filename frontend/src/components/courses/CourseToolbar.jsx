@@ -1,5 +1,28 @@
+/**
+ * @module components/courses/CourseToolbar
+ * @description Barre d'outils des cours : recherche, filtres (programme, compétence),
+ * bascule actifs/archivés et ajout d'un cours.
+ */
+
 import { Search, Plus, Archive } from "lucide-react";
 
+/**
+ * Barre d'outils de la liste des cours.
+ *
+ * @param {Object} props
+ * @param {string} props.search - Texte de recherche.
+ * @param {Function} props.onSearchChange - Callback de changement de recherche.
+ * @param {string} props.filterProgram - Programme filtré.
+ * @param {Array<Object>} props.programs - Programmes disponibles.
+ * @param {Function} props.onFilterChange - Callback de changement de filtre programme.
+ * @param {string} props.filterSkill - Compétence filtrée.
+ * @param {Array<Object>} props.skills - Compétences disponibles.
+ * @param {Function} props.onFilterSkillChange - Callback de changement de filtre compétence.
+ * @param {Function} props.onAdd - Ouvre le formulaire d'ajout.
+ * @param {boolean} props.showArchived - Affiche les cours archivés si vrai.
+ * @param {Function} props.onToggleArchived - Bascule actifs/archivés.
+ * @returns {JSX.Element} La barre d'outils.
+ */
 export function CourseToolbar({
   search,
   onSearchChange,

@@ -5,9 +5,20 @@ import { ShieldCheck, KeyRound, Lock, Eye, EyeOff, Save, Loader2 } from "lucide-
 import { useSettings } from "@/hooks/useSettings";
 import Feedback from "@/components/ui/Feedback";
 
+/**
+ * @module components/settings/PasswordCard
+ * @description Carte de changement de mot de passe (ancien/nouveau/confirmation)
+ * avec affichage des champs et retour via {@link module:hooks/useSettings}.
+ */
+
+/** Classe CSS commune des champs de saisie. */
 const fieldCls =
   "w-full pl-11 pr-12 py-3 bg-gray-50 border-2 border-transparent rounded-xl focus:bg-white focus:border-[hsl(134,35%,45%)] focus:ring-0 transition-all outline-none text-gray-700 placeholder:text-gray-400";
 
+/**
+ * Carte de modification du mot de passe.
+ * @returns {JSX.Element} La carte de changement de mot de passe.
+ */
 export function PasswordCard() {
   const [show, setShow] = useState({ current: false, next: false, confirm: false });
   const [data, setData] = useState({ password: "", newpassword: "", confirmPassword: "" });

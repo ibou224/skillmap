@@ -1,3 +1,11 @@
+/**
+ * @module lib/auth
+ * @description Configuration NextAuth principale : provider Credentials avec
+ * vérification bcrypt, gestion du verrouillage de compte après 5 échecs,
+ * journalisation d'audit des connexions, et rotation access/refresh token via
+ * les callbacks JWT. Exporte `auth`, `signIn`, `signOut` et les `handlers`.
+ */
+
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -18,7 +26,11 @@ class LoginError extends CredentialsSignin {
     this.code = code;
   }
 }
-// Fonction pour generer le refresh token
+/**
+ * Génère un refresh token, en stocke le hash bcrypt en base et fixe son expiration.
+ * @param {string} userId - Identifiant de l'utilisateur.
+ * @returns {Promise<string>} Le refresh token en clair (à transmettre au JWT).
+ */
 const createRefreshToken = async (userId) => {
   const token = crypto.randomBytes(32).toString("hex");
   const hash = await bcrypt.hash(token, 10);
@@ -35,7 +47,11 @@ const createRefreshToken = async (userId) => {
   return token;
 };
 
-// Renouvelle l'access token via le refresh token
+/**
+ * Renouvelle l'access token en validant le refresh token stocké en base.
+ * @param {Object} token - JWT courant contenant `id` et `refreshToken`.
+ * @returns {Promise<Object>} Le token mis à jour, ou marqué `error: "RefreshTokenError"` en cas d'échec.
+ */
 const refreshAccessToken = async (token) => {
   try {
     const user = await prisma.user.findUnique({

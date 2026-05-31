@@ -1,13 +1,26 @@
 "use client";
 
+/**
+ * @module components/professeur/skills/SkillsEditor
+ * @description Éditeur de compétences avec sélection du niveau (débutant/intermédiaire/avancé).
+ */
+
 import { Plus, Trash2 } from "lucide-react";
 
+/** Niveaux de compétence et leurs styles. */
 const NIVEAUX = [
   { value: "DEBUTANT",      short: "Débutant",      active: "bg-slate-600 text-white",    idle: "text-slate-400" },
   { value: "INTERMEDIAIRE", short: "Intermédiaire",  active: "bg-blue-600 text-white",     idle: "text-slate-400" },
   { value: "AVANCE",        short: "Avancé",         active: "bg-emerald-600 text-white",  idle: "text-slate-400" },
 ];
 
+/**
+ * Éditeur de la liste de compétences (nom + niveau).
+ * @param {Object} props
+ * @param {Array<{nom: string, niveau: string}>} [props.items] - Compétences éditées.
+ * @param {Function} props.onChange - Callback de mise à jour de la liste.
+ * @returns {JSX.Element} L'éditeur de compétences.
+ */
 export function SkillsEditor({ items = [], onChange }) {
   const update = (index, field, value) =>
     onChange(items.map((item, i) => (i === index ? { ...item, [field]: value } : item)));

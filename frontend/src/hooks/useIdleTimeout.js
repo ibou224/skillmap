@@ -1,7 +1,21 @@
+/**
+ * @module hooks/useIdleTimeout
+ * @description Hook de déconnexion automatique après inactivité. Surveille les
+ * événements d'activité utilisateur et déclenche `signOut` après 30 minutes
+ * sans interaction.
+ */
+
 import { useEffect, useRef } from "react"
 import { signOut } from "next-auth/react"
 
-const TIME = 30 * 60 * 1000 
+/** Durée d'inactivité avant déconnexion automatique (ms). */
+const TIME = 30 * 60 * 1000
+
+/**
+ * Déconnecte l'utilisateur après une période d'inactivité.
+ * À monter une fois dans un layout authentifié ; ne retourne rien.
+ * @returns {void}
+ */
 export function useIdleTimeout() {
   const timer = useRef(null)
 

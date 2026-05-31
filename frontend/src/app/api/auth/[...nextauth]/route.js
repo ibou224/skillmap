@@ -1,4 +1,7 @@
 /**
+ * @module app/api/auth/[...nextauth]/route
+ * @description Point d'entrée NextAuth.js.
+ *
  * Handlers NextAuth.js pour les routes d'authentification.
  *
  * Délègue la gestion des requêtes GET et POST à NextAuth via la configuration

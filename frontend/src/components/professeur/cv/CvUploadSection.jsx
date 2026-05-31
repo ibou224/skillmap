@@ -13,6 +13,18 @@ import { StringArrayEditor } from "../skills/StringArrayEditor";
 import { SkillsEditor } from "../skills/SkillsEditor";
 import { CertificationsEditor } from "../certifications/CertificationsEditor";
 
+/**
+ * @module components/professeur/cv/CvUploadSection
+ * @description Section d'import de CV : dépôt de fichier (drag & drop), extraction
+ * LLM via l'API, puis édition/validation des champs extraits.
+ */
+
+/**
+ * Section d'upload et d'extraction de CV.
+ * @param {Object} props
+ * @param {Function} props.onValidated - Callback appelé après validation des données extraites.
+ * @returns {JSX.Element} La section d'upload de CV.
+ */
 export default function CvUploadSection({ onValidated }) {
   const [uploadState, setUploadState] = useState("idle");
   const [file, setFile] = useState(null);

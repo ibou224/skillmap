@@ -1,3 +1,9 @@
+/**
+ * @module app/api/rh/professors/[id]/route
+ * @description Route API retournant le profil CV complet d'un professeur ciblé,
+ * accessible aux RH/ADMIN (avec normalisation des données via formatData).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";

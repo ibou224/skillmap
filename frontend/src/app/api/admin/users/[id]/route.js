@@ -1,3 +1,10 @@
+/**
+ * @module app/api/admin/users/[id]/route
+ * @description Routes API d'administration d'un utilisateur ciblé par son id :
+ * modification du rôle/statut (PUT) et archivage (DELETE). Toutes les actions
+ * sont journalisées dans les logs d'audit.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { isValidRole } from "@/lib/validation.js";

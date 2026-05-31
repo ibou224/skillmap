@@ -1,3 +1,8 @@
+/**
+ * @module app/api/affectations/analyze/status/route
+ * @description Route API de suivi (polling) de l'état d'un job d'analyse d'affectations.
+ */
+
 import { NextResponse } from "next/server";
 import { requireRole } from "@/lib/permission.js";
 import { jobStore } from "@/lib/jobStore.js";

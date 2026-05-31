@@ -1,8 +1,19 @@
 "use client";
 
+/**
+ * @module components/rh/affectations/ProfCard
+ * @description Carte d'un professeur listant ses affectations (côté RH), dépliable.
+ */
+
 import { ChevronDown, ChevronRight, User } from "lucide-react";
 import { STATUT } from "@/constants/constantes";
 
+/**
+ * Ligne de cours d'une affectation (sous-composant).
+ * @param {Object} props
+ * @param {Object} props.aff - Affectation (cours, statut, score).
+ * @returns {JSX.Element} La ligne de cours.
+ */
 function CourseRow({ aff }) {
   const s = STATUT[aff.statut] ?? STATUT.PROPOSEE;
   const score = Math.round((aff.score ?? 0) * 100);

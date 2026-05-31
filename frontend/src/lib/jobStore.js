@@ -1,6 +1,6 @@
 /**
- * jobStore.js
- * Stockage en mémoire des jobs d'analyse d'affectations.
+ * @module lib/jobStore
+ * @description Stockage en mémoire des jobs d'analyse d'affectations.
  *
  * Utilise globalThis pour survivre aux hot-reloads Next.js en développement.
  *

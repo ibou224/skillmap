@@ -9,6 +9,13 @@ import { StringArrayEditor } from "../skills/StringArrayEditor";
 import { SkillsEditor } from "../skills/SkillsEditor";
 import { CertificationsEditor } from "../certifications/CertificationsEditor";
 
+/**
+ * @module components/professeur/cv/CvManualSection
+ * @description Section de saisie manuelle du CV : infos personnelles, compétences,
+ * langues, certifications, expériences et formations, avec sauvegarde.
+ */
+
+/** Structure vide par défaut d'un CV saisi manuellement. */
 const EMPTY = {
   titre: "", prenom: "", nom: "", email: "", telephone: "",
   ville: "", siteWeb: "", linkedin: "", github: "", resume: "",
@@ -16,6 +23,13 @@ const EMPTY = {
   experiences: [], formations: [],
 };
 
+/**
+ * Section d'édition manuelle du CV.
+ * @param {Object} props
+ * @param {Function} props.onSave - Callback de sauvegarde du CV saisi.
+ * @param {Object|null} [props.initialData=null] - Données initiales pré-remplies.
+ * @returns {JSX.Element} La section de saisie manuelle.
+ */
 export default function CvManualSection({ onSave, initialData = null }) {
   const [form, setForm] = useState({ ...EMPTY, ...initialData });
 

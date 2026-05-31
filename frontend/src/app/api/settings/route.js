@@ -6,6 +6,19 @@ import { auth } from "@/lib/auth.js";
 import { getIp } from "@/lib/permission.js";
 import { requireRole } from "@/lib/permission.js";
 
+/**
+ * @module app/api/settings/route
+ * @description Routes API des paramètres du compte connecté : mise à jour du
+ * profil (PATCH) et changement de mot de passe (PUT).
+ */
+
+/**
+ * Met à jour les informations de profil (prénom, nom) du compte connecté.
+ * @route PATCH /api/settings
+ * @access ADMIN, RH, PROFESSEUR
+ * @param {Request} request - Corps JSON avec les champs de profil.
+ * @returns {NextResponse} 200 si succès, 400 si invalide, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function PATCH(request) {
   const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;
@@ -77,6 +90,13 @@ export async function PATCH(request) {
   }
 }
 
+/**
+ * Change le mot de passe du compte connecté (vérifie l'ancien, valide le nouveau).
+ * @route PUT /api/settings
+ * @access ADMIN, RH, PROFESSEUR
+ * @param {Request} request - Corps JSON `{ password, newpassword }`.
+ * @returns {NextResponse} 200 si succès, 400 si invalide, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function PUT(request) {
   const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;

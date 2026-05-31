@@ -1,3 +1,14 @@
+/**
+ * @module components/ui/ProgressBar
+ * @description Barre de progression compacte avec pourcentage affiché.
+ */
+
+/**
+ * Barre de progression horizontale.
+ * @param {Object} props
+ * @param {number} props.pct - Pourcentage de progression (0-100).
+ * @returns {JSX.Element} La barre de progression.
+ */
 export function ProgressBar({ pct }) {
   return (
     <div className="flex items-center gap-2">

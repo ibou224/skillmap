@@ -96,14 +96,14 @@ export default function DashboardHeader({
               {/* Date */}
               <div className="hidden xl:flex items-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50/80 px-2.5 py-1.5 text-xs font-medium text-emerald-800">
                 <CalendarDays className="h-3.5 w-3.5 text-[hsl(134_35%_45%)]" />
-                <span className="capitalize">{todayLabel}</span>
+                <span className="capitalize" suppressHydrationWarning>{todayLabel}</span>
               </div>
 
               {/* Notifications */}
               <div className="relative" ref={notifRef}>
                 <button
                   aria-label="Notifications"
-                  onClick={() => { setShowNotifs((p) => !p); if (!showNotifs) markAllRead(); }}
+                  onClick={() => setShowNotifs((p) => !p)}
                   className="relative flex h-9 w-9 items-center cursor-pointer justify-center rounded-xl border border-gray-200/70 bg-white/70 text-gray-400 transition-all duration-200 hover:border-cite-green/30 hover:bg-cite-green/5 hover:text-cite-green"
                 >
                   <Bell className="h-4.5 w-4.5" />
@@ -118,6 +118,14 @@ export default function DashboardHeader({
                   <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-xl">
                     <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
                       <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Notifications</span>
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={markAllRead}
+                          className="text-[10px] font-semibold cursor-pointer text-slate-400 hover:text-cite-green transition"
+                        >
+                          Tout marquer comme lu
+                        </button>
+                      )}
                     </div>
                     {notifications.length === 0 ? (
                       <p className="px-4 py-6 text-center text-sm text-slate-400">Aucune nouvelle notification</p>

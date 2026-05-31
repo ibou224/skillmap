@@ -1,3 +1,9 @@
+/**
+ * @module app/api/affectations/[id]/route
+ * @description Route API de mise à jour du statut d'une affectation, avec contrôle
+ * des transitions autorisées (PROPOSEE → AJUSTEE → FINALISEE) et journalisation.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";
@@ -22,6 +28,8 @@ import { requireRole, getIp } from "@/lib/permission";
  * @returns {404} Affectation introuvable.
  * @returns {500} Erreur interne du serveur.
  */
+
+/** Transitions de statut autorisées pour une affectation. */
 const TRANSITIONS_VALIDES = {
   PROPOSEE:  ["AJUSTEE"],
   AJUSTEE:   ["FINALISEE"],

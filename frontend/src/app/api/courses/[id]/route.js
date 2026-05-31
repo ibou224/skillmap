@@ -1,3 +1,9 @@
+/**
+ * @module app/api/courses/[id]/route
+ * @description Routes API d'un cours ciblé par son id : modification complète avec
+ * gestion des compétences/programmes (PUT) et archivage (DELETE).
+ */
+
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 import { isValidString } from '@/lib/validation';

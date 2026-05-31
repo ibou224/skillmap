@@ -5,6 +5,13 @@ import { requireRole, getIp }  from "@/lib/permission.js";
 import { createJob, updateJob } from "@/lib/jobStore.js";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit.js";
 
+/**
+ * @module app/api/affectations/analyze/route
+ * @description Route API d'analyse automatique des affectations. Crée un job
+ * asynchrone, appelle le backend FastAPI pour calculer les scores, filtre/persiste
+ * les propositions et met à jour l'état du job suivi par le client en polling.
+ */
+
 // FASTAPI_INTERNAL_URL est injecté par Docker Compose (nom du service).
 // BACKEND_URL est utilisé en développement local.
 const BACKEND_URL      = process.env.FASTAPI_INTERNAL_URL ?? process.env.BACKEND_URL ?? "http://localhost:8000";
@@ -73,7 +80,20 @@ export async function POST(request) {
 }
 
 /**
- * Exécute toutes les étapes de l'analyse et met à jour le job à chaque étape.
+ * Exécute toutes les étapes de l'analyse en arrière-plan et met à jour le job à
+ * chaque étape (chargement données, appel FastAPI, filtrage, persistance, audit).
+ *
+ * @param {string} jobId - Identifiant du job créé dans le jobStore.
+ * @param {Object} options - Paramètres de l'analyse.
+ * @param {string} options.sessionId - Session ciblée.
+ * @param {string} [options.programId] - Programme optionnel pour filtrer les cours.
+ * @param {number} options.topN - Nombre maximum de professeurs proposés par cours.
+ * @param {number} options.minScore - Score minimal pour retenir une proposition.
+ * @param {string} options.userId - Identifiant de l'utilisateur déclencheur (audit).
+ * @param {string} options.userEmail - Email de l'utilisateur (audit).
+ * @param {string} options.userRole - Rôle de l'utilisateur (audit).
+ * @param {string|null} options.ipAddress - Adresse IP du client (audit).
+ * @returns {Promise<void>} Met à jour le job (DONE/ERROR) sans valeur de retour.
  */
 async function runAnalysisBackground(jobId, { sessionId, programId, topN, minScore, userId, userEmail, userRole, ipAddress }) {
   const step = (index, label) =>
@@ -192,32 +212,23 @@ async function runAnalysisBackground(jobId, { sessionId, programId, topN, minSco
 
     step(4, "Filtrage des propositions...");
 
-    // ── Sélection greedy avec double contrainte ──────────────────────────────
-    // Règles :
-    //   • max topN  professeurs  par cours  (meilleurs scores en tête)
-    //   • max topN  cours        par prof   (un prof éligible à topN cours max)
-    //
-    // Algorithme : tri global score desc → parcours unique → compteurs duaux.
-    // Le greedy favorise toujours la paire (prof, cours) la plus pertinente.
+    // ── Sélection : max topN professeurs par cours, aucune limite par prof ───
+    // Le RH voit tous les candidats qualifiés pour chaque cours (score ≥ minScore)
+    // et décide manuellement de la charge de chaque professeur.
     // ─────────────────────────────────────────────────────────────────────────
     const sorted = rawAssignments
       .filter((a) => a.score >= minScore)
       .sort((a, b) => b.score - a.score);
 
-    const courseCount = new Map(); // courseId   → nb profs sélectionnés
-    const profCount   = new Map(); // professorId → nb cours sélectionnés
+    const courseCount = new Map(); // courseId → nb profs sélectionnés
 
     const assignments = [];
     for (const a of sorted) {
-      const nbForCourse = courseCount.get(a.course_id)    ?? 0;
-      const nbForProf   = profCount.get(a.professor_id)   ?? 0;
-
-      if (nbForCourse >= topN) continue; 
-      if (nbForProf   >= topN) continue; 
+      const nbForCourse = courseCount.get(a.course_id) ?? 0;
+      if (nbForCourse >= topN) continue;
 
       assignments.push(a);
-      courseCount.set(a.course_id,   nbForCourse + 1);
-      profCount.set(a.professor_id,  nbForProf   + 1);
+      courseCount.set(a.course_id, nbForCourse + 1);
     }
 
     step(5, "Sauvegarde en base de données...");
@@ -266,6 +277,7 @@ async function runAnalysisBackground(jobId, { sessionId, programId, topN, minSco
       return {
         id:        assignmentIdMap[`${p.course_id}-${p.professor_id}`],
         sessionId,
+        role:      session.user.role,
         cours: {
           id:         course.id,
           code:       course.code,
@@ -329,6 +341,11 @@ async function runAnalysisBackground(jobId, { sessionId, programId, topN, minSco
   }
 }
 
+/**
+ * Calcule le nombre total d'années d'expérience cumulées.
+ * @param {Array<{dateDebut: string, dateFin?: string}>} experiences - Expériences professionnelles.
+ * @returns {number} Années d'expérience (décimales).
+ */
 function calcYearsExperience(experiences) {
   const now = Date.now();
   return experiences.reduce((total, exp) => {
@@ -338,6 +355,11 @@ function calcYearsExperience(experiences) {
   }, 0);
 }
 
+/**
+ * Retourne le diplôme le plus élevé parmi les formations.
+ * @param {Array<{niveauDiplome: string}>} formations - Formations du professeur.
+ * @returns {string|null} Niveau de diplôme le plus élevé, ou null si aucune formation.
+ */
 function getBestDiploma(formations) {
   if (!formations.length) return null;
   const order = ["DOCTORATE", "MASTERS", "BACHELORS", "DEC", "OTHER"];

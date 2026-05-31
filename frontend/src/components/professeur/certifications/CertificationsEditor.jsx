@@ -1,8 +1,24 @@
+/**
+ * @module components/professeur/certifications/CertificationsEditor
+ * @description Éditeur de la liste des certifications du CV (ajout/édition/suppression).
+ */
+
 import { Plus, Award, Trash2 } from "lucide-react";
 
+/** Classe CSS commune des champs de saisie. */
 const inputCls =
   "w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(134,35%,45%)] transition bg-white";
 
+/**
+ * Formulaire d'une certification (sous-composant).
+ * @param {Object} props
+ * @param {Object} props.certification - Données de la certification.
+ * @param {number} props.index - Index dans la liste.
+ * @param {Function} props.onUpdate - Met à jour un champ.
+ * @param {Function} props.onRemove - Supprime cette certification.
+ * @param {boolean} props.canDelete - Autorise la suppression.
+ * @returns {JSX.Element} Le formulaire de certification.
+ */
 function CertificationForm({ certification, index, onUpdate, onRemove, canDelete }) {
   return (
     <div className="relative border border-slate-100 rounded-2xl p-4 bg-slate-50/40 space-y-3">

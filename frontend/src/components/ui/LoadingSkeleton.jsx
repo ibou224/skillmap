@@ -1,3 +1,12 @@
+/**
+ * @module components/ui/LoadingSkeleton
+ * @description Squelette de chargement de page (placeholders animés).
+ */
+
+/**
+ * Squelette de chargement composite pour une page de dashboard.
+ * @returns {JSX.Element} La structure de placeholders.
+ */
 export default function LoadingSkeleton() {
   return (
     <div className="space-y-5">
@@ -14,6 +23,12 @@ export default function LoadingSkeleton() {
   );
 }
 
+/**
+ * Bloc placeholder animé unitaire.
+ * @param {Object} props
+ * @param {string} [props.className] - Classes de dimensions/forme.
+ * @returns {JSX.Element} Le bloc squelette.
+ */
 function Skeleton({ className = "" }) {
   return <div className={`animate-pulse bg-slate-100 rounded-xl ${className}`} />;
 }

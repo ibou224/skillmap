@@ -1,5 +1,20 @@
+/**
+ * @module components/users/userToolbar
+ * @description Barre d'outils des utilisateurs : recherche, filtre par rôle et ajout.
+ */
+
 import { Search, Plus } from "lucide-react";
 
+/**
+ * Barre d'outils de la liste des utilisateurs.
+ * @param {Object} props
+ * @param {string} props.search - Texte de recherche.
+ * @param {Function} props.onSearchChange - Callback de changement de recherche.
+ * @param {string} props.filterRole - Rôle filtré.
+ * @param {Function} props.onFilterChange - Callback de changement de filtre.
+ * @param {Function} props.onAdd - Ouvre le formulaire d'ajout.
+ * @returns {JSX.Element} La barre d'outils.
+ */
 export function UserToolbar({ search, onSearchChange, filterRole, onFilterChange, onAdd }) {
   return (
     <div className="flex flex-col sm:flex-row gap-3">

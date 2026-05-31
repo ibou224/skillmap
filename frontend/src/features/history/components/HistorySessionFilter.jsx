@@ -1,5 +1,18 @@
 "use client";
 
+/**
+ * @module features/history/components/HistorySessionFilter
+ * @description Filtre de sélection de session pour l'historique des affectations.
+ */
+
+/**
+ * Filtre de session de l'historique.
+ * @param {Object} props
+ * @param {Array<Object>} props.sessions - Sessions disponibles.
+ * @param {string} props.selectedSession - Id de la session sélectionnée ("" = toutes).
+ * @param {Function} props.onChange - Callback de changement de session.
+ * @returns {JSX.Element} Le filtre de session.
+ */
 export default function HistorySessionFilter({ sessions, selectedSession, onChange }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

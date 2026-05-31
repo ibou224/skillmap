@@ -1,8 +1,19 @@
+/**
+ * @module hooks/useLogs
+ * @description Hook de récupération des logs d'audit (administration).
+ */
+
 import { useState, useCallback } from "react";
 
 /**
  * Récupère tous les logs d'audit depuis l'API.
  * Le filtrage et la pagination sont gérés par le composant appelant.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Array<Object>} returns.logs - Logs d'audit chargés.
+ * @returns {boolean} returns.loading - Indicateur de chargement.
+ * @returns {string|null} returns.error - Message d'erreur éventuel.
+ * @returns {Function} returns.fetchLogs - Recharge les logs.
  */
 export default function useLogs() {
   const [logs, setLogs]     = useState([]);

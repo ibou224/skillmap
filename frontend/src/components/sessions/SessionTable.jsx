@@ -1,9 +1,16 @@
 "use client";
 
+/**
+ * @module components/sessions/SessionTable
+ * @description Tableau des sessions académiques avec actions (éditer, supprimer,
+ * activer) et badges de statut.
+ */
+
 import React, { useCallback } from "react";
 import { Pencil, Trash2, CalendarX, Zap } from "lucide-react";
 import { Button } from "../ui/Button";
 
+/** Styles de badge par statut de session. */
 const STATUT_STYLE = {
   ACTIVE:    { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500", label: "Active" },
   PLANIFIEE: { bg: "bg-amber-50",   text: "text-amber-700",   dot: "bg-amber-400",   label: "Planifiée" },

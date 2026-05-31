@@ -90,19 +90,23 @@ You are an expert CV parser for an academic HR system. Extract structured inform
 {cv_text}
 """
 
-#  Client LLM 
+#  Client LLM (singleton — créé une seule fois au premier appel)
+
+_llm_client: OpenAI | None = None
 
 def _get_llm_client() -> OpenAI:
-    # Crée un client HTTP avec le cookie d'authentification CoCalc
-    http_client = httpx.Client(
-        cookies={"COCALC_COMPUTE_SERVER_AUTH_TOKEN": settings.llm_cookie}
-    )
-    # Redirige le SDK OpenAI vers l'API de la compétition
-    return OpenAI(
-        base_url=settings.llm_base_url,
-        api_key=settings.llm_api_key,
-        http_client=http_client
-    )
+    global _llm_client
+    if _llm_client is None:
+        http_client = httpx.Client(
+            cookies={"COCALC_COMPUTE_SERVER_AUTH_TOKEN": settings.llm_cookie},
+            timeout=60.0,
+        )
+        _llm_client = OpenAI(
+            base_url=settings.llm_base_url,
+            api_key=settings.llm_api_key,
+            http_client=http_client,
+        )
+    return _llm_client
 
 #  Extraction principale 
 

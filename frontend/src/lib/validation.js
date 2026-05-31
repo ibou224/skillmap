@@ -1,4 +1,15 @@
+/**
+ * @module lib/validation
+ * @description Fonctions de validation réutilisables côté serveur et client :
+ * email institutionnel, mot de passe robuste, chaînes, rôles, fichiers CV et
+ * pondérations de l'algorithme de matching.
+ */
 
+/**
+ * Valide une adresse e-mail (format + domaine institutionnel @lacitec.on.ca).
+ * @param {string} email - Adresse à valider.
+ * @returns {{ valid: boolean, message: string }} Résultat de la validation.
+ */
 export const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim() || email.trim().length === 0 || typeof email !== "string") return { valid: false, message: "Identifiants incorrects. Veuillez réessayer." };
@@ -8,6 +19,12 @@ export const isValidEmail = (email) => {
 };
 
 
+/**
+ * Valide la robustesse d'un mot de passe (≥ 8 caractères, majuscule, minuscule,
+ * chiffre et caractère spécial).
+ * @param {string} password - Mot de passe à valider.
+ * @returns {{ valid: boolean, message: string }} Résultat de la validation.
+ */
 export const isValidPassword = (password) => {
     if (!password.trim()) return { valid: false, message: "Le mot de passe est requis." };
     if (password.length < 8) return { valid: false, message: "Le mot de passe doit contenir au moins 8 caractères." };
@@ -18,6 +35,11 @@ export const isValidPassword = (password) => {
     return { valid: true, message: "Le mot de passe est valide." };
 }
 
+/**
+ * Valide une chaîne générique (non vide, caractères alphanumériques et ponctuation autorisée).
+ * @param {string} nom - Chaîne à valider.
+ * @returns {{ valid: boolean, message: string }} Résultat de la validation.
+ */
 export const isValidString = (nom) => {
     if(!nom.trim() || nom.trim().length === 0 || typeof nom !== "string") return { valid: false, message: "Ce champ est requis." };
     const normalisationRegex = nom.trim().replace(/[\u2018\u2019]/g, "'");
@@ -26,6 +48,11 @@ export const isValidString = (nom) => {
     return stringValide.test(normalisationRegex) ? { valid: true, message: "Ce champ est valide." } : { valid: false, message: "Ce champ contient des caractères invalides." };
 }
 
+/**
+ * Vérifie qu'un rôle fait partie des rôles autorisés (ADMIN, RH, PROFESSEUR).
+ * @param {string} role - Rôle à vérifier (insensible à la casse).
+ * @returns {boolean} Vrai si le rôle est valide.
+ */
 export const isValidRole = (role) => {
     const validRoles = ['ADMIN', 'RH', 'PROFESSEUR'];
     return validRoles.includes(role.trim().toUpperCase());

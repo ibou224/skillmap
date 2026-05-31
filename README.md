@@ -24,14 +24,22 @@
 
 ## 📋 Table des matières
 
-- [🏗️ Architecture](#️-architecture)
-- [🛠️ Stack technique](#️-stack-technique)
-- [✨ Fonctionnalités](#-fonctionnalités)
-- [📦 Prérequis](#-prérequis)
-- [🚀 Installation](#-installation)
-  - [Docker (recommandé)](#docker-recommandé)
-  - [Installation locale](#installation-locale)
-- [⚙️ Variables d'environnement](#️-variables-denvironnement)
+- [SkillMap](#skillmap)
+  - [📋 Table des matières](#-table-des-matières)
+  - [🏗️ Architecture](#️-architecture)
+  - [🛠️ Stack technique](#️-stack-technique)
+  - [✨ Fonctionnalités](#-fonctionnalités)
+  - [📦 Prérequis](#-prérequis)
+    - [🐳 Docker (recommandé)](#-docker-recommandé)
+    - [💻 Installation locale](#-installation-locale)
+  - [🚀 Installation](#-installation)
+    - [📥 1. Cloner le projet](#-1-cloner-le-projet)
+    - [🐳 2. Docker (recommandé)](#-2-docker-recommandé)
+    - [🧪 Comptes de test (après Seed)](#-comptes-de-test-après-seed)
+    - [💻 Installation locale sans Docker](#-installation-locale-sans-docker)
+      - [Backend](#backend)
+      - [Frontend](#frontend)
+  - [⚙️ Variables d'environnement](#️-variables-denvironnement)
 
 ---
 
@@ -67,7 +75,7 @@
 
 | Couche | Technologie | Version |
 | --- | --- | --- |
-| 🎨 Frontend | Next.js + Tailwind CSS + shadcn/ui | 14 |
+| 🎨 Frontend | Next.js + Tailwind CSS | 14 |
 | 🔐 Auth & API | Next.js API Routes + NextAuth.js + Prisma | 14 / 5.x |
 | 🤖 Backend IA | FastAPI + SQLAlchemy + Alembic | Python 3.11 |
 | 🗄️ Base de données | PostgreSQL | 16 |
@@ -108,25 +116,60 @@
 
 ## 🚀 Installation
 
-### Docker (recommandé)
+### 📥 1. Cloner le projet
+
+Commencez par récupérer le code source sur votre machine en utilisant Git :
 
 ```bash
-# 1. Configurer les variables d'environnement
+git clone <URL_DU_DEPOT_GIT>
+cd skillmap
+```
+
+### 🐳 2. Docker (recommandé)
+
+```bash
+# 1. Copier le fichier d'exemple des variables d'environnement
 cp .env.example .env
 
-# 2. Démarrer tous les services
-docker compose up -d
+# 2. Construire et démarrer tous les services en arrière-plan
+docker compose up -d --build
+
+# 3. Synchroniser la base de données locale (depuis le conteneur frontend)
+docker compose exec nextjs npx prisma db push
+
+# 4. Remplir la base de données avec le jeu de données initial
+docker compose exec nextjs npx prisma db seed
 ```
 
 Une fois lancé, les services sont accessibles aux adresses suivantes :
 
 | Service | URL |
 | --- | --- |
-| 🌐 Application | <http://localhost:3000> |
-| ⚡ API FastAPI | <http://localhost:8000> |
-| 🗄️ pgAdmin | <http://localhost:5050> |
+| 🌐 Application (Frontend) | <http://localhost:3000> |
+| ⚡ API FastAPI (Backend IA) | interne à Docker |
+| 🗄️ PostgreSQL (Local Db) | `localhost:5432` |
 
-### Installation locale
+> **⚠️ En cas d'erreur `Next.js package not found` / Turbopack au lancement :**
+> Exécutez la commande `docker compose rm -s -v -f nextjs && docker compose up -d --build nextjs` pour nettoyer le cache corrompu.
+
+### 🧪 Comptes de test (après Seed)
+
+Le script de seed (`npx prisma db seed`) crée automatiquement des comptes pour tester l'application :
+
+- **Admin** : `admin@lacitec.on.ca` — _Mot de passe : `Admin1234!`_
+- **RH** : `rh@lacitec.on.ca` — _Mot de passe : `RhSkillMap1!`_
+- **Professeur (test)** : `prof@lacitec.on.ca` — _Mot de passe : `Prof1234!`_
+- **Autres professeurs (générés)** : ex: `marc.tremblay@lacitec.on.ca` — _Mot de passe : `Prof@2026!`_
+
+### 💻 Installation locale sans Docker
+
+⚠️ **Important : Base de données**  
+Sans Docker, la base de données PostgreSQL n'est pas instanciée automatiquement. Vous devrez fournir votre propre instance pour que l'application fonctionne :
+1. Soit **installer PostgreSQL localement** sur votre ordinateur (via l'installateur officiel).
+2. Soit **utiliser une base Cloud gratuite** comme Supabase, Neon.tech ou Render.
+3. Soit **démarrer uniquement la DB via Docker** depuis la racine du projet, avec la commande `docker compose up -d db`.
+
+*N'oubliez pas d'indiquer l'adresse de cette base de données dans la variable `DATABASE_URL` de votre fichier `.env`.*
 
 #### Backend
 
@@ -155,20 +198,21 @@ npm run dev
 
 ## ⚙️ Variables d'environnement
 
-Copier `.env.example` en `.env` et renseigner les valeurs suivantes :
+Copier `.env.example` en `.env` (à la racine) et renseigner les valeurs. 
+Pour faciliter les tests locaux (sans risque de sécurité), voici les valeurs recommandées à utiliser :
 
-| Variable | Description |
-| --- | --- |
-| `POSTGRES_USER` | Utilisateur PostgreSQL |
-| `POSTGRES_PASSWORD` | Mot de passe PostgreSQL |
-| `POSTGRES_DB` | Nom de la base de données |
-| `NEXTAUTH_SECRET` | Secret NextAuth — générer avec `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | URL publique de l'application |
-| `LLM_API_URL` | URL de l'API LLM |
-| `LLM_API_KEY` | Clé d'authentification LLM |
-| `INTERNAL_API_KEY` | Clé partagée Next.js ↔ FastAPI |
-| `PGADMIN_EMAIL` | Email de connexion pgAdmin |
-| `PGADMIN_PASSWORD` | Mot de passe pgAdmin |
+| Variable | Description | Valeur recommandée / de test (Local) |
+| --- | --- | --- |
+| `POSTGRES_USER` | Utilisateur PostgreSQL | `admin` |
+| `POSTGRES_PASSWORD` | Mot de passe PostgreSQL | `SkillMap2026` |
+| `POSTGRES_DB` | Nom de la base de données | `skillmap_bd` |
+| `NEXTAUTH_SECRET` | Secret de session (JWT) | `secret-local-skillmap-2026-lacite` |
+| `NEXTAUTH_URL` | URL publique de l'application | `http://localhost:3000` |
+| `LLM_API_URL` | URL de l'API globale du LLM | _[Dépend de votre modèle LLM]_ |
+| `LLM_API_KEY` | Clé d'accès à l'API LLM | 🛑 **[Sensible : Demander la clé à l'équipe]** |
+| `INTERNAL_API_KEY` | Clé partagée Next.js ↔ FastAPI | `cle-interne-securite-docker` |
+| `PGADMIN_EMAIL` | Email de connexion pgAdmin | `admin@lacitec.on.ca` |
+| `PGADMIN_PASSWORD` | Mot de passe pgAdmin | `admin` |
 
 ---
 

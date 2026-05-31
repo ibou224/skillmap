@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/admin/HomeSection
+ * @description Tableau de bord d'accueil administrateur : statistiques, graphiques
+ * et activité récente, alimenté par {@link module:hooks/useHome}.
+ * @returns {ReactNode} La section d'accueil admin.
+ */
+
 import { useState } from "react";
 import {
   Users, BookOpen, FileText,
@@ -10,6 +17,7 @@ import Link from "next/link";
 import { useHome } from "@/hooks/useHome";
 import { BarChart } from "@/components/ui/BarChart";
 import { AFFECTATIONS_CHART, CVS_CHART, relativeTime, logToActivity } from "@/constants/homeAdmin";
+import AlertsPanel from "@/components/admin/AlertsPanel";
 
 const SHORTCUT_ICONS = { Users, BookOpen, Layers, Settings2 };
 
@@ -52,6 +60,9 @@ export default function HomeSection() {
         <h1 className="relative text-2xl sm:text-3xl font-black text-white">Vue d&apos;ensemble</h1>
         <p className="relative text-white/70 text-sm mt-1">Tableau de bord administrateur — SkillMap</p>
       </div>
+
+      {/* Alertes système — actions à entreprendre */}
+      <AlertsPanel />
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -154,25 +165,6 @@ export default function HomeSection() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Raccourcis */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {SHORTCUTS.map((r) => {
-          const Icon = SHORTCUT_ICONS[r.icon];
-          return (
-            <Link
-              key={r.label}
-              href={r.href}
-              className="bg-white border border-slate-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:shadow-md hover:border-slate-200 transition-all text-center"
-            >
-              <div className={`w-10 h-10 rounded-xl ${r.bg} flex items-center justify-center ${r.color}`}>
-                <Icon className="w-5 h-5" />
-              </div>
-              <span className="text-xs font-semibold text-slate-600">{r.label}</span>
-            </Link>
-          );
-        })}
       </div>
     </div>
   );

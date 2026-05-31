@@ -1,10 +1,37 @@
 'use client';
 
+/**
+ * @module hooks/useCourses
+ * @description Hook CRUD pour les cours et les programmes associés : chargement,
+ * création, modification, archivage (soft-delete) et restauration, avec
+ * validation des champs et gestion de l'état de chargement/erreur.
+ */
+
 import { useState, useCallback } from 'react';
 import { isValidString } from '@/lib/validation';
 
+/** Pagination par défaut (12 cours par page). */
 const DEFAULT_PAGINATION = { total: 0, page: 1, limit: 12, totalPages: 0 };
 
+/**
+ * Hook de gestion des cours et programmes.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Array<Object>} returns.courses - Liste des cours.
+ * @returns {Array<Object>} returns.programmes - Liste des programmes.
+ * @returns {Object} returns.pagination - Métadonnées de pagination.
+ * @returns {boolean} returns.isLoading - Indicateur de chargement.
+ * @returns {string|null} returns.error - Message d'erreur éventuel.
+ * @returns {Function} returns.fetchCourses - Charge cours + programmes.
+ * @returns {Function} returns.fetchProgrammes - Charge uniquement les programmes.
+ * @returns {Function} returns.createCourse - Crée un cours (avec validation).
+ * @returns {Function} returns.updateCourse - Met à jour un cours.
+ * @returns {Function} returns.deleteCourse - Archive un cours.
+ * @returns {Function} returns.restoreCourse - Restaure un cours archivé.
+ * @returns {Function} returns.setCourses - Setter direct des cours.
+ * @returns {Function} returns.setProgrammes - Setter direct des programmes.
+ * @returns {Function} returns.setError - Setter direct d'erreur.
+ */
 export function useCourses() {
   const [courses, setCourses]       = useState([]);
   const [programmes, setProgrammes] = useState([]);

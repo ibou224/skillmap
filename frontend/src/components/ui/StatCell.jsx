@@ -1,5 +1,19 @@
+/**
+ * @module components/ui/StatCell
+ * @description Cellule de statistique : icône, valeur, libellé et tendance optionnelle.
+ */
+
 import { TrendingUp } from "lucide-react";
 
+/**
+ * Cellule d'affichage d'une statistique.
+ * @param {Object} props
+ * @param {React.ComponentType} props.icon - Composant icône (Lucide).
+ * @param {string} props.label - Libellé de la statistique.
+ * @param {string|number} props.value - Valeur affichée.
+ * @param {number} [props.trend] - Tendance (positive = hausse) ; masquée si absente.
+ * @returns {JSX.Element} La cellule de statistique.
+ */
 export function StatCell({ icon: Icon, label, value, trend }) {
   return (
     <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 transition-colors">

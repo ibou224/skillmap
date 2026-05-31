@@ -1,7 +1,20 @@
+/**
+ * @module app/api/history/route
+ * @description Route API de l'historique des affectations FINALISEE, filtrable par
+ * session/professeur/cours. Un professeur ne voit que ses propres affectations.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";
 
+/**
+ * Route GET /api/history — liste l'historique des affectations finalisées.
+ *
+ * @access ADMIN, RH, PROFESSEUR (un professeur est restreint à ses affectations)
+ * @param {Request} request - Requête HTTP ; query optionnels `sessionId`, `professorId`, `courseId`.
+ * @returns {NextResponse} 200 avec l'historique, 404 si profil professeur introuvable, 500 sur erreur.
+ */
 export async function GET(request) {
   const { session, error } = await requireRole("ADMIN", "RH", "PROFESSEUR");
   if (error) return error;

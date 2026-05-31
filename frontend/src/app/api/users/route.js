@@ -1,3 +1,8 @@
+/**
+ * @module app/api/users/route
+ * @description Route API retournant le profil complet du professeur connecté.
+ */
+
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";

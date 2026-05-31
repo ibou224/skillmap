@@ -1,5 +1,17 @@
+/**
+ * @module components/professeur/StatCard
+ * @description Carte de statistique du tableau de bord professeur (palette de couleurs prédéfinie).
+ */
 
-
+/**
+ * Carte de statistique colorée.
+ * @param {Object} props
+ * @param {React.ComponentType} props.icon - Composant icône (Lucide).
+ * @param {string} props.label - Libellé de la statistique.
+ * @param {string|number} props.value - Valeur affichée.
+ * @param {"emerald"|"blue"|"purple"|"amber"} props.color - Couleur de la carte.
+ * @returns {JSX.Element} La carte de statistique.
+ */
 export function StatCard({ icon: Icon, label, value, color }) {
   const colors = {
     emerald: { bg: "bg-emerald-50", text: "text-emerald-600" },

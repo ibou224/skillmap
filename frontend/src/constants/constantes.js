@@ -27,6 +27,12 @@ export const STATUT = {
     badge: "bg-amber-50 text-amber-700 border-amber-200",
     darkBadge: "dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800"
   },
+  ANNULEE:   {
+    label: "Annulée",
+    dot: "bg-red-400",
+    badge: "bg-red-50 text-red-600 border-red-200",
+    darkBadge: "dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
+  },
 };
 
 /** Labels visibles par le professeur — masquent les mécanismes internes */

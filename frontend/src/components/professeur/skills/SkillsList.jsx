@@ -1,3 +1,15 @@
+/**
+ * @module components/professeur/skills/SkillsList
+ * @description Liste d'affichage de compétences/langues sous forme de badges.
+ */
+
+/**
+ * Badge coloré (sous-composant).
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Contenu du badge.
+ * @param {"green"|"blue"} [props.variant='green'] - Variante de couleur.
+ * @returns {JSX.Element} Le badge.
+ */
 function Badge({ children, variant = "green" }) {
   const styles = {
     green: "bg-emerald-50 text-emerald-700 border border-emerald-100",

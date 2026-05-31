@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * @module features/affectations/AffectationsPage
+ * @description Page complète de gestion des affectations (partagée admin/RH) :
+ * lancement de l'analyse, statistiques, recherche/filtre, regroupement par cours,
+ * ajustement et finalisation, via {@link module:hooks/useAffectations}.
+ * @returns {ReactNode} La page d'affectations.
+ */
+
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { RefreshCw, BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -19,13 +27,22 @@ import { useCourses } from "@/hooks/useCourses";
 const PAGE_SIZE = 15;
 
 export default function AffectationPage() {
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => setRole(s?.user?.role ?? null))
+      .catch(() => setRole(null));
+  }, []);
+
   const { sessions, fetchSessions }                              = useSessions();
   const { programmes, fetchProgrammes, courses, fetchCourses }   = useCourses();
   const {
     analyseAffectations, fetchAffectations,
     proposals, loading, error, jobProgress,
     updateAssignmentStatus, saveAdjustment,
-    finalizeSessionAssignments,
+    finalizeSessionAssignments, cancelAssignment,
   } = useAffectations();
   const { updateWeight, fetchWeights } = useWeights();
 
@@ -42,6 +59,7 @@ export default function AffectationPage() {
   const [editProposal, setEditProposal]           = useState(null);
   const [pendingAdjustment, setPendingAdjustment] = useState(null);
   const [confirmFinalizeAll, setConfirmFinalizeAll] = useState(false);
+  const [pendingCancelId, setPendingCancelId]       = useState(null);
   const [actionLoading, setActionLoading]         = useState(false);
   const [toast, setToast]                         = useState(null);
   const [showWeights, setShowWeights]             = useState(false);
@@ -88,13 +106,13 @@ export default function AffectationPage() {
     return proposals.filter((p) => p.sessionId === sessionId);
   }, [proposals, sessionId]);
 
-  // Nb de cours proposés/validés/finalisés par professeur dans la session
-  // → affiché comme badge de charge dans CourseGroup (#20)
   const profCourseCount = useMemo(() => {
     const map = new Map();
-    proposalsForSession.forEach((p) => {
-      map.set(p.professeur.id, (map.get(p.professeur.id) ?? 0) + 1);
-    });
+    proposalsForSession
+      .filter((p) => p.statut === "FINALISEE")
+      .forEach((p) => {
+        map.set(p.professeur.id, (map.get(p.professeur.id) ?? 0) + 1);
+      });
     return map;
   }, [proposalsForSession]);
 
@@ -190,6 +208,10 @@ const filteredGroups = useMemo(() => {
         setEditProposal(proposals.find((p) => p.id === id) ?? null);
         return;
       }
+      if (action === "cancel") {
+        setPendingCancelId(id);
+        return;
+      }
       const TRANSITIONS = { validate: "AJUSTEE", finalize: "FINALISEE" };
       const next = TRANSITIONS[action];
       if (!next) return;
@@ -203,6 +225,20 @@ const filteredGroups = useMemo(() => {
     },
     [proposals, updateAssignmentStatus]
   );
+
+  const confirmCancel = useCallback(async () => {
+    if (!pendingCancelId) return;
+    setActionLoading(true);
+    try {
+      await cancelAssignment(pendingCancelId);
+      setToast({ message: "Affectation annulée avec succès", type: "success" });
+    } catch (err) {
+      setToast({ message: err.message, type: "error" });
+    } finally {
+      setActionLoading(false);
+      setPendingCancelId(null);
+    }
+  }, [pendingCancelId, cancelAssignment]);
 
   const handleSaveAdjustment = useCallback((id, updates) => {
     setPendingAdjustment({ id, updates });
@@ -357,6 +393,7 @@ const filteredGroups = useMemo(() => {
                     expandedProposalId={expandedId}
                     onToggleProposal={handleToggleExpand}
                     profCourseCount={profCourseCount}
+                    role={role}
                   />
                 ))}
               </div>
@@ -437,6 +474,20 @@ const filteredGroups = useMemo(() => {
         message={`Cette action finalisera ${finalizeInfo.adjusted} affectation(s) ajustée(s) pour la session sélectionnée. Les affectations finalisées ne pourront plus être ajustées.`}
         onConfirm={handleFinalizeAll}
         onCancel={() => setConfirmFinalizeAll(false)}
+        isLoading={actionLoading}
+      />
+
+      <ConfirmModal
+        isOpen={!!pendingCancelId}
+        title="Annuler l'affectation finalisée"
+        message={(() => {
+          const p = proposals.find((x) => x.id === pendingCancelId);
+          return p
+            ? `Voulez-vous vraiment annuler l'affectation de ${p.professeur.prenom} ${p.professeur.nom} au cours ${p.cours.nom} ?`
+            : "Voulez-vous vraiment annuler cette affectation ?";
+        })()}
+        onConfirm={confirmCancel}
+        onCancel={() => setPendingCancelId(null)}
         isLoading={actionLoading}
       />
 

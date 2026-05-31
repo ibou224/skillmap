@@ -1,7 +1,24 @@
 "use client";
 
+/**
+ * @module components/skills/SkillsTable
+ * @description Tableau paginé des compétences avec actions d'édition/suppression.
+ */
+
 import { Lightbulb, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
+/**
+ * Tableau paginé des compétences.
+ * @param {Object} props
+ * @param {Array<Object>} props.paginatedSkills - Compétences de la page courante.
+ * @param {boolean} props.isLoading - Chargement en cours.
+ * @param {string} props.search - Recherche courante (pour l'état vide).
+ * @param {number} props.filteredCount - Nombre total après filtrage.
+ * @param {number} props.currentPage - Page courante.
+ * @param {number} props.totalPages - Nombre total de pages.
+ * @param {Function} props.setPage - Callback de changement de page.
+ * @returns {JSX.Element} Le tableau des compétences.
+ */
 export function SkillsTable({
   paginatedSkills,
   isLoading,

@@ -1,8 +1,32 @@
+/**
+ * @module hooks/useAffectations
+ * @description Hook de gestion des affectations professeur↔cours : récupération,
+ * lancement de l'analyse automatique (asynchrone avec polling de job), mise à
+ * jour de statut, ajustement manuel, finalisation et annulation.
+ */
+
 import { useState, useCallback } from "react";
 
+/** Intervalle entre deux interrogations de l'état du job d'analyse (ms). */
 const POLL_INTERVAL_MS = 2_000;  // 2 secondes entre chaque poll
+/** Délai maximum d'attente d'un job d'analyse avant abandon (ms). */
 const MAX_WAIT_MS      = 5 * 60 * 1000; // 5 minutes maximum
 
+/**
+ * Hook de gestion du cycle de vie des affectations.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Array<Object>} returns.proposals - Propositions d'affectation courantes.
+ * @returns {boolean} returns.loading - Indicateur de chargement.
+ * @returns {string|null} returns.error - Message d'erreur éventuel.
+ * @returns {Object|null} returns.jobProgress - Progression du job d'analyse { step, stepIndex, stepTotal, status }.
+ * @returns {Function} returns.fetchAffectations - Recharge les affectations.
+ * @returns {Function} returns.analyseAffectations - Lance l'analyse (sessionId, programId, topN, minScore).
+ * @returns {Function} returns.updateAssignmentStatus - Met à jour le statut d'une affectation.
+ * @returns {Function} returns.saveAdjustment - Sauvegarde un ajustement manuel.
+ * @returns {Function} returns.finalizeSessionAssignments - Finalise les affectations AJUSTEE d'une session.
+ * @returns {Function} returns.cancelAssignment - Annule une affectation.
+ */
 export const useAffectations = () => {
   const [proposals, setProposals]     = useState([]);
   const [loading, setLoading]         = useState(true);
@@ -164,6 +188,18 @@ export const useAffectations = () => {
     return result;
   }, []);
 
+  const cancelAssignment = useCallback(async (id, motif = "") => {
+    const res = await fetch(`/api/affectations/${id}/cancel`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ motif }),
+    });
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok || !result.success) throw new Error(result.message || "Échec annulation");
+    setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, statut: "ANNULEE" } : p)));
+    return result;
+  }, []);
+
   return {
     proposals,
     loading,
@@ -174,5 +210,6 @@ export const useAffectations = () => {
     updateAssignmentStatus,
     saveAdjustment,
     finalizeSessionAssignments,
+    cancelAssignment,
   };
 };

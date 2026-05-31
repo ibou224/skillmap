@@ -1,3 +1,11 @@
+/**
+ * @module lib/openapi
+ * @description Spécification OpenAPI 3.0.3 décrivant l'ensemble des routes API
+ * Next.js de SkillMap. Servie par la route /api/openapi et consommée par
+ * Swagger UI (/api-docs). Contient également des helpers de fabrique de réponses.
+ */
+
+/** Contenu JSON générique réutilisé dans les définitions de réponses. */
 const json = {
   "application/json": {
     schema: {
@@ -6,11 +14,17 @@ const json = {
   },
 };
 
+/**
+ * Construit un objet de réponse OpenAPI 200 avec corps JSON générique.
+ * @param {string} [description="Operation reussie"] Description de la réponse.
+ * @returns {Object} Objet réponse OpenAPI.
+ */
 const successResponse = (description = "Operation reussie") => ({
   description,
   content: json,
 });
 
+/** Réponses d'erreur standard réutilisables (400/401/403/404/409/500). */
 const errorResponses = {
   400: { description: "Requete invalide" },
   401: { description: "Authentification requise" },
@@ -20,6 +34,12 @@ const errorResponses = {
   500: { description: "Erreur serveur" },
 };
 
+/**
+ * Construit un `requestBody` OpenAPI au format application/json.
+ * @param {Object} schema           Schéma JSON du corps de requête.
+ * @param {boolean} [required=true] Indique si le corps est obligatoire.
+ * @returns {Object} Objet requestBody OpenAPI.
+ */
 const jsonBody = (schema, required = true) => ({
   required,
   content: {
@@ -29,6 +49,12 @@ const jsonBody = (schema, required = true) => ({
   },
 });
 
+/**
+ * Construit un paramètre de chemin (path) OpenAPI de type chaîne.
+ * @param {string} [name="id"]                              Nom du paramètre.
+ * @param {string} [description="Identifiant de la ressource"] Description du paramètre.
+ * @returns {Object} Objet parameter OpenAPI.
+ */
 const idParam = (name = "id", description = "Identifiant de la ressource") => ({
   name,
   in: "path",
@@ -37,6 +63,11 @@ const idParam = (name = "id", description = "Identifiant de la ressource") => ({
   schema: { type: "string" },
 });
 
+/**
+ * Document OpenAPI 3.0.3 complet de l'API SkillMap (info, serveurs, tags,
+ * schémas de composants réutilisables et description de tous les chemins).
+ * @type {Object}
+ */
 export const openApiSpec = {
   openapi: "3.0.3",
   info: {

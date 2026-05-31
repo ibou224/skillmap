@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/admin/programsSection
+ * @description Section de gestion des programmes (admin) : liste, recherche,
+ * création/édition/suppression via {@link module:hooks/usePrograms}.
+ * @returns {ReactNode} La section de gestion des programmes.
+ */
+
 import { useEffect, useState } from "react";
 import {
   BookOpen, Loader2, Search, Building2, Layers,

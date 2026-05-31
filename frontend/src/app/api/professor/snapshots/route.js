@@ -1,3 +1,8 @@
+/**
+ * @module app/api/professor/snapshots/route
+ * @description Route API listant les versions (snapshots) du CV du professeur connecté.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";

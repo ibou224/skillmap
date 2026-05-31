@@ -1,9 +1,22 @@
 "use client";
 
+/**
+ * @module components/professeur/affectation/SessionCard
+ * @description Carte dépliable d'une session listant les cours affectés (professeur).
+ */
+
 import { ChevronDown, ChevronRight, BookOpen } from "lucide-react";
 import { PERIODE } from "@/constants/constantes";
 import { SessionList } from "./SessionList";
 
+/**
+ * Carte d'une session avec liste de cours dépliable.
+ * @param {Object} props
+ * @param {Object} props.session - Session (nom, période, cours...).
+ * @param {boolean} props.isOpen - Carte dépliée si vrai.
+ * @param {Function} props.onToggle - Ouvre/ferme la carte.
+ * @returns {JSX.Element} La carte de session.
+ */
 export function SessionCard({ session, isOpen, onToggle }) {
   const periode = PERIODE[session.periode] ?? null;
 

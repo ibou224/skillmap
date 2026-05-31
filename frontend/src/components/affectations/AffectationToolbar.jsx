@@ -1,8 +1,27 @@
 "use client";
 
+/**
+ * @module components/affectations/AffectationToolbar
+ * @description Barre d'outils des affectations : recherche, filtre par statut et
+ * action de finalisation globale.
+ */
+
 import { CheckCheck, Search } from "lucide-react";
 import { STATUT } from "@/constants/constantes";
 
+/**
+ * Barre d'outils de la liste d'affectations.
+ *
+ * @param {Object} props
+ * @param {string} props.search - Texte de recherche courant.
+ * @param {Function} props.onSearchChange - Callback de changement de recherche.
+ * @param {string} props.filterStatut - Statut filtré courant.
+ * @param {Function} props.onFilterChange - Callback de changement de filtre.
+ * @param {Function} props.onFinalizeAll - Finalise toutes les affectations ajustées.
+ * @param {boolean} [props.canFinalizeAll=false] - Active le bouton de finalisation globale.
+ * @param {string} [props.finalizeDisabledReason] - Infobulle expliquant pourquoi la finalisation est désactivée.
+ * @returns {JSX.Element} La barre d'outils.
+ */
 export default function AffectationToolbar({
   search,
   onSearchChange,

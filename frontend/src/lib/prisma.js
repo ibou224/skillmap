@@ -1,3 +1,10 @@
+/**
+ * @module lib/prisma
+ * @description Instance unique (patron Singleton) du client Prisma connecté à
+ * PostgreSQL. Réutilise la même connexion entre les hot-reloads Next.js via
+ * `globalThis` pour éviter d'épuiser le pool de connexions en développement.
+ */
+
 import { PrismaClient } from '../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 

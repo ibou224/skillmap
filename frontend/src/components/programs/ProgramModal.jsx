@@ -1,8 +1,15 @@
 "use client";
 
+/**
+ * @module components/programs/ProgramModal
+ * @description Modale de création/édition d'un programme, avec validation par champ
+ * et affichage des erreurs serveur (ex. code déjà utilisé).
+ */
+
 import { useState } from "react";
 import { X, Loader2 } from "lucide-react";
 
+/** Classe CSS d'un champ valide. */
 const inputCls =
   "w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400 transition bg-white";
 const inputErrCls =

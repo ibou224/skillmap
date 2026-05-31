@@ -1,10 +1,17 @@
+/**
+ * @module components/affectations/AffectationStats
+ * @description Bande de statistiques résumant les propositions d'affectation.
+ */
+
 import { Layers, AlertCircle, Edit3, Check, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { STATUT } from "@/constants/constantes";
 
 /**
  * Bande de 5 cartes : Total, Proposées, Ajustées, Finalisées, Score moyen.
- * @param {{ proposals: Array }} props
+ * @param {Object} props
+ * @param {Array<Object>} props.proposals - Propositions d'affectation à agréger.
+ * @returns {JSX.Element} La bande de statistiques.
  */
 export default function AffectationStats({ proposals }) {
   const total      = proposals.length;

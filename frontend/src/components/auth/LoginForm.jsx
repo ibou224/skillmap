@@ -12,6 +12,16 @@ import {
 import { Button } from '@/components/ui/Button';
 import { useLogin } from '@/hooks/useAuth';
 
+/**
+ * @module components/auth/LoginForm
+ * @description Formulaire de connexion : saisie email/mot de passe, affichage du
+ * mot de passe, gestion d'erreur et soumission via {@link module:hooks/useAuth}.
+ */
+
+/**
+ * Formulaire de connexion.
+ * @returns {JSX.Element} Le formulaire de login.
+ */
 export default function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

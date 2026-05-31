@@ -105,7 +105,9 @@ export async function POST(request) {
             ville: professor.ville,
             siteWeb: professor.siteWeb,
             linkedin: professor.linkedIn,
+            github: professor.github,
             resume: professor.resume,
+            email: professor.email,
             langues: professor.langues,
             competences: professor.skills.map((s) => ({
               nom: s.skill.nom,
@@ -136,6 +138,7 @@ export async function POST(request) {
           where: { id: professor.id },
           data: {
             titre: profile.titre,
+            email: profile.email,
             telephone: profile.telephone,
             ville: profile.ville,
             siteWeb: profile.siteWeb,

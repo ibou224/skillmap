@@ -1,5 +1,16 @@
-import { Mail, Phone, MapPin, Globe, Link2 } from "lucide-react";
+/**
+ * @module components/professeur/profil/CoordonneProfil
+ * @description Carte latérale des coordonnées du professeur (avatar, contacts, liens).
+ */
 
+import { Mail, Phone, MapPin, Globe, Link2, GitBranch } from "lucide-react";
+
+/**
+ * Carte des coordonnées du professeur.
+ * @param {Object} props
+ * @param {Object} props.user - Données du professeur (prenom, nom, email, etc.).
+ * @returns {JSX.Element} La carte de coordonnées.
+ */
 export default function CoordonneProfil({ user }) {
   const initials = `${user.prenom?.[0] ?? ""}${user.nom?.[0] ?? ""}`;
 
@@ -13,9 +24,11 @@ export default function CoordonneProfil({ user }) {
         <p className="font-semibold text-slate-800 text-sm">
           {user.prenom} {user.nom}
         </p>
-        <p className="text-[11px] text-slate-400 font-light mt-0.5">
-          Professeure · Informatique
-        </p>
+        {user.titre && (
+          <p className="text-[11px] text-slate-400 font-light mt-0.5">
+            {user.titre}
+          </p>
+        )}
       </div>
 
       <div className="space-y-0">
@@ -37,6 +50,13 @@ export default function CoordonneProfil({ user }) {
             icon={Link2}
             label="LinkedIn"
             value={user.linkedin.replace("https://", "")}
+          />
+        )}
+        {user.github && (
+          <InfoRow
+            icon={GitBranch}
+            label="GitHub"
+            value={user.github.replace("https://", "")}
           />
         )}
       </div>

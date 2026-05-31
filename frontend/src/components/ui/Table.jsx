@@ -1,3 +1,15 @@
+/**
+ * @module components/ui/Table
+ * @description Tableau générique piloté par une description de colonnes.
+ */
+
+/**
+ * Tableau de données simple.
+ * @param {Object} props
+ * @param {Array<{key: string, label: string}>} props.columns - Définition des colonnes.
+ * @param {Array<Object>} props.data - Lignes de données (indexées par `key`).
+ * @returns {JSX.Element} Le tableau.
+ */
 export default function Table({ columns, data }) {
   return (
     <table>

@@ -1,8 +1,24 @@
 // components/ExperienceForm.jsx
+/**
+ * @module components/professeur/experiences/ExperienceForm
+ * @description Formulaire d'édition d'une expérience professionnelle du CV.
+ */
+
 import { Briefcase, Trash2 } from "lucide-react";
 
+/** Classe CSS commune des champs de saisie. */
 const inputCls = "w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(134,35%,45%)] transition bg-white";
 
+/**
+ * Formulaire d'une expérience.
+ * @param {Object} props
+ * @param {Object} props.exp - Données de l'expérience.
+ * @param {number} props.index - Index dans la liste.
+ * @param {Function} props.onUpdate - Met à jour un champ.
+ * @param {Function} props.onRemove - Supprime cette expérience.
+ * @param {boolean} props.canDelete - Autorise la suppression.
+ * @returns {JSX.Element} Le formulaire d'expérience.
+ */
 export default function ExperienceForm({ exp, index, onUpdate, onRemove, canDelete }) {
   return (
     <div className="relative border border-slate-100 rounded-2xl p-4 bg-slate-50/40 space-y-3">

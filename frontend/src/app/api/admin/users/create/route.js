@@ -6,6 +6,13 @@ import { requireRole, getIp } from "@/lib/permission.js";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit.js";
 
 /**
+ * @module app/api/admin/users/create/route
+ * @description Route API de création d'utilisateur (administration), avec
+ * validation des champs, rate limiting, gestion des doublons d'email et création
+ * automatique du profil Professeur si le rôle est PROFESSEUR.
+ */
+
+/**
  * Crée un nouvel utilisateur dans le système.
  *
  * @route POST /api/admin/users/create

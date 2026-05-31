@@ -1,3 +1,9 @@
+/**
+ * @module components/affectations/ProposalTable
+ * @description Tableau paginé des propositions d'affectation, gérant les états de
+ * chargement, d'erreur, vide et filtré.
+ */
+
 import { BookOpen, ChevronLeft, ChevronRight, Filter, RefreshCw, AlertCircle } from "lucide-react";
 import ProposalRow from "./ProposalRow";
 
@@ -5,8 +11,23 @@ import ProposalRow from "./ProposalRow";
  * Tableau des propositions d'affectation.
  * Gère les états : chargement, erreur, vide, résultats filtrés + pagination.
  *
- * `filtered`      — tranche paginée à afficher (slice de la page courante)
- * `totalFiltered` — nombre total de résultats avant pagination (pour l'état vide et le footer)
+ * @param {Object} props
+ * @param {Array<Object>} props.proposals - Toutes les propositions (avant filtrage).
+ * @param {Array<Object>} props.filtered - Tranche paginée à afficher.
+ * @param {number} props.totalFiltered - Nombre total de résultats avant pagination.
+ * @param {boolean} props.loading - Affiche l'état de chargement.
+ * @param {string|null} props.error - Message d'erreur éventuel.
+ * @param {Function} props.onRetry - Relance le chargement en cas d'erreur.
+ * @param {string|null} props.expandedId - Id de la ligne au détail ouvert.
+ * @param {Function} props.onToggleExpand - Ouvre/ferme le détail d'une ligne.
+ * @param {Function} props.onAction - Callback d'action (action, id).
+ * @param {Function} props.onResetFilters - Réinitialise les filtres.
+ * @param {Object} props.weights - Pondérations par critère.
+ * @param {number} props.currentPage - Page courante.
+ * @param {number} props.totalPages - Nombre total de pages.
+ * @param {Function} props.onPageChange - Callback de changement de page.
+ * @param {string} props.role - Rôle de l'utilisateur.
+ * @returns {JSX.Element} Le tableau des propositions.
  */
 export default function ProposalTable({
   proposals,
@@ -23,6 +44,7 @@ export default function ProposalTable({
   currentPage,
   totalPages,
   onPageChange,
+  role,
 }) {
   // ── États alternatifs ──────────────────────────────────────────────────────
 
@@ -126,6 +148,7 @@ export default function ProposalTable({
                   isExpanded={expandedId === p.id}
                   onToggle={() => onToggleExpand(p.id)}
                   weights={weights}
+                  role={role}
                 />
               ))
             )}

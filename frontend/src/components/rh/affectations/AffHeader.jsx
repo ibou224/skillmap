@@ -1,7 +1,22 @@
 "use client";
 
+/**
+ * @module components/rh/affectations/AffHeader
+ * @description En-tête de la vue d'affectations RH (session active + lancement de l'analyse).
+ */
+
 import { Users, RefreshCw, Play } from "lucide-react";
 
+/**
+ * En-tête de la page d'affectations RH.
+ * @param {Object} props
+ * @param {Object} props.sessionActive - Session active courante.
+ * @param {Function} props.onRefresh - Recharge les données.
+ * @param {Function} props.onLancer - Lance l'analyse des affectations.
+ * @param {boolean} props.loading - Chargement en cours.
+ * @param {boolean} props.launching - Analyse en cours de lancement.
+ * @returns {JSX.Element} L'en-tête RH.
+ */
 export default function AffHeader({ sessionActive, onRefresh, onLancer, loading, launching }) {
   return (
     <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">

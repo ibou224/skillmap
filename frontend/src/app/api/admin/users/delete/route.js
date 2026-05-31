@@ -1,7 +1,22 @@
+/**
+ * @module app/api/admin/users/delete/route
+ * @description Route API d'archivage (suppression douce) d'un utilisateur,
+ * avec journalisation d'audit.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole, getIp } from "@/lib/permission.js";
 
+/**
+ * Archive un utilisateur (soft-delete via `isArchived: true`).
+ *
+ * @route DELETE /api/admin/users/delete
+ * @access ADMIN
+ * @param {Request} request - Requête HTTP.
+ * @param {{ params: { id: string } }} context - Identifiant de l'utilisateur.
+ * @returns {NextResponse} 200 si archivé, 400 si id manquant, 404 si introuvable, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function DELETE(request, { params }) {
   const { session, error } = await requireRole("ADMIN");
   if (error) return error;

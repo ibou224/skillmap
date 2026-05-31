@@ -1,3 +1,9 @@
+/**
+ * @module app/api/weights/route
+ * @description Route API listant les configurations de pondération de toutes les
+ * sessions (normalisées via formatData).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";

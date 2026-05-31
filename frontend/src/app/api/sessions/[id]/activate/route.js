@@ -1,3 +1,8 @@
+/**
+ * @module app/api/sessions/[id]/activate/route
+ * @description Route API d'activation d'une session (archive les autres sessions actives).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";

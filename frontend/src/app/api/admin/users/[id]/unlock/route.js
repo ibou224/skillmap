@@ -1,3 +1,9 @@
+/**
+ * @module app/api/admin/users/[id]/unlock/route
+ * @description Route API permettant à un administrateur de déverrouiller
+ * manuellement un compte bloqué après trop de tentatives de connexion.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole, getIp } from "@/lib/permission.js";

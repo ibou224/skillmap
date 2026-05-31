@@ -1,3 +1,8 @@
+/**
+ * @module app/api/admin/logs/route
+ * @description Route API de consultation des logs d'audit (administration).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";
@@ -8,6 +13,8 @@ import { requireRole } from "@/lib/permission.js";
  *
  * @route GET /api/admin/logs
  * @access ADMIN
+ * @param {Request} request - Requête HTTP ; paramètre query optionnel `limit`.
+ * @returns {NextResponse} 200 avec les logs (+ utilisateur lié), 401/403 si non autorisé, 500 sur erreur.
  */
 export async function GET(request) {
   const { error } = await requireRole("ADMIN");

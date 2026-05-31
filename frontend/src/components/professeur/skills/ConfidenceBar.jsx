@@ -1,3 +1,14 @@
+/**
+ * @module components/professeur/skills/ConfidenceBar
+ * @description Barre indiquant le niveau de confiance (%) d'une donnée extraite par l'IA.
+ */
+
+/**
+ * Barre de confiance colorée selon le pourcentage.
+ * @param {Object} props
+ * @param {number} props.confidence - Score de confiance (0-100).
+ * @returns {JSX.Element} La barre de confiance.
+ */
 export default function ConfidenceBar({ confidence }) {
   const color = confidence >= 90 ? "bg-emerald-400" : confidence >= 70 ? "bg-amber-400" : "bg-red-400";
   return (

@@ -1,8 +1,19 @@
+/**
+ * @module app/api/notifications/route
+ * @description Routes API des notifications de l'utilisateur connecté :
+ * liste des non lues (GET), marquage de toutes comme lues (PATCH) et marquage
+ * d'une notification précise (PUT).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";
 
-// GET — non lues
+/**
+ * Route GET /api/notifications — retourne les 20 dernières notifications non lues.
+ * @access PROFESSEUR, RH, ADMIN
+ * @returns {NextResponse} 200 avec les notifications, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function GET() {
   const { session, error } = await requireRole("PROFESSEUR", "RH", "ADMIN");
   if (error) return error;
@@ -22,6 +33,11 @@ export async function GET() {
   }
 }
 
+/**
+ * Route PATCH /api/notifications — marque toutes les notifications de l'utilisateur comme lues.
+ * @access PROFESSEUR, RH, ADMIN
+ * @returns {NextResponse} 200 si succès, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function PATCH() {
   const { session, error } = await requireRole("PROFESSEUR", "RH", "ADMIN");
   if (error) return error;
@@ -42,6 +58,12 @@ export async function PATCH() {
 }
 
 
+/**
+ * Route PUT /api/notifications — marque une notification précise comme lue.
+ * @access PROFESSEUR, RH, ADMIN
+ * @param {Request} request - Corps JSON `{ id }` de la notification.
+ * @returns {NextResponse} 200 si succès, 404 si introuvable, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function PUT(request) {
   const { session, error } = await requireRole("PROFESSEUR", "RH", "ADMIN");
   if (error) return error;

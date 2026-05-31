@@ -1,3 +1,9 @@
+/**
+ * @module constants/sideBarConstante
+ * @description Définition des entrées de navigation de la barre latérale par rôle
+ * (libellés, icônes Lucide et liens).
+ */
+
 import {
   Home,
   FileText,

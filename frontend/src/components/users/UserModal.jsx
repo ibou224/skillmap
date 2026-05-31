@@ -1,8 +1,15 @@
 "use client";
 
+/**
+ * @module components/users/UserModal
+ * @description Modale de création/édition d'un utilisateur (identité, email, rôle,
+ * statut), connectée à {@link module:hooks/useManagementUser}.
+ */
+
 import { useState } from "react";
 import { useManagementUser } from "@/hooks/useManagementUser";
 
+/** Classe CSS commune des champs de saisie. */
 const inputCls = "w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(134,35%,45%)] transition bg-white";
 
 const disabledClasses =

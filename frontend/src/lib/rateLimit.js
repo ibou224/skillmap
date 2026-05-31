@@ -1,6 +1,6 @@
 /**
- * rateLimit.js
- * Rate limiter en mémoire pour les routes API sensibles.
+ * @module lib/rateLimit
+ * @description Rate limiter en mémoire pour les routes API sensibles.
  *
  * Utilise globalThis pour survivre aux hot-reloads Next.js.
  * Pour un déploiement multi-instance, migrer vers Redis (Upstash, etc.).

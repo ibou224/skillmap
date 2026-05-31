@@ -1,3 +1,20 @@
+/**
+ * @module components/ui/Input
+ * @description Champ de saisie contrôlé avec libellé.
+ */
+
+/**
+ * Champ de formulaire contrôlé avec label optionnel.
+ * @param {Object} props
+ * @param {string} [props.label] - Libellé du champ.
+ * @param {string} props.name - Nom/id du champ.
+ * @param {string} props.value - Valeur contrôlée.
+ * @param {Function} props.onChange - Gestionnaire de changement.
+ * @param {string} [props.type='text'] - Type d'input HTML.
+ * @param {boolean} [props.required=false] - Champ obligatoire.
+ * @param {string} [props.placeholder=''] - Texte indicatif.
+ * @returns {JSX.Element} Le champ de saisie.
+ */
 export default function Input({ label, name, value, onChange, type = 'text', required = false, placeholder = '' }) {
   return (
     <div className="mb-4">

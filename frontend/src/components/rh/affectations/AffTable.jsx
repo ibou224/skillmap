@@ -1,6 +1,17 @@
+/**
+ * @module components/rh/affectations/AffTable
+ * @description Tableau des affectations (RH), avec état vide.
+ */
+
 import { FileText } from "lucide-react";
 import { STATUT } from "@/constants/constantes";
 
+/**
+ * Tableau des affectations RH.
+ * @param {Object} props
+ * @param {Array<Object>} props.proposals - Affectations à afficher.
+ * @returns {JSX.Element} Le tableau (ou un état vide).
+ */
 export default function AffTable({ proposals }) {
   if (proposals.length === 0) {
     return (

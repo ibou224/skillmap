@@ -1,15 +1,32 @@
+/**
+ * @module components/professeur/formations/FormationForm
+ * @description Formulaire d'édition d'une formation/diplôme du CV.
+ */
+
 import { GraduationCap, Trash2 } from "lucide-react";
 
+/** Classe CSS commune des champs de saisie. */
 const inputCls = "w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(134,35%,45%)] transition bg-white";
 
+/** Niveaux de diplôme proposés. */
 const NIVEAU_OPTIONS = [
-  { value: "DOCTORATE",  label: "Doctorat (Ph.D.) — 100%" },
-  { value: "MASTERS",    label: "Maîtrise (M.Sc. / M.A. / M.Eng.) — 100%" },
-  { value: "BACHELORS",  label: "Baccalauréat (B.Sc. / B.A.) — 60%" },
-  { value: "DEC",        label: "DEC / Diplôme technique — 30%" },
-  { value: "OTHER",      label: "Autre — 10%" },
+  { value: "DOCTORATE",  label: "Doctorat" },
+  { value: "MASTERS",    label: "Maîtrise" },
+  { value: "BACHELORS",  label: "Baccalauréat" },
+  { value: "DEC",        label: "DEC / Diplôme technique" },
+  { value: "OTHER",      label: "Autre" },
 ];
 
+/**
+ * Formulaire d'une formation.
+ * @param {Object} props
+ * @param {Object} props.formation - Données de la formation.
+ * @param {number} props.index - Index dans la liste.
+ * @param {Function} props.onUpdate - Met à jour un champ.
+ * @param {Function} props.onRemove - Supprime cette formation.
+ * @param {boolean} props.canDelete - Autorise la suppression.
+ * @returns {JSX.Element} Le formulaire de formation.
+ */
 export default function FormationForm({ formation, index, onUpdate, onRemove, canDelete }) {
   return (
     <div className="relative border border-slate-100 rounded-2xl p-4 bg-slate-50/40 space-y-3">
@@ -55,7 +72,7 @@ export default function FormationForm({ formation, index, onUpdate, onRemove, ca
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Établissement</label>
           <input
-            placeholder="Université de Montréal"
+            placeholder="Université d'Ottawa"
             value={formation.etablissement ?? ""}
             onChange={(e) => onUpdate("etablissement", e.target.value)}
             className={inputCls}

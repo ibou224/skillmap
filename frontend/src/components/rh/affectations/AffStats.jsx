@@ -1,6 +1,17 @@
+/**
+ * @module components/rh/affectations/AffStats
+ * @description Statistiques résumées des affectations (RH) : total et par statut.
+ */
+
 import { BookOpen, CheckCircle2, Edit3, Clock } from "lucide-react";
 import { StatCell } from "@/components/ui/StatCell";
 
+/**
+ * Bande de statistiques des affectations RH.
+ * @param {Object} props
+ * @param {Array<Object>} props.proposals - Affectations à agréger.
+ * @returns {JSX.Element} La bande de statistiques.
+ */
 export default function AffStats({ proposals }) {
   const total      = proposals.length;
   const proposees  = proposals.filter((p) => p.statut === "PROPOSEE").length;

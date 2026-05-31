@@ -1,5 +1,18 @@
+/**
+ * @module components/professeur/affectation/HistoryHeader
+ * @description En-tête de la page d'historique d'enseignement (professeur).
+ */
+
 import { GraduationCap, Calendar, RefreshCw } from "lucide-react";
 
+/**
+ * En-tête de l'historique des affectations du professeur.
+ * @param {Object} props
+ * @param {number} props.totalSessions - Nombre de sessions affichées.
+ * @param {Function} props.onRefresh - Recharge l'historique.
+ * @param {boolean} props.loading - Indicateur de rechargement.
+ * @returns {JSX.Element} L'en-tête.
+ */
 export function HistoryHeader({ totalSessions, onRefresh, loading }) {
   return (
     <div className="relative overflow-hidden rounded-3xl p-8 shadow-lg bg-linear-to-br from-[hsl(134,35%,45%)] to-[#135d55]">

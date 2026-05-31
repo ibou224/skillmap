@@ -1,3 +1,10 @@
+/**
+ * @module app/api/professor/snapshots/[id]/restore/route
+ * @description Route API de restauration d'une version de CV : sauvegarde l'état
+ * courant dans un nouveau snapshot puis réapplique les données du snapshot choisi
+ * (infos, compétences, expériences, formations) dans une transaction.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";
@@ -53,10 +60,12 @@ export async function POST(request, { params }) {
           version:     (last?.version ?? 0) + 1,
           label:       `Avant restauration vers version ${snapshot.version}`,
           data: {
+            titre:       professor.titre,
             telephone:   professor.telephone,
             ville:       professor.ville,
             siteWeb:     professor.siteWeb,
             linkedin:    professor.linkedIn,
+            github:      professor.github,
             resume:      professor.resume,
             langues:     professor.langues,
             competences: professor.skills.map((s) => ({ nom: s.skill.nom, niveau: s.niveau })),
@@ -85,6 +94,7 @@ export async function POST(request, { params }) {
           ville:     cv.ville     ?? null,
           siteWeb:   cv.siteWeb   ?? null,
           linkedIn:  cv.linkedin  ?? null,
+          github:    cv.github    ?? null,
           resume:    cv.resume    ?? null,
           langues:   cv.langues   ?? [],
         },

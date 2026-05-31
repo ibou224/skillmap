@@ -1,14 +1,25 @@
+/**
+ * @module app/(auth)/login/page
+ * @description Page de connexion : panneau de branding (desktop) et formulaire
+ * de connexion {@link module:components/auth/LoginForm}.
+ */
+
 import LoginForm from '@/components/auth/LoginForm.jsx';
 import Image from 'next/image';
 import FooterLog from '@/components/layout/Footer.jsx';
 import { FileCheck2, Layers3, ShieldCheck, Globe } from 'lucide-react';
 
+/** Fonctionnalités mises en avant sur le panneau de branding. */
 const features = [
     { icon: FileCheck2, label: 'CVs centralisés et structurés' },
     { icon: Layers3, label: 'Compétences cartographiées par IA' },
     { icon: ShieldCheck, label: 'Accès sécurisé par rôle' },
 ];
 
+/**
+ * Page de connexion de l'application.
+ * @returns {JSX.Element} La page de login avec branding et formulaire.
+ */
 export default function LoginPage() {
     return (
         <div className="flex min-h-screen">

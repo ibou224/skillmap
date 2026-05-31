@@ -1,3 +1,9 @@
+/**
+ * @module app/api/affectations/[id]/adjust/route
+ * @description Route API d'ajustement manuel du cours d'une affectation
+ * (vérifie le cours, les conflits et passe le statut à AJUSTEE).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";

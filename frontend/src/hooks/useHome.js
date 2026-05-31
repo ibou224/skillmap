@@ -1,3 +1,10 @@
+/**
+ * @module hooks/useHome
+ * @description Hook agrégateur du tableau de bord administrateur. Combine cours,
+ * utilisateurs, affectations et sessions pour produire les statistiques (STATS),
+ * les données de graphiques et l'activité récente affichées sur la page d'accueil.
+ */
+
 import { Users, BookOpen, CheckCircle2, CalendarRange } from "lucide-react";
 import {
   createElement,
@@ -12,8 +19,26 @@ import { useAffectations } from "./useAffectations";
 import { useSessions } from "./useSessions";
 import { AFFECTATIONS_CHART, CVS_CHART, logToActivity, TYPE_COLOR, TYPE_LABEL } from "@/constants/homeAdmin";
 
+/** Fabrique un élément d'icône Lucide dimensionné pour les cartes de stats. */
 const icon = (Icon) => createElement(Icon, { className: "w-5 h-5" });
 
+/**
+ * Agrège les données des dashboards pour la page d'accueil admin.
+ *
+ * @returns {Object} Données prêtes pour l'affichage.
+ * @returns {Array<Object>} returns.STATS - Cartes de statistiques (professeurs, cours, sessions, affectations).
+ * @returns {Object} returns.AFFECTATIONS_CHART - Données du graphique des affectations.
+ * @returns {Object} returns.CVS_CHART - Données du graphique des CV.
+ * @returns {Array<Object>} returns.recentActivity - Activité récente (logs d'audit).
+ * @returns {Object} returns.TYPE_COLOR - Couleurs par type d'activité.
+ * @returns {Object} returns.TYPE_LABEL - Libellés par type d'activité.
+ * @returns {Array<Object>} returns.sessions - Liste des sessions.
+ * @returns {Object|undefined} returns.sessionActive - Session actuellement active.
+ * @returns {Function} returns.activateSession - Active une session.
+ * @returns {Function} returns.fetchSessions - Recharge les sessions.
+ * @returns {Function} returns.fetchRecentActivity - Recharge l'activité récente.
+ * @returns {boolean} returns.isLoading - Vrai si l'une des sources est en chargement.
+ */
 export function useHome() {
   const { courses, fetchCourses, isLoading: coursesLoading } = useCourses();
   const { users, getUsers, isLoading: usersLoading } = useManagementUser();

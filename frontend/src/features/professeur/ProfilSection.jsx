@@ -72,8 +72,18 @@ export default function ProfilPage() {
             <ExperienceTimeline experiences={cvData.experiences} />
           </SectionCard>
 
-          <SectionCard title="Formations" dotColor="bg-amber-400">
-            <FormationList formations={cvData.formations} />
+          <SectionCard title="Formations & certifications" dotColor="bg-amber-400">
+            <FormationList
+              formations={[
+                ...(cvData.formations ?? []),
+                ...(cvData.certifications ?? []).map((c) => ({
+                  diplome:        c.title ?? "",
+                  etablissement:  "",
+                  anneeObtention: c.year ? String(c.year) : "",
+                  niveauDiplome:  "CERTIFICATION",
+                })),
+              ]}
+            />
           </SectionCard>
         </div>
       </div>

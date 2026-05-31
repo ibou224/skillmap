@@ -1,3 +1,9 @@
+/**
+ * @module app/api/sessions/[id]/route
+ * @description Routes API d'une session ciblée par son id : consultation (GET),
+ * modification (PUT) et suppression (DELETE).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole, getIp } from "@/lib/permission.js";

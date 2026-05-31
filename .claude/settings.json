@@ -42,7 +42,10 @@
       "Bash(grep -E \"\\\\.\\(json|ts|js|yml|yaml|prisma|md\\)$\")",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\" -Directory)",
       "Bash(Select-Object Name)",
-      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\\\\frontend\\\\src\\\\\" -Recurse -Directory | Select-Object -ExpandProperty FullName | head -30)"
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\tiamk\\\\Desktop\\\\Gestion_Cv\\\\skillmap\\\\frontend\\\\src\\\\\" -Recurse -Directory | Select-Object -ExpandProperty FullName | head -30)",
+      "Bash(grep -E \"\\\\.js$\")",
+      "Bash(grep -E \"\\\\.js$|^d\")",
+      "PowerShell(\"ok\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\tiamk\\Desktop\\Gestion_Cv\\skillmap\\frontend\\src\\app\\dashboard\\admin\\sections",

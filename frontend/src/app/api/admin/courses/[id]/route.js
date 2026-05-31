@@ -1,3 +1,9 @@
+/**
+ * @module app/api/admin/courses/[id]/route
+ * @description Routes API d'administration d'un cours ciblé par son id :
+ * modification (PUT) et archivage/suppression douce (DELETE).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { isValidString } from "@/lib/validation.js";

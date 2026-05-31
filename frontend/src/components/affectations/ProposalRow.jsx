@@ -3,12 +3,24 @@
 import { useCallback } from "react";
 import {
   BookOpen, User, ChevronDown, ChevronUp, Edit3,
-  Target, Briefcase, GraduationCap, Clock,
+  Target, Briefcase, GraduationCap, Clock, XCircle,
 } from "lucide-react";
 import { cn, scoreBarColor, scoreTextColor } from "@/lib/utils";
 import { STATUT } from "@/constants/constantes";
 
+/**
+ * @module components/affectations/ProposalRow
+ * @description Ligne de tableau d'une proposition d'affectation, avec détail des
+ * scores dépliable et actions contextuelles selon le statut.
+ */
+
 // ── Atome : badge de statut ───────────────────────────────────────────────────
+/**
+ * Badge de statut coloré (atome interne).
+ * @param {Object} props
+ * @param {string} props.statut - Clé de statut.
+ * @returns {JSX.Element} Le badge.
+ */
 function StatusBadge({ statut }) {
   const s = STATUT[statut] ?? STATUT.PROPOSEE;
   return (
@@ -20,6 +32,12 @@ function StatusBadge({ statut }) {
 }
 
 // ── Atome : barre de score ────────────────────────────────────────────────────
+/**
+ * Barre de score (atome interne).
+ * @param {Object} props
+ * @param {number} props.score - Score sur 100.
+ * @returns {JSX.Element} La barre de score.
+ */
 function ScoreBar({ score }) {
   return (
     <div className="flex items-center gap-2">
@@ -43,6 +61,13 @@ function ScoreBar({ score }) {
 }
 
 // ── Panneau détail des 4 critères ────────────────────────────────────────────
+/**
+ * Panneau de détail des 4 sous-scores (atome interne).
+ * @param {Object} props
+ * @param {Object} props.detail - Sous-scores { skills, experience, education, history }.
+ * @param {Object} props.weights - Pondérations par critère.
+ * @returns {JSX.Element} Le panneau de détail.
+ */
 function ScoreDetail({ detail, weights }) {
   const items = [
     { label: "Compétences", value: detail.skills,     icon: Target,        weight: weights.competences.weight },
@@ -76,9 +101,16 @@ function ScoreDetail({ detail, weights }) {
 // ── Composant principal ───────────────────────────────────────────────────────
 /**
  * Une ligne du tableau d'affectation, avec panneau de détail dépliable.
- * @param {{ proposal, onAction, isExpanded, onToggle, weights }} props
+ * @param {Object} props
+ * @param {Object} props.proposal - Proposition d'affectation (cours, professeur, score, statut).
+ * @param {Function} props.onAction - Callback d'action (action, id).
+ * @param {boolean} props.isExpanded - Détail des scores ouvert.
+ * @param {Function} props.onToggle - Ouvre/ferme le détail.
+ * @param {Object} props.weights - Pondérations par critère.
+ * @param {string} props.role - Rôle de l'utilisateur.
+ * @returns {JSX.Element} La ligne de proposition.
  */
-export default function ProposalRow({ proposal, onAction, isExpanded, onToggle, weights }) {
+export default function ProposalRow({ proposal, onAction, isExpanded, onToggle, weights, role }) {
   const stopAndCall = useCallback(
     (e, action) => { e.stopPropagation(); onAction(action, proposal.id); },
     [onAction, proposal.id]
@@ -180,6 +212,16 @@ export default function ProposalRow({ proposal, onAction, isExpanded, onToggle, 
                 className="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition"
               >
                 Finaliser
+              </button>
+            )}
+            {proposal.statut === "FINALISEE" && role === "ADMIN" && (
+              <button
+                onClick={(e) => stopAndCall(e, "cancel")}
+                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+                title="Annuler l'affectation"
+                aria-label="Annuler"
+              >
+                <XCircle className="w-4 h-4" />
               </button>
             )}
             <span className="text-slate-300 dark:text-slate-700 ml-1">

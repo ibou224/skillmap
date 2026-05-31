@@ -4,7 +4,19 @@ import { useEffect, useState } from "react";
 import { X, Check } from "lucide-react";
 import { cn, scoreBarColor, scoreTextColor } from "@/lib/utils";
 
+/**
+ * @module components/affectations/AjustementModal
+ * @description Modale d'ajustement manuel d'une affectation : changement du cours
+ * assigné et ajout d'une note d'audit.
+ */
+
 // ── Mini barre de score (réutilisée dans le modal) ────────────────────────────
+/**
+ * Barre de score (atome interne au modal).
+ * @param {Object} props
+ * @param {number} props.score - Score sur 100.
+ * @returns {JSX.Element} La barre de score.
+ */
 function ScoreBar({ score }) {
   return (
     <div className="flex items-center gap-2">
@@ -31,12 +43,13 @@ function ScoreBar({ score }) {
  * Modal d'ajustement d'une affectation.
  * Permet au RH de changer le cours assigné et d'ajouter une note d'audit.
  *
- * @param {{
- *   isOpen: boolean,
- *   proposal: object|null,
- *   onClose: () => void,
- *   onSave: (id: string, updates: { cours, notes? }) => void
- * }} props
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Affiche la modale si vrai.
+ * @param {Object|null} props.proposal - Proposition à ajuster.
+ * @param {Function} props.onClose - Callback de fermeture.
+ * @param {Function} props.onSave - Callback de sauvegarde (id, { cours, notes? }).
+ * @param {Array<Object>} props.courses - Liste des cours sélectionnables.
+ * @returns {JSX.Element|null} La modale, ou null si fermée/sans proposition.
  */
 export default function AjustementModal({ isOpen, proposal, onClose, onSave,courses }) {
   const [selectedCoursId, setSelectedCoursId] = useState(proposal?.cours.id ?? "");

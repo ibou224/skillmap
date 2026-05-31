@@ -1,6 +1,18 @@
+/**
+ * @module components/professeur/formations/FormationsEditor
+ * @description Éditeur de la liste des formations (ajout/édition/suppression).
+ */
+
 import { Plus } from "lucide-react";
 import FormationForm from "./FormationForm";
 
+/**
+ * Éditeur de la liste des formations.
+ * @param {Object} props
+ * @param {Array<Object>} props.formations - Liste des formations.
+ * @param {Function} props.onChange - Callback de mise à jour de la liste.
+ * @returns {JSX.Element} L'éditeur de formations.
+ */
 export function FormationsEditor({ formations, onChange }) {
   const handleUpdate = (index, key, value) => {
     const updated = formations.map((f, i) =>

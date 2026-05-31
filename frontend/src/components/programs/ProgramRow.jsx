@@ -1,5 +1,18 @@
+/**
+ * @module components/programs/ProgramRow
+ * @description Ligne de tableau d'un programme avec actions d'édition/suppression.
+ */
+
 import { Building2, Layers, Pencil, Trash2 } from "lucide-react";
 
+/**
+ * Ligne de tableau d'un programme.
+ * @param {Object} props
+ * @param {Object} props.program - Programme (code, nom, nbEtapes, département...).
+ * @param {Function} props.onEdit - Callback d'édition.
+ * @param {Function} props.onDelete - Callback de suppression.
+ * @returns {JSX.Element} La ligne du programme.
+ */
 export default function ProgramRow({ program, onEdit, onDelete }) {
   return (
     <tr className="hover:bg-slate-50 transition-colors group">

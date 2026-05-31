@@ -1,3 +1,9 @@
+/**
+ * @module constants/cvConstantes
+ * @description Constantes d'affichage liées aux CV : métadonnées de statut
+ * (couleurs/libellés), onglets de filtrage et options de tri.
+ */
+
 import { CheckCircle2, Clock } from "lucide-react";
 
 export const STATUT_META = {

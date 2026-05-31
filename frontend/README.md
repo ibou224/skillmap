@@ -21,21 +21,49 @@ Application de gestion des affectations d'enseignants, construite avec Next.js 1
 
 ## Démarrage
 
+### 📥 Cloner le projet
+
+Si ce n'est pas déjà fait, récupérez le projet avec Git :
+
+```bash
+git clone <URL_DU_DEPOT_GIT>
+cd skillmap
+```
+
 ### Avec Docker (recommandé)
 
 ```bash
 # Depuis la racine du projet (dossier parent de frontend/)
-docker compose up -d
+# 1. Construire et démarrer les services
+docker compose up -d --build
+
+# 2. Synchroniser le schéma Prisma avec la base de données locale
+docker compose exec nextjs npx prisma db push
+
+# 3. Remplir la base avec le jeu de données initial
+docker compose exec nextjs npx prisma db seed
 ```
 
 Services lancés :
 
 - `http://localhost:3000` — Next.js
-- `http://localhost:8000` — FastAPI (algorithme d'affectation)
-- `http://localhost:5432` — PostgreSQL
-- `http://localhost:5050` — pgAdmin
+- `http://localhost:8000` — FastAPI (algorithme d'affectation, en réseau interne)
+- `localhost:5432` — PostgreSQL
 
-### En local (développement)
+> **⚠️ En cas d'erreur `Next.js package not found` / Turbopack au lancement :**
+> Exécutez la commande `docker compose rm -s -v -f nextjs && docker compose up -d --build nextjs` pour nettoyer le cache corrompu.
+
+### 🧪 Comptes de test (générés par le seed)
+
+- **Admin** : `admin@lacitec.on.ca` — _Mot de passe : `Admin1234!`_
+- **RH** : `rh@lacitec.on.ca` — _Mot de passe : `RhSkillMap1!`_
+- **Professeur (test)** : `prof@lacitec.on.ca` — _Mot de passe : `Prof1234!`_
+- **Autres professeurs (générés)** : ex: `marc.tremblay@lacitec.on.ca` — _Mot de passe : `Prof@2026!`_
+
+### En local (développement sans Docker)
+
+⚠️ **Important : Base de données**  
+Puisque vous n'utilisez pas l'environnement Docker complet, vous devez fournir vous-même une base de données PostgreSQL (installation locale sur votre OS, Cloud gratuit comme Supabase/Neon, ou via un conteneur isolé `docker compose up -d db`). N'oubliez pas de mettre à jour votre fichier `.env` avec la bonne variable `DATABASE_URL`.
 
 ```bash
 # Installer les dépendances

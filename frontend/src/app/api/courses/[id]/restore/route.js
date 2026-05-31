@@ -1,3 +1,8 @@
+/**
+ * @module app/api/courses/[id]/restore/route
+ * @description Route API de restauration (désarchivage) d'un cours.
+ */
+
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 import { requireRole, getIp } from '@/lib/permission.js';

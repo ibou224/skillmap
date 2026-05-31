@@ -1,6 +1,14 @@
+/**
+ * @module constants/homeAdmin
+ * @description Données et helpers de la page d'accueil administrateur : jeux de
+ * données de graphiques (affectations, CV), couleurs/libellés par type d'activité
+ * et conversion d'un log d'audit en élément d'activité affichable.
+ */
+
 import { createElement} from "react";
 
 
+/** Fabrique un élément d'icône Lucide dimensionné pour les cartes. */
 const icon = (Icon) => createElement(Icon, { className: "w-5 h-5" });
 
 export const AFFECTATIONS_CHART = {
@@ -31,6 +39,11 @@ export const CVS_CHART = {
   ],
 };
 
+/**
+ * Formate une date ISO en libellé relatif (« il y a X min/h/j »).
+ * @param {string} iso - Date au format ISO 8601.
+ * @returns {string} Libellé relatif en français.
+ */
 export function relativeTime(iso) {
   const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
   if (diff < 60) return "il y a quelques secondes";
@@ -50,6 +63,11 @@ const ACTION_LABELS = {
   ANALYZE: "Analyse IA",
 };
 
+/**
+ * Convertit un log d'audit en élément d'activité prêt à afficher.
+ * @param {Object} log - Entrée de log d'audit (action, entityType, user, createdAt...).
+ * @returns {{ who: string, action: string, type: string, time: string }} Activité formatée.
+ */
 export function logToActivity(log) {
   const who = log.user ? `${log.user.prenom} ${log.user.nom}` : "Système";
   const action = [ACTION_LABELS[log.action], log.entityType]

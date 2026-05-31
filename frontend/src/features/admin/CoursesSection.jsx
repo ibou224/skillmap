@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/admin/CoursesSection
+ * @description Section de gestion des cours (admin) : liste paginée, filtres,
+ * création/édition/archivage via {@link module:hooks/useCourses}.
+ * @returns {ReactNode} La section de gestion des cours.
+ */
+
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Banner } from "@/components/ui/Banner";

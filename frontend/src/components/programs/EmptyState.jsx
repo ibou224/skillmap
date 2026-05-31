@@ -1,5 +1,17 @@
+/**
+ * @module components/programs/EmptyState
+ * @description État vide de la liste des programmes (avec ou sans recherche active).
+ */
+
 import { Search, BookOpen, PlusCircle} from "lucide-react";
 
+/**
+ * État vide de la liste de programmes.
+ * @param {Object} props
+ * @param {string} props.search - Recherche courante (adapte le message).
+ * @param {Function} props.onAdd - Ouvre le formulaire d'ajout d'un programme.
+ * @returns {JSX.Element} L'état vide.
+ */
 export default function EmptyState({ search, onAdd }) {
   if (search) {
     return (

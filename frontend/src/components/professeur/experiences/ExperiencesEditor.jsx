@@ -1,6 +1,18 @@
+/**
+ * @module components/professeur/experiences/ExperiencesEditor
+ * @description Éditeur de la liste des expériences (ajout/édition/suppression).
+ */
+
 import { Plus } from "lucide-react";
 import ExperienceForm from "./ExperienceForm";
 
+/**
+ * Éditeur de la liste des expériences professionnelles.
+ * @param {Object} props
+ * @param {Array<Object>} props.experiences - Liste des expériences.
+ * @param {Function} props.onChange - Callback de mise à jour de la liste.
+ * @returns {JSX.Element} L'éditeur d'expériences.
+ */
 export function ExperiencesEditor({ experiences, onChange }) {
   const handleUpdate = (index, key, value) => {
     const updated = experiences.map((exp, i) =>

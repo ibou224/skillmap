@@ -1,7 +1,19 @@
 // components/ExperienceTimeline.jsx
+/**
+ * @module components/professeur/experiences/ExperienceTimeline
+ * @description Timeline verticale d'affichage des expériences professionnelles.
+ */
+
 import { Briefcase } from "lucide-react";
 
 // ─── Élément individuel de la timeline ───────────────────────────────────────
+/**
+ * Élément de timeline d'une expérience (sous-composant).
+ * @param {Object} props
+ * @param {Object} props.exp - Données de l'expérience.
+ * @param {boolean} props.isActive - Indique si l'expérience est en cours.
+ * @returns {JSX.Element} L'élément de timeline.
+ */
 function TimelineItem({ exp, isActive }) {
   const formatDate = (str) => {
     if (!str) return "Aujourd'hui";

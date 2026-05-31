@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/admin/logsSection
+ * @description Section de consultation des logs d'audit (admin) : recherche,
+ * filtres et pagination, alimentée par {@link module:hooks/useLogs}.
+ * @returns {ReactNode} La section des logs d'audit.
+ */
+
 import { useState, useEffect } from "react";
 import {
   ScrollText, RefreshCw, AlertCircle, Search,
@@ -7,6 +14,7 @@ import {
 } from "lucide-react";
 import { ACTION_PRIORITY, ENTITY_TYPES } from "@/lib/log_utils.js";
 
+/** Nombre de logs affichés par page. */
 const PAGE_SIZE = 20;
 
 /* ─── Helpers ─────────────────────────────────────────────── */

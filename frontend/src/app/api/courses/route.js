@@ -1,3 +1,9 @@
+/**
+ * @module app/api/courses/route
+ * @description Route API de listing des cours (avec compétences et programmes) ou
+ * des programmes seuls via le paramètre `?programs=true`.
+ */
+
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma.js';
 import { isValidString } from '@/lib/validation.js';

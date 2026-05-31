@@ -1,6 +1,20 @@
+/**
+ * @module components/rh/affectations/AffSearchBar
+ * @description Barre de recherche et filtre par statut pour les affectations RH.
+ */
+
 import { Search } from "lucide-react";
 import { STATUT } from "@/constants/constantes";
 
+/**
+ * Barre de recherche/filtre des affectations.
+ * @param {Object} props
+ * @param {string} props.search - Texte de recherche.
+ * @param {Function} props.onSearch - Callback de changement de recherche.
+ * @param {string} props.filterStatut - Statut filtré.
+ * @param {Function} props.onFilter - Callback de changement de filtre.
+ * @returns {JSX.Element} La barre de recherche.
+ */
 export default function AffSearchBar({ search, onSearch, filterStatut, onFilter }) {
   return (
     <div className="flex flex-col sm:flex-row gap-3">

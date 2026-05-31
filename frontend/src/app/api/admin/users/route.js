@@ -29,21 +29,34 @@ export async function GET(request) {
     if(error) return error;
 
   try {
-    const userSelect = {
-      id: true, email: true, nom: true, prenom: true, role: true,
-      isActive: true, isArchived: true, loginAttempts: true, lockedUntil: true,
-    };
-
     const { searchParams } = new URL(request.url);
     const showArchived = searchParams.get("archived") === "true";
 
     const users = await prisma.user.findMany({
-      where:   { isArchived: showArchived },
-      select:  userSelect,
+      where: { isArchived: showArchived },
+      select: {
+        id: true, email: true, nom: true, prenom: true, role: true,
+        isActive: true, isArchived: true, loginAttempts: true, lockedUntil: true,
+        professor: {
+          select: {
+            cvExtractions: {
+              where: { status: { in: ["EXTRACTED", "VALIDATED"] } },
+              take: 1,
+              select: { id: true },
+            },
+          },
+        },
+      },
       orderBy: { prenom: "asc" },
     });
 
-    return NextResponse.json({ success: true, data: users });
+    const data = users.map((u) => ({
+      ...u,
+      cvUploaded: (u.professor?.cvExtractions?.length ?? 0) > 0,
+      professor: undefined,
+    }));
+
+    return NextResponse.json({ success: true, data });
 
   } catch (error) {
     console.error("Erreur critique GET /api/admin/users :", error);

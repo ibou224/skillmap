@@ -1,11 +1,41 @@
 "use client";
 
+/**
+ * @module components/affectations/AffectationHeader
+ * @description En-tête de la page d'affectations : sélection session/programme,
+ * panneau de pondérations (modifiable) et filtres de volume (topN, score min),
+ * bouton de lancement de l'algorithme.
+ */
+
 import { Layers, Settings, Play, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PONDERATIONS_DEFAUT } from "@/constants/affectations";
 
 import { useEffect } from "react";
 
+/**
+ * En-tête de configuration et de lancement de l'analyse d'affectations.
+ *
+ * @param {Object} props
+ * @param {string} props.sessionId - Session sélectionnée.
+ * @param {string} props.programId - Programme sélectionné.
+ * @param {Function} props.onSessionChange - Callback de changement de session.
+ * @param {Function} props.onProgramChange - Callback de changement de programme.
+ * @param {Function} props.onRun - Lance l'algorithme.
+ * @param {boolean} props.loading - Analyse en cours.
+ * @param {boolean} props.hasRun - Indique qu'une analyse a déjà été lancée.
+ * @param {Object} props.weights - Pondérations courantes par critère.
+ * @param {Function} props.onWeightChange - Callback de changement d'une pondération.
+ * @param {boolean} props.showWeights - Affiche le panneau de pondérations.
+ * @param {Function} props.onToggleWeights - Bascule l'affichage des pondérations.
+ * @param {Array<Object>} [props.sessions] - Liste des sessions disponibles.
+ * @param {Array<Object>} [props.programmes] - Liste des programmes disponibles.
+ * @param {number} [props.topN=5] - Nombre max de profs proposés par cours.
+ * @param {Function} props.onTopNChange - Callback de changement de topN.
+ * @param {number} [props.minScore=0] - Score minimal des propositions.
+ * @param {Function} props.onMinScoreChange - Callback de changement du score min.
+ * @returns {JSX.Element} L'en-tête d'affectations.
+ */
 export default function AffectationHeader({
   sessionId,
   programId,

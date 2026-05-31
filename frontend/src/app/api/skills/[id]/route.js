@@ -3,6 +3,20 @@ import prisma from "@/lib/prisma.js";
 import { isValidString } from "@/lib/validation.js";
 import { requireRole, getIp } from "@/lib/permission.js";
 
+/**
+ * @module app/api/skills/[id]/route
+ * @description Routes API d'une compétence ciblée par son id : modification (PUT)
+ * et suppression (DELETE).
+ */
+
+/**
+ * Met à jour une compétence.
+ * @route PUT /api/skills/[id]
+ * @access ADMIN
+ * @param {Request} request - Corps JSON `{ nom, categorie, description? }`.
+ * @param {{ params: { id: string } }} context - Identifiant de la compétence.
+ * @returns {NextResponse} 200 si modifiée, 400 si invalide, 404 si introuvable, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function PUT(request, { params }) {
   const { session, error } = await requireRole("ADMIN");
   if (error) return error;
@@ -47,6 +61,14 @@ export async function PUT(request, { params }) {
   }
 }
 
+/**
+ * Supprime une compétence.
+ * @route DELETE /api/skills/[id]
+ * @access ADMIN
+ * @param {Request} request - Requête HTTP.
+ * @param {{ params: { id: string } }} context - Identifiant de la compétence.
+ * @returns {NextResponse} 200 si supprimée, 404 si introuvable, 401/403 si non autorisé, 500 sur erreur.
+ */
 export async function DELETE(request, { params }) {
   const { session, error } = await requireRole("ADMIN");
   if (error) return error;

@@ -1,5 +1,18 @@
+/**
+ * @module components/professeur/skills/StringArrayEditor
+ * @description Éditeur générique d'un tableau de chaînes (ex. langues), avec ajout/suppression.
+ */
+
 import { Plus, Trash2 } from "lucide-react";
 
+/**
+ * Éditeur d'une liste de chaînes de caractères.
+ * @param {Object} props
+ * @param {string[]} [props.items] - Valeurs éditées.
+ * @param {Function} props.onChange - Callback de mise à jour de la liste.
+ * @param {string} [props.placeholder='Ajouter…'] - Texte indicatif des champs.
+ * @returns {JSX.Element} L'éditeur de chaînes.
+ */
 export function StringArrayEditor({ items = [], onChange, placeholder = "Ajouter…" }) {
   const update = (index, value) => {
     const newItems = items.map((item, i) => (i === index ? value : item));

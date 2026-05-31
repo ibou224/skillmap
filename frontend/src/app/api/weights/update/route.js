@@ -1,3 +1,9 @@
+/**
+ * @module app/api/weights/update/route
+ * @description Route API de création/mise à jour des pondérations d'une session
+ * (somme des pourcentages = 100, validée via lib/validation).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole, getIp } from "@/lib/permission.js";

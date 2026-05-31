@@ -1,3 +1,10 @@
+/**
+ * @module app/api/rh/analytics/route
+ * @description Route API d'agrégation des statistiques d'affectations pour le
+ * tableau de bord analytique RH (stats par session, distribution des scores,
+ * top professeurs, indicateurs globaux).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole } from "@/lib/permission.js";

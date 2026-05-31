@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/admin/usersSection
+ * @description Section de gestion des utilisateurs (admin) : liste paginée, filtres,
+ * création/édition/archivage via {@link module:hooks/useManagementUser}.
+ * @returns {ReactNode} La section de gestion des utilisateurs.
+ */
+
 import { useState, useEffect, use } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Banner } from "@/components/ui/Banner";

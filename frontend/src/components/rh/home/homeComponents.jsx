@@ -1,5 +1,21 @@
+/**
+ * @module components/rh/home/homeComponents
+ * @description Briques d'affichage de l'accueil RH : carte de statistique et
+ * infobulle personnalisée pour les graphiques Recharts.
+ */
+
 import { cn } from "@/lib/utils";
 
+/**
+ * Carte de statistique de l'accueil RH.
+ * @param {Object} props
+ * @param {React.ComponentType} props.icon - Composant icône (Lucide).
+ * @param {string} props.label - Libellé de la statistique.
+ * @param {string|number} props.value - Valeur affichée.
+ * @param {string} [props.sub] - Sous-texte optionnel.
+ * @param {string} props.color - Classe de couleur de l'icône.
+ * @returns {JSX.Element} La carte de statistique.
+ */
 export function StatCard({ icon: Icon, label, value, sub, color }) {
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 flex items-center gap-4">
@@ -15,6 +31,14 @@ export function StatCard({ icon: Icon, label, value, sub, color }) {
   );
 }
 
+/**
+ * Infobulle personnalisée pour les graphiques Recharts.
+ * @param {Object} props
+ * @param {boolean} props.active - Infobulle active (survol).
+ * @param {Array<Object>} props.payload - Données du point survolé.
+ * @param {string} props.label - Libellé de l'axe.
+ * @returns {JSX.Element|null} L'infobulle, ou null si inactive.
+ */
 export function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (

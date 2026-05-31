@@ -3,6 +3,9 @@
 # Reçoit un fichier PDF ou Word, extrait le texte, appelle le LLM
 # et sauvegarde les données en base PostgreSQL.
 
+import os
+import re
+import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException, Header
 from app.services.parser import extract_text
 from app.services.llm import extract_cv_data
@@ -69,15 +72,20 @@ async def analyze_cv(
     # Extraction des données structurées via le LLM
     cv_data = await extract_cv_data(text)
 
-    #  Sauvegarde en base si professor_id fourni 
+    #  Sauvegarde en base si professor_id fourni
     extraction_id = None
     if professor_id:
         try:
+            # Sanitize le nom de fichier — neutralise path traversal et caractères spéciaux
+            original_name = os.path.basename(file.filename or "cv.pdf")
+            safe_name     = re.sub(r"[^A-Za-z0-9._-]", "_", original_name)[:120]
+            unique_name   = f"{uuid.uuid4().hex}_{safe_name}"
+
             # Sauvegarder l'extraction CV
             extraction_id = save_cv_extraction(
                 professor_id=professor_id,
-                file_name=file.filename,
-                file_path=f"uploads/{file.filename}",
+                file_name=original_name,
+                file_path=f"uploads/{professor_id}/{unique_name}",
                 raw_text=text
             )
 

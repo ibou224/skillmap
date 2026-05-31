@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * @module components/layout/DashboardSidebar
+ * @description Barre latérale de navigation du dashboard : entrées filtrées par
+ * rôle, regroupées par section, avec repli, version mobile et déconnexion.
+ */
+
 import {signOut } from "next-auth/react";
 import { useState } from "react";
 import {LogOut, ChevronLeft, ChevronRight} from "lucide-react";
@@ -10,6 +16,18 @@ import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
 import { NAV_ITEMS, GROUP_LABELS, GROUP_ORDER, HOME_ROUTES } from "@/constants/sideBarConstante.js";
 
 
+/**
+ * Barre latérale de navigation du dashboard, filtrée par rôle et regroupée par sections.
+ *
+ * @param {Object} props
+ * @param {string} props.role - Rôle de l'utilisateur (filtre les entrées de menu).
+ * @param {boolean} props.isCollapsed - Sidebar réduite si vrai.
+ * @param {Function} props.toggleSidebar - Bascule l'état réduit/déployé.
+ * @param {Function} props.onLogout - Callback de déconnexion (après confirmation).
+ * @param {boolean} [props.isMobileOpen=false] - Sidebar ouverte en mode mobile.
+ * @param {Function} [props.onMobileClose] - Ferme la sidebar mobile.
+ * @returns {JSX.Element} La barre latérale.
+ */
 export default function DashboardSidebar({ role, isCollapsed, toggleSidebar, onLogout, isMobileOpen = false, onMobileClose }) {
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);

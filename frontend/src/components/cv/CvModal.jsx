@@ -10,6 +10,19 @@ import { NIVEAU_LABEL, DIPLOME_LABEL, CV_STATUT_META } from "@/constants/cvConst
 import { fmtPeriod, SectionTitle, NiveauBar, TimelineDot } from "./CvModalComponents";
 import { useCvs } from "@/hooks/useProfessor";
 
+/**
+ * @module components/cv/CvModal
+ * @description Modale d'affichage détaillé du CV d'un professeur (coordonnées,
+ * expériences, formations, compétences, langues) chargé depuis l'API de détail.
+ */
+
+/**
+ * Modale de consultation du CV complet d'un professeur.
+ * @param {Object} props
+ * @param {string} props.professorId - Identifiant du professeur à charger.
+ * @param {Function} props.onClose - Callback de fermeture de la modale.
+ * @returns {JSX.Element} La modale CV.
+ */
 export default function CvModal({ professorId, onClose }) {
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);

@@ -1,3 +1,9 @@
+/**
+ * @module app/api/rh/professors/route
+ * @description Route API listant les professeurs avec leur statut de CV le plus
+ * récent, pour les tableaux de bord RH/ADMIN.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/permission";
@@ -39,7 +45,9 @@ export async function GET() {
       userId: p.user.id,
       nom: p.user.nom,
       prenom: p.user.prenom,
-      email: p.user.email,
+      email: p.email || p.user.email,
+      titre: p.titre ?? null,
+      github: p.github ?? null,
       isActive: p.user.isActive,
       cvStatut: p.cvExtractions[0]?.status ?? null,
       cvId: p.cvExtractions[0]?.id ?? null,

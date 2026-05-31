@@ -36,10 +36,12 @@ export default function CvPage() {
    await saveInfos({
      profile: {
        titre: cvData.titre,
+       email: cvData.email,
        telephone: cvData.telephone,
        ville: cvData.ville,
        siteWeb: cvData.siteWeb,
        linkedin: cvData.linkedin,
+       github: cvData.github,
        resume: cvData.resume,
        langues: cvData.langues ?? [],
      },
@@ -70,6 +72,8 @@ const handleManualSave = async (cvData) => {
       ville: cvData.ville,
       siteWeb: cvData.siteWeb,
       linkedin: cvData.linkedin,
+      github: cvData.github,
+      email: cvData.email,
       resume: cvData.resume,
       langues: cvData.langues ?? [],
     },

@@ -5,9 +5,21 @@ import { UserCircle, Mail, BadgeCheck, Save, Loader2 } from "lucide-react";
 import { useSettings } from "@/hooks/useSettings";
 import Feedback from "@/components/ui/Feedback";
 
+/**
+ * @module components/settings/ProfileCard
+ * @description Carte d'édition des informations de profil (prénom, nom) du compte connecté.
+ */
+
+/** Classe CSS commune des champs de saisie. */
 const fieldCls =
   "w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-transparent rounded-xl focus:bg-white focus:border-[hsl(134,35%,45%)] focus:ring-0 transition-all outline-none text-gray-700 placeholder:text-gray-400";
 
+/**
+ * Carte d'édition du profil utilisateur.
+ * @param {Object} props
+ * @param {Object} [props.user={}] - Données du compte (prenom, nom, email...).
+ * @returns {JSX.Element} La carte de profil.
+ */
 export function ProfileCard({ user = {} }) {
   const [profil, setProfil] = useState({ prenom: user.prenom ?? "", nom: user.nom ?? "" });
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,22 @@
+/**
+ * @module components/professeur/profil/PersonalInfos
+ * @description Formulaire d'édition des informations personnelles du CV (coordonnées, liens).
+ */
+
 import { User, Mail, Phone, MapPin, Link2, Globe, GitBranch, Briefcase } from "lucide-react";
 
 
+/**
+ * Ligne de champ étiqueté avec icône (sous-composant).
+ * @param {Object} props
+ * @param {React.ComponentType} props.icon - Composant icône (Lucide).
+ * @param {string} props.label - Libellé du champ.
+ * @param {string} props.value - Valeur du champ.
+ * @param {Function} props.onChange - Callback de changement (reçoit la valeur).
+ * @param {string} props.placeholder - Texte indicatif.
+ * @param {string} [props.type='text'] - Type d'input.
+ * @returns {JSX.Element} La ligne de champ.
+ */
 function FieldRow({ icon: Icon, label, value, onChange, placeholder, type = "text" }) {
   return (
     <div className="space-y-1.5">

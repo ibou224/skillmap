@@ -1,6 +1,18 @@
+/**
+ * @module components/cv/CvModalComponents
+ * @description Briques d'affichage réutilisables de la modale CV : formatage de
+ * période, titre de section, barre de niveau et point de timeline.
+ */
+
 import { NIVEAU_BARS, NIVEAU_LABEL } from "../../constants/cvConstantes";
 
 
+/**
+ * Formate une période « AAAA/MM — AAAA/MM » (ou « Présent » si fin absente).
+ * @param {string} debut - Date de début (ISO).
+ * @param {string} [fin] - Date de fin (ISO) ; « Présent » si absente.
+ * @returns {string} La période formatée.
+ */
 export function fmtPeriod(debut, fin) {
   if (!debut) return "";
   const d = debut.slice(0, 7).replace("-", "/");
@@ -9,6 +21,14 @@ export function fmtPeriod(debut, fin) {
 }
 
 
+/**
+ * Titre de section avec icône et soulignement.
+ * @param {Object} props
+ * @param {React.ComponentType} props.icon - Composant icône (Lucide).
+ * @param {React.ReactNode} props.children - Libellé de la section.
+ * @param {string} [props.color] - Classe de couleur du titre.
+ * @returns {JSX.Element} Le titre de section.
+ */
 export function SectionTitle({ icon: Icon, children, color = "text-[hsl(134,35%,45%)]" }) {
   return (
     <div className={`flex items-center gap-2 mb-3 pb-2 border-b border-slate-100 ${color}`}>
@@ -18,6 +38,12 @@ export function SectionTitle({ icon: Icon, children, color = "text-[hsl(134,35%,
   );
 }
 
+/**
+ * Barre de niveau de compétence (5 segments remplis selon le niveau).
+ * @param {Object} props
+ * @param {string} props.niveau - Niveau de compétence (clé de NIVEAU_BARS).
+ * @returns {JSX.Element} La barre de niveau.
+ */
 export function NiveauBar({ niveau }) {
   const filled = NIVEAU_BARS[niveau] ?? 2;
   return (
@@ -34,6 +60,10 @@ export function NiveauBar({ niveau }) {
   );
 }
 
+/**
+ * Point de jalon pour une timeline verticale.
+ * @returns {JSX.Element} Le point de timeline.
+ */
 export function TimelineDot() {
   return (
     <div className="relative flex flex-col items-center">

@@ -1,9 +1,16 @@
+/**
+ * @module app/api/programs/[id]/route
+ * @description Routes API d'un programme ciblé par son id : modification avec
+ * validation et contrôle d'unicité du code (PUT) et suppression (DELETE).
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma.js";
 import { requireRole, getIp } from "@/lib/permission.js";
 import { isValidString } from "@/lib/validation";
 
 /**
+ * Met à jour un programme.
  * @route PUT /api/programs/[id]
  * @access ADMIN
  */
@@ -116,6 +123,7 @@ export async function PUT(request, { params }) {
 }
 
 /**
+ * Supprime un programme.
  * @route DELETE /api/programs/[id]
  * @access ADMIN
  */

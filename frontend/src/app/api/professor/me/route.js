@@ -69,7 +69,6 @@ export async function GET(request) {
         { status: 404 },
       );
     }
-
     return NextResponse.json({
       success: true,
       data: normalizeInfosProfessor(professor),

@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @module features/admin/SkillsSection
+ * @description Section de gestion des compétences (admin) : liste paginée, filtres,
+ * création/édition/suppression via {@link module:hooks/useSkills}.
+ * @returns {ReactNode} La section de gestion des compétences.
+ */
+
 import { useState, useEffect } from "react";
 import { Banner } from "@/components/ui/Banner";
 import ConfirmModal from "@/components/ui/ConfirmModal";

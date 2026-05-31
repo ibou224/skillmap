@@ -1,6 +1,22 @@
+/**
+ * @module hooks/useWeights
+ * @description Hook de gestion des pondérations de l'algorithme de matching par
+ * session : chargement et mise à jour (avec validation de la somme = 100 %).
+ */
+
 import { useState, useCallback } from "react";
 import { isValidateWeights } from "@/lib/validation";
 
+/**
+ * Hook de gestion des pondérations de matching.
+ *
+ * @returns {Object} État et actions.
+ * @returns {Array<Object>} returns.weights - Configurations de pondération par session.
+ * @returns {boolean} returns.isLoading - Indicateur de chargement.
+ * @returns {string|null} returns.error - Message d'erreur éventuel.
+ * @returns {Function} returns.fetchWeights - Charge les pondérations.
+ * @returns {Function} returns.updateWeight - Met à jour les pondérations d'une session.
+ */
 export const useWeights = () => {
     const [weights, setWeights] = useState([]);
     const [isLoading, setIsLoading] = useState(false);

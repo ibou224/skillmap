@@ -1,3 +1,10 @@
+/**
+ * @module constants/affectations
+ * @description Constantes liées aux affectations et aux pondérations par défaut.
+ * Les bornes min/max proviennent de {@link module:lib/validation WEIGHT_BOUNDS}
+ * (source de vérité unique côté serveur).
+ */
+
 import { Target, Briefcase, GraduationCap, Clock } from "lucide-react";
 import { WEIGHT_BOUNDS } from "@/lib/validation";
 

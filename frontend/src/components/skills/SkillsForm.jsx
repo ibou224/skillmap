@@ -1,7 +1,24 @@
 "use client";
 
+/**
+ * @module components/skills/SkillsForm
+ * @description Modale de création/édition d'une compétence (nom, catégorie, description).
+ */
+
 import { X } from "lucide-react";
 
+/**
+ * Formulaire modal d'une compétence.
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Affiche la modale si vrai.
+ * @param {Function} props.onClose - Callback de fermeture.
+ * @param {Object|null} props.editSkill - Compétence en édition (null en création).
+ * @param {Object} props.formData - Données du formulaire.
+ * @param {Function} props.setFormData - Setter des données du formulaire.
+ * @param {string} props.formError - Message d'erreur de validation.
+ * @param {boolean} props.isSubmitting - Soumission en cours.
+ * @returns {JSX.Element} Le formulaire de compétence.
+ */
 export function SkillsForm({
   isOpen,
   onClose,

@@ -1,8 +1,23 @@
+/**
+ * @module app/api/affectations/finalize/route
+ * @description Route API de finalisation globale des affectations d'une session
+ * (passe les PROPOSEE/AJUSTEE à FINALISEE), journalise l'action et notifie les
+ * professeurs concernés.
+ */
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole, getIp } from "@/lib/permission";
 
 
+/**
+ * Finalise toutes les affectations finalisables d'une session.
+ *
+ * @route PATCH /api/affectations/finalize
+ * @access RH, ADMIN
+ * @param {Request} request - Corps JSON `{ sessionId }`.
+ * @returns {NextResponse} 200 avec le nombre finalisé, 400/404/409 selon le cas, 500 sur erreur.
+ */
 export async function PATCH(request) {
   const { session, error } = await requireRole("RH", "ADMIN");
   if (error) return error;

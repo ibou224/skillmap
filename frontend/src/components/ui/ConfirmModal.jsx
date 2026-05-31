@@ -1,7 +1,23 @@
 "use client";
 
+/**
+ * @module components/ui/ConfirmModal
+ * @description Fenêtre modale de confirmation d'action destructrice (avec état de chargement).
+ */
+
 import { AlertTriangle, Loader2 } from "lucide-react";
 
+/**
+ * Modale de confirmation (ex. suppression).
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Affiche la modale si vrai.
+ * @param {string} props.title - Titre de la modale.
+ * @param {string} props.message - Message de confirmation.
+ * @param {Function} props.onConfirm - Callback de confirmation.
+ * @param {Function} props.onCancel - Callback d'annulation/fermeture.
+ * @param {boolean} [props.isLoading=false] - Affiche l'état de chargement et désactive les boutons.
+ * @returns {JSX.Element|null} La modale, ou null si fermée.
+ */
 export default function ConfirmModal({
   isOpen,
   title,

@@ -1,3 +1,9 @@
+/**
+ * @module app/fonts
+ * @description Déclaration des polices de l'application (locales et Google Fonts)
+ * exposées sous forme de variables CSS, importées par le layout racine.
+ */
+
 import localFont from 'next/font/local';
 import { Felipa } from "next/font/google";
 

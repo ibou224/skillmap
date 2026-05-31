@@ -1,5 +1,16 @@
+/**
+ * @module components/professeur/affectation/CourseRow
+ * @description Ligne d'un cours affecté (côté professeur) avec badge de statut.
+ */
+
 import { STATUT_PROF } from "@/constants/constantes";
 
+/**
+ * Ligne d'affichage d'un cours affecté.
+ * @param {Object} props
+ * @param {Object} props.cours - Cours (code, nom, etape, programme, statut).
+ * @returns {JSX.Element} La ligne de cours.
+ */
 export function CourseRow({ cours }) {
   const s = STATUT_PROF[cours.statut] ?? STATUT_PROF.PROPOSEE;
   return (
