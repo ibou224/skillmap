@@ -22,29 +22,29 @@
 
 ---
 
-## 📋 Table des matières
+## Table des matières
 
 - [SkillMap](#skillmap)
-  - [📋 Table des matières](#-table-des-matières)
-  - [🏗️ Architecture](#️-architecture)
-  - [🛠️ Stack technique](#️-stack-technique)
-  - [✨ Fonctionnalités](#-fonctionnalités)
-  - [📦 Prérequis](#-prérequis)
-    - [🐳 Docker (recommandé)](#-docker-recommandé)
-    - [💻 Installation locale](#-installation-locale)
-  - [🚀 Installation](#-installation)
-    - [📥 1. Cloner le projet](#-1-cloner-le-projet)
-    - [🐳 2. Docker (recommandé)](#-2-docker-recommandé)
+  - [Table des matières](#table-des-matières)
+  - [Architecture](#architecture)
+  - [Stack technique](#stack-technique)
+  - [Fonctionnalités](#fonctionnalités)
+  - [Prérequis](#prérequis)
+    - [Docker (recommandé)](#docker-recommandé)
+    - [Installation locale](#installation-locale)
+  - [Installation](#installation)
+    - [1. Cloner le projet](#1-cloner-le-projet)
+    - [2. Docker (recommandé)](#2-docker-recommandé)
     - [Comptes de test (après Seed)](#comptes-de-test-après-seed)
     - [Installation locale sans Docker](#installation-locale-sans-docker)
       - [Backend](#backend)
       - [Frontend](#frontend)
-  - [⚙️ Variables d'environnement](#️-variables-denvironnement)
-  - [📚 Documentation du code (Doxygen)](#-documentation-du-code-doxygen)
+  - [Variables d'environnement](#variables-denvironnement)
+  - [Documentation du code (Doxygen)](#documentation-du-code-doxygen)
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```text
 ┌─────────────────────────────────────────────────┐
@@ -72,7 +72,7 @@
 
 ---
 
-## 🛠️ Stack technique
+## Stack technique
 
 | Couche | Technologie | Version |
 | --- | --- | --- |
@@ -92,7 +92,7 @@
 
 ---
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 | # | Fonctionnalité | Description |
 | --- | --- | --- |
@@ -105,14 +105,14 @@
 
 ---
 
-## 📦 Prérequis
+## Prérequis
 
-### 🐳 Docker (recommandé)
+### Docker (recommandé)
 
 - Docker 24+
 - Docker Compose v2+
 
-### 💻 Installation locale
+### Installation locale
 
 - Node.js 20+
 - Python 3.11+
@@ -120,9 +120,9 @@
 
 ---
 
-## 🚀 Installation
+## Installation
 
-### 📥 1. Cloner le projet
+### 1. Cloner le projet
 
 Commencez par récupérer le code source sur votre machine en utilisant Git :
 
@@ -131,7 +131,7 @@ git clone <URL_DU_DEPOT_GIT>
 cd skillmap
 ```
 
-### 🐳 2. Docker (recommandé)
+### 2. Docker (recommandé)
 
 ```bash
 # 1. Copier le fichier d'exemple des variables d'environnement
@@ -168,8 +168,7 @@ Le script de seed (`npx prisma db seed`) crée automatiquement des comptes pour 
 - **Autres professeurs (générés)** : ex: `marc.tremblay@lacitec.on.ca` — _Mot de passe : `Prof@2026!`_
 
 ### Installation locale sans Docker
-
-⚠️ **Important : Base de données**  
+**Important : Base de données**  
 Sans Docker, la base de données PostgreSQL n'est pas instanciée automatiquement. Vous devrez fournir votre propre instance pour que l'application fonctionne :
 1. Soit **installer PostgreSQL localement** sur votre ordinateur (via l'installateur officiel).
 2. Soit **utiliser une base Cloud gratuite** comme Supabase, Neon.tech ou Render.
@@ -202,7 +201,7 @@ npm run dev
 
 ---
 
-## ⚙️ Variables d'environnement
+## Variables d'environnement
 
 Copier `.env.example` en `.env` (à la racine) et renseigner les valeurs. 
 Pour faciliter les tests locaux (sans risque de sécurité), voici les valeurs recommandées à utiliser :
@@ -215,15 +214,15 @@ Pour faciliter les tests locaux (sans risque de sécurité), voici les valeurs r
 | `NEXTAUTH_SECRET` | Secret de session (JWT) — `openssl rand -hex 32` | `secret-local-skillmap-2026-lacite` |
 | `INTERNAL_API_KEY` | Clé partagée Next.js ↔ FastAPI (identique des deux côtés) | `cle-interne-securite-docker` |
 | `LLM_BASE_URL` | URL de base de l'API LLM (compatible OpenAI) | `https://defi-informatique.cocalc.cloud/api` |
-| `LLM_API_KEY` | Clé d'accès à l'API LLM | 🛑 **[Sensible : Demander la clé à l'équipe]** |
-| `LLM_COOKIE` | Cookie d'authentification CoCalc (si requis) | 🛑 **[Sensible]** |
+| `LLM_API_KEY` | Clé d'accès à l'API LLM |  **[Sensible : Demander la clé à l'équipe]** |
+| `LLM_COOKIE` | Cookie d'authentification CoCalc (si requis) |  **[Sensible]** |
 | `LLM_MODEL` | Modèle LLM utilisé | `gpt-oss-ctx24k:120b` |
 | `PGADMIN_EMAIL` | Email de connexion pgAdmin | `admin@gestion-cv.com` |
 | `PGADMIN_PASSWORD` | Mot de passe pgAdmin | `admin` |
 
 ---
 
-## 📚 Documentation du code (Doxygen)
+## Documentation du code (Doxygen)
 
 Le code du frontend (`frontend/src`) est annoté avec des commentaires JSDoc/Doxygen
 (en-tête `@module` par fichier, blocs `@param` / `@returns` sur les fonctions,
