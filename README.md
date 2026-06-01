@@ -35,11 +35,12 @@
   - [🚀 Installation](#-installation)
     - [📥 1. Cloner le projet](#-1-cloner-le-projet)
     - [🐳 2. Docker (recommandé)](#-2-docker-recommandé)
-    - [🧪 Comptes de test (après Seed)](#-comptes-de-test-après-seed)
-    - [💻 Installation locale sans Docker](#-installation-locale-sans-docker)
+    - [Comptes de test (après Seed)](#comptes-de-test-après-seed)
+    - [Installation locale sans Docker](#installation-locale-sans-docker)
       - [Backend](#backend)
       - [Frontend](#frontend)
   - [⚙️ Variables d'environnement](#️-variables-denvironnement)
+  - [📚 Documentation du code (Doxygen)](#-documentation-du-code-doxygen)
 
 ---
 
@@ -157,7 +158,7 @@ Une fois lancé, les services sont accessibles aux adresses suivantes :
 > **⚠️ En cas d'erreur `Next.js package not found` / Turbopack au lancement :**
 > Exécutez la commande `docker compose rm -s -v -f nextjs && docker compose up -d --build nextjs` pour nettoyer le cache corrompu.
 
-### 🧪 Comptes de test (après Seed)
+### Comptes de test (après Seed)
 
 Le script de seed (`npx prisma db seed`) crée automatiquement des comptes pour tester l'application :
 
@@ -166,7 +167,7 @@ Le script de seed (`npx prisma db seed`) crée automatiquement des comptes pour 
 - **Professeur (test)** : `prof@lacitec.on.ca` — _Mot de passe : `Prof1234!`_
 - **Autres professeurs (générés)** : ex: `marc.tremblay@lacitec.on.ca` — _Mot de passe : `Prof@2026!`_
 
-### 💻 Installation locale sans Docker
+### Installation locale sans Docker
 
 ⚠️ **Important : Base de données**  
 Sans Docker, la base de données PostgreSQL n'est pas instanciée automatiquement. Vous devrez fournir votre propre instance pour que l'application fonctionne :
@@ -246,4 +247,8 @@ ignoré par Git (régénérable à volonté).
 
 ---
 
-Fait avec ❤️ pour le **Défi Informatique La Cité 2026**
+Equipe de Developpement
+* Kevin Rostand Sop Tiam
+* Ibrama Sory Traore
+* Maxime Ivan Gbetkon Youyidia
+* Tania Boudedja
